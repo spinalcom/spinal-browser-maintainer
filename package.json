@@ -1,0 +1,32 @@
+{
+  "name": "spinal-browser-maintainer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "rm -rf wwww && NODE_ENV=production node bin/parcel.config.js",
+    "dev": "NODE_ENV=development node bin/parcel.config.js",
+    "reset": "rm -fr www",
+    "postinstall": "npm run spinal-register",
+    "spinal-register": "spinal-register --browser 'spinal-browser-'",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.8.1",
+    "app.vue": "^0.1.10",
+    "bootstrap": "^4.3.1",
+    "bootstrap-vue": "^2.0.0-rc.16",
+    "jquery": "^3.3.1",
+    "parcel-bundler": "^1.12.3",
+    "spinal-env-drive-core": "git+https://github.com/spinalcom/spinal-env-drive-core.git",
+    "spinal-env-viewer-graph-service": "git+https://github.com/spinalcom/Spinal-Graph-Service.git",
+    "vue": "^2.6.10",
+    "vue-sidebar-menu": "^3.6.3"
+  },
+  "devDependencies": {
+    "@vue/component-compiler-utils": "^2.6.0"
+  }
+}
