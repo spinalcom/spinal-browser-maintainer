@@ -62,6 +62,23 @@ export class GraphService {
     //context.bind(this.getOccupationsFuncBinded);
   }
 
+  async getContext(name) {
+    await this.init();
+    const context = await this.SpinalGraphService.getContext(name);
+
+    return context;
+  }
+
+  getRealNode(id) {
+    return this.SpinalGraphService.getRealNode(id);
+  }
+
+  async getcHILDREN(id, relationName = []) {
+    const children = await this.SpinalGraphService.getChildren(id, relationName);
+
+    return children;
+  }  
+
   async getOccupationsFunc() {
     await this.init();
     const context = await this.SpinalGraphService.getContext('Occupation');
