@@ -21,13 +21,15 @@
  * with this file. If not, see
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
-import "babel-polyfill";
 
-import Vue from "vue";
+var aesjs = require('aes-js');
 
-import App from "./app.vue";
-import VueSidebarMenu from 'vue-sidebar-menu'
-
-Vue.use(VueSidebarMenu);
-
-new Vue(App).$mount("#app");
+export function decriAes(k, encryptedHex) {
+  const encryptedBytes = aesjs.utils.hex.toBytes(encryptedHex);
+  const aesCtr = new aesjs.ModeOfOperation.ctr(k, new aesjs.Counter(5));
+  const decryptedBytes = aesCtr.decrypt(encryptedBytes);
+  return aesjs.utils.utf8.fromBytes(decryptedBytes);
+}
+export function decriB64(encryptedHex) {
+  return atob(encryptedHex);
+}

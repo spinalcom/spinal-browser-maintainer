@@ -1,2 +1,6 @@
 node_module
 www
+launch.config.js
+.apps.json
+.browser_organs
+.config.json
