@@ -50,14 +50,16 @@ export class GraphService {
 
   async getOccupations(onChangeFunc) {
     await this.init();
-    const context = await this.SpinalGraphService.getContext('Occupation');
-    this.getOccupationsFuncBinded = throttle(() => {
-      this.getOccupationsFunc().then((res) => {
-        onChangeFunc(res);
-      });
-    }, 1000);
+    const context = await this.SpinalGraphService.getContext('geo');
 
-    context.bind(this.getOccupationsFuncBinded);
+    // this.getOccupationsFuncBinded = throttle(() => {
+    //   this.getOccupationsFunc().then((res) => {
+    //     onChangeFunc(res);
+    //   });
+    // }, 1000);
+    console.log(context);
+
+    //context.bind(this.getOccupationsFuncBinded);
   }
 
   async getOccupationsFunc() {

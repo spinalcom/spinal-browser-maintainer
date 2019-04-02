@@ -8,7 +8,7 @@
 import Vue from 'vue';
 import VueSidebarMenu from 'vue-sidebar-menu'
 import 'vue-sidebar-menu/dist/vue-sidebar-menu.css'
-//import spinalGraphService from "spinal-env-viewer-graph-service"
+import spinalGraphService from "../../config/GraphService"
 
 export default Vue.extend({
 	data() {
@@ -29,6 +29,8 @@ export default Vue.extend({
 	created() {
 		this.menu.push({ title: 'etage1', child: [ {title: 'room1'}, {title: 'room2'} ]});
 		console.log(this.menu);
+		console.log("-------");
+		spinalGraphService.getOccupations();
 	},
 	methods: {
 		onCollapse(collapsed) {

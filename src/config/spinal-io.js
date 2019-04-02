@@ -33,7 +33,7 @@ import {
   decriB64
 } from './crypt';
 
-const SpinalUserManager = window;
+const SpinalUserManager = window.SpinalUserManager;
 
 function getParameterByName(name, url) {
   if (!url) url = window.location.href;
