@@ -21,8 +21,12 @@
  * with this file. If not, see
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
-import {SpinalGraphService} from 'spinal-env-viewer-graph-service';
-import {spinalIO} from './spinal-io';
+import {
+  SpinalGraphService
+} from 'spinal-env-viewer-graph-service';
+import {
+  spinalIO
+} from './spinal-io';
 var throttle = require('lodash.throttle');
 
 export class GraphService {
@@ -74,10 +78,11 @@ export class GraphService {
   }
 
   async getcHILDREN(id, relationName = []) {
-    const children = await this.SpinalGraphService.getChildren(id, relationName);
+    const children = await this.SpinalGraphService.getChildren(id,
+      relationName);
 
     return children;
-  }  
+  }
 
   async getOccupationsFunc() {
     await this.init();
@@ -91,7 +96,8 @@ export class GraphService {
       const ocupationGrp = ocupationGrpLst[idx];
       if (!this.OccupantGrpSet.has(ocupationGrp)) {
         this.OccupantGrpSet.add(ocupationGrp);
-        const nodeModel = this.SpinalGraphService.getRealNode(ocupationGrp.id.get());
+        const nodeModel = this.SpinalGraphService.getRealNode(ocupationGrp.id
+          .get());
         nodeModel.bind(this.getOccupationsFuncBinded);
       }
       const obj = {
@@ -123,4 +129,3 @@ export class GraphService {
 const graphService = new GraphService;
 
 export default graphService;
-

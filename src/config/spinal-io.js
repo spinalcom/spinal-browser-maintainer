@@ -25,13 +25,16 @@
 
 import {
   File,
-  spinalCore
+  spinalCore,
+  FileSystem
 } from 'spinal-core-connectorjs_type';
 
 import {
   decriAes,
   decriB64
 } from './crypt';
+
+let $ = require("jquery");
 
 const SpinalUserManager = window.SpinalUserManager;
 
@@ -82,28 +85,35 @@ class SpinalIO {
     if (this.connectPromise !== null) {
       return this.connectPromise;
     }
+
     this.connectPromise = new Promise((resolve, reject) => {
-      const user = this.getauth();
-      if (this.user.username) {
-        SpinalUserManager.get_user_id(
-          'http://' + window.location.host, user.username, user
+      $(document).ready(() => {
+
+        FileSystem.CONNECTOR_TYPE = "Browser"
+
+        const user = this.getauth();
+        if (this.user.username) {
+          SpinalUserManager.get_user_id(
+            'http://' + window.location.host, user.username, user
             .password,
-          response => {
-            this.spinalUserId = parseInt(response);
-            this.conn =
-              window.spinalCore.connect(`http://${this.spinalUserId}:${
+            response => {
+              this.spinalUserId = parseInt(response);
+              this.conn =
+                window.spinalCore.connect(`http://${this.spinalUserId}:${
                 user.password}@${window.location.host}/`);
-            resolve(this.conn);
-          },
-          () => {
-            window.location = '/html/drive/';
-            reject('Authentication Connection Error');
-          });
-      } else {
-        window.location = '/html/drive/';
-        reject('Authentication Connection Error');
-      }
-    });
+              resolve(this.conn);
+            },
+            () => {
+              window.location = '/html/drive/';
+              reject('Authentication Connection Error');
+            });
+        } else {
+          window.location = '/html/drive/';
+          reject('Authentication Connection Error');
+        }
+      });
+
+    })
     return this.connectPromise;
   }
   getModelPath() {
@@ -186,12 +196,12 @@ class SpinalIO {
         if (withAdminCheck === true) {
           return this.loadPtr(userFile).then(
             async (res) => {
-              await this.checkUserAdmin(user, res);
-              return res;
-            },
-            () => {
-              throw new Error('Undefined User');
-            });
+                await this.checkUserAdmin(user, res);
+                return res;
+              },
+              () => {
+                throw new Error('Undefined User');
+              });
         } else {
           return this.loadPtr(userFile);
         }
