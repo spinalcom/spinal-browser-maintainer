@@ -21,13 +21,40 @@
  * with this file. If not, see
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
+
 import "babel-polyfill";
 
 import Vue from "vue";
+
+
+import VueBootstrap from 'bootstrap-vue'
+import VueInsProgressBar from 'vue-ins-progress-bar'
+
+
+// plugins css
+import 'bootstrap/dist/css/bootstrap.css'
+import 'bootstrap-vue/dist/bootstrap-vue.css'
+
+
+
+
+// color admin css
+// import './assets/css/default/style.min.css'
+// import './assets/css/default/style-responsive.min.css'
+// import './assets/css/default/theme/default.css'
+// import './assets/css/style.css'
+
 
 import App from "./app.vue";
 import VueSidebarMenu from 'vue-sidebar-menu'
 
 Vue.use(VueSidebarMenu);
+
+Vue.use(VueBootstrap);
+Vue.use(VueInsProgressBar, {
+  position: 'fixed',
+  show: true,
+  height: '3px'
+})
 
 new Vue(App).$mount("#app");

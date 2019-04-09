@@ -1,18 +1,21 @@
 <template>
-  <div>
+  <div class="container-fluid">
     <app-sidebar :collapseMenu="collapseMenu"
                  @collapsed="onCollapsed"></app-sidebar>
-    <app-viewer :collapseMenu="collapseMenu"></app-viewer>
+
+    <!-- <app-rooms></app-rooms> -->
+    <app-main :collapsed="collapseMenu"></app-main>
+    <vue-ins-progress-bar></vue-ins-progress-bar>
+
   </div>
 </template>
 
 <script>
 import Vue from "vue";
 import sidebar from "./components/sidebar/sidebar.vue";
-import graphserv from "./config/GraphService";
-import appViewer from "./components/viewer/viewer.vue";
+import PageOptions from "./config/PageOptions";
+import MainContainer from "./components/container/container.vue";
 
-// graphserv.getContext("geo");
 export default Vue.extend({
   data() {
     return {
@@ -21,10 +24,23 @@ export default Vue.extend({
   },
   components: {
     "app-sidebar": sidebar,
-    "app-viewer": appViewer
+    "app-main": MainContainer
+  },
+  created() {
+    PageOptions.pageBodyScrollTop = window.scrollY;
+
+    window.addEventListener("scroll", this.handleScroll);
+
+    this.$insProgress.start();
+
+    // this.$router.beforeEach((to, from, next) => {
+    // this.$insProgress.start();
+    // next();
+    // });
   },
   methods: {
     mounted() {
+      this.$insProgress.finish();
       console.log("mounted app.vue");
     },
     created() {
@@ -38,3 +54,9 @@ export default Vue.extend({
   }
 });
 </script>
+
+<style scoped>
+.container-fluid {
+  height: calc(100%);
+}
+</style>

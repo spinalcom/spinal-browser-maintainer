@@ -1,8 +1,6 @@
 <template>
-  <div :class="{'collapsed' : !collapseMenu}"
-       class="mainLayout">
-    <div class="viewerContainer"
-         id="autodesk_forge_viewer"></div>
+  <div class="col-md-10 col-lg-10 viewerContainer"
+       id="autodesk_forge_viewer">
 
   </div>
 
@@ -17,25 +15,22 @@ let forgeViewer = new ForgeViewer();
 
 export default {
   name: "appViewer",
-  props: ["collapseMenu"],
+  // props: ["collapseMenu"],
   data() {
     return {};
   },
   mounted() {
-    console.log(this.collapseMenu);
-
     forgeViewer.start_viewer(document.getElementById("autodesk_forge_viewer"));
   }
 };
 </script>
 
 <style scoped>
-.mainLayout {
+/* .mainLayout {
   width: calc(100% - 50px);
   position: relative;
   -webkit-transition-duration: 0.3s;
-  /* text-align: center;
-   */
+
   margin-left: 50px;
 }
 
@@ -49,5 +44,15 @@ export default {
   height: 500px;
   position: relative;
   margin: 10px;
+} */
+
+@media screen and (max-width: 900px) {
+  #autodesk_forge_viewer {
+    width: 100%;
+    height: calc(60%);
+    padding: 0px;
+    margin-top: 10px;
+    display: block;
+  }
 }
 </style>
