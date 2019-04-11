@@ -28,9 +28,12 @@
     "spinal-env-drive-core": "git+https://github.com/spinalcom/spinal-env-drive-core.git",
     "spinal-env-viewer-graph-service": "git+https://github.com/spinalcom/Spinal-Graph-Service.git",
     "vue": "^2.6.10",
-    "vue-sidebar-menu": "^3.6.3"
+    "vue-sidebar-menu": "^3.6.3",
+    "vuesax": "^3.8.59",
+    "vuex": "^3.1.0"
   },
   "devDependencies": {
-    "@vue/component-compiler-utils": "^2.6.0"
+    "@vue/component-compiler-utils": "^2.6.0",
+    "stylus": "^0.54.5"
   }
 }

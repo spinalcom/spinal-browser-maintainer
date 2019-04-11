@@ -1,11 +1,14 @@
 <template>
-  <div class="container-fluid">
-    <app-sidebar :collapseMenu="collapseMenu"
-                 @collapsed="onCollapsed"></app-sidebar>
+  <div v-if="data"
+       class="container-fluid">
 
-    <!-- <app-rooms></app-rooms> -->
-    <app-main :collapsed="collapseMenu"></app-main>
-    <vue-ins-progress-bar></vue-ins-progress-bar>
+    <app-sidebar :floors="data.floors"
+                 @selectFloor="selecFloor"></app-sidebar>
+
+    <app-main :collapsed="collapseMenu"
+              :floorSelected="floorSelected"
+              :rooms="data.rooms"
+              :equipments="data.equipments"></app-main>
 
   </div>
 </template>
@@ -13,13 +16,15 @@
 <script>
 import Vue from "vue";
 import sidebar from "./components/sidebar/sidebar.vue";
-import PageOptions from "./config/PageOptions";
 import MainContainer from "./components/container/container.vue";
+import dataService from "./config/data";
 
 export default Vue.extend({
   data() {
     return {
-      collapseMenu: false
+      collapseMenu: false,
+      data: null,
+      floorSelected: null
     };
   },
   components: {
@@ -27,29 +32,18 @@ export default Vue.extend({
     "app-main": MainContainer
   },
   created() {
-    PageOptions.pageBodyScrollTop = window.scrollY;
-
-    window.addEventListener("scroll", this.handleScroll);
-
-    this.$insProgress.start();
-
-    // this.$router.beforeEach((to, from, next) => {
-    // this.$insProgress.start();
-    // next();
-    // });
+    dataService.getAllData().then(allData => {
+      this.data = allData;
+    });
   },
-  methods: {
-    mounted() {
-      this.$insProgress.finish();
-      console.log("mounted app.vue");
-    },
-    created() {
-      console.log("created app.vue");
-    },
-    onCollapsed(value) {
-      console.log("collapsed");
 
+  methods: {
+    mounted() {},
+    onCollapsed(value) {
       this.collapseMenu = value;
+    },
+    selecFloor(id) {
+      this.floorSelected = id;
     }
   }
 });
@@ -57,6 +51,7 @@ export default Vue.extend({
 
 <style scoped>
 .container-fluid {
+  width: calc(100%);
   height: calc(100%);
 }
 </style>

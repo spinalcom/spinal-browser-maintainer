@@ -1,5 +1,5 @@
 <template>
-  <div class="col-md-10 col-lg-10 viewerContainer"
+  <div class="viewerContainer"
        id="autodesk_forge_viewer">
 
   </div>
@@ -10,6 +10,9 @@
 <script>
 // import Vue from "vue";
 import ForgeViewer from "./forgeViewer";
+import { EventBus } from "../../config/event";
+
+import dataService from "../../config/data";
 
 let forgeViewer = new ForgeViewer();
 
@@ -17,10 +20,46 @@ export default {
   name: "appViewer",
   // props: ["collapseMenu"],
   data() {
-    return {};
+    return {
+      viewer: null
+    };
   },
-  mounted() {
-    forgeViewer.start_viewer(document.getElementById("autodesk_forge_viewer"));
+  async mounted() {
+    this.getEvents();
+
+    await forgeViewer.start_viewer(
+      document.getElementById("autodesk_forge_viewer")
+    );
+    this.viewer = forgeViewer.viewer;
+  },
+  methods: {
+    getEvents() {
+      EventBus.$on("click-event", item => {
+        this.isolateObjects(item.id);
+      });
+
+      EventBus.$on("mouse-over", item => {
+        this.selectObjects(item.id);
+      });
+
+      EventBus.$on("mouse-leave", () => {
+        this.viewer.select();
+      });
+    },
+    selectObjects(id) {
+      dataService.getBimObjects(id).then(res => {
+        this.viewer.select(res);
+      });
+    },
+    isolateObjects(id) {
+      dataService.getBimObjects(id).then(res => {
+        this.viewer.isolate(res);
+        this.viewer.fitToView(res);
+        this.viewer.setViewCube("top");
+      });
+    },
+
+    setCameraToTopView() {}
   }
 };
 </script>
@@ -38,13 +77,13 @@ export default {
   width: calc(100% - 350px);
   margin-left: 350px;
 }
-
+*/
 .viewerContainer {
-  width: calc(100% - 20px);
-  height: 500px;
+  width: 79%;
+  height: calc(100%);
   position: relative;
-  margin: 10px;
-} */
+  float: right;
+}
 
 @media screen and (max-width: 900px) {
   #autodesk_forge_viewer {

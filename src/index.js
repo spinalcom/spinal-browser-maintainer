@@ -26,35 +26,29 @@ import "babel-polyfill";
 
 import Vue from "vue";
 
+// import VueBootstrap from "bootstrap-vue";
+// import VueInsProgressBar from "vue-ins-progress-bar";
 
-import VueBootstrap from 'bootstrap-vue'
-import VueInsProgressBar from 'vue-ins-progress-bar'
+// import "bootstrap/dist/css/bootstrap.css";
+// import "bootstrap-vue/dist/bootstrap-vue.css";
 
-
-// plugins css
-import 'bootstrap/dist/css/bootstrap.css'
-import 'bootstrap-vue/dist/bootstrap-vue.css'
-
-
-
-
-// color admin css
-// import './assets/css/default/style.min.css'
-// import './assets/css/default/style-responsive.min.css'
-// import './assets/css/default/theme/default.css'
-// import './assets/css/style.css'
-
+// import 'vue-sidebar-menu/dist/vue-sidebar-menu.css'
 
 import App from "./app.vue";
-import VueSidebarMenu from 'vue-sidebar-menu'
+// import VueSidebarMenu from 'vue-sidebar-menu/src/index'
 
-Vue.use(VueSidebarMenu);
+// Vue.use(VueSidebarMenu);import vu
 
-Vue.use(VueBootstrap);
-Vue.use(VueInsProgressBar, {
-  position: 'fixed',
-  show: true,
-  height: '3px'
-})
+import Vuesax from "vuesax";
+import "vuesax/dist/vuesax.css";
+
+Vue.use(Vuesax);
+
+// Vue.use(VueBootstrap);
+// Vue.use(VueInsProgressBar, {
+// position: "fixed",
+// show: true,
+// height: "3px"
+// });
 
 new Vue(App).$mount("#app");
