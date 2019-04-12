@@ -24,10 +24,10 @@
                          v-for="(child,index2) in menu.child"
                          :index="index2"
                          :key="index2"
+                         :icon="child.icon"
                          @click="onItemClick(child)"
                          @mouseover="onMouseOver(child)"
                          @mouseleave="onMouseLeave">
-          <h3>H</h3>
 
           {{child.title}}
         </vs-sidebar-item>
