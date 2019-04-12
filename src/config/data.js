@@ -37,9 +37,16 @@ let dataService = {
       };
     }))
   },
-  async getEquipments() {
-    await graph.init();
-    return []
+  getEquipments(floors) {
+    // let promises = [];
+    // floors.forEach(el => {
+    //   promises.push(this.getBimObjects(el.id));
+    // })
+
+    // return Promise.all(promises).then(ids => {
+
+    // })
+
   },
   getFloorRooms(floorId) {
     return graph.SpinalGraphService.findNodes(floorId, geographicConstants
@@ -76,7 +83,8 @@ let dataService = {
         return el.info.dbid.get();
       })
     })
-  }
+  },
+
 }
 
 export default dataService;

@@ -13,6 +13,7 @@ import ForgeViewer from "./forgeViewer";
 import { EventBus } from "../../config/event";
 
 import dataService from "../../config/data";
+import { setTimeout } from "timers";
 
 let forgeViewer = new ForgeViewer();
 
@@ -52,11 +53,18 @@ export default {
       });
     },
     isolateObjects(id) {
-      dataService.getBimObjects(id).then(res => {
-        this.viewer.isolate(res);
-        this.viewer.fitToView(res);
-        this.viewer.setViewCube("top");
-      });
+      dataService
+        .getBimObjects(id)
+        .then(res => {
+          this.viewer.isolate(res);
+          this.viewer.fitToView(res);
+          return;
+        })
+        .then(() => {
+          setTimeout(() => {
+            this.viewer.setViewCube("[top,]");
+          }, 1000);
+        });
     },
 
     setCameraToTopView() {}

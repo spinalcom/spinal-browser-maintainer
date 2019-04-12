@@ -5,18 +5,17 @@
               :reduce-not-hover-expand="notExpand"
               parent="body"
               color="success"
-              class="sidebarx"
-              spacer
+              class="sidebarx mySidebar"
               v-model="active">
 
     <div class="header-sidebar"
          slot="header">
       <vs-icon icon="menu"
-               size="medium"
                round></vs-icon>
     </div>
 
-    <template v-for="(menu,index) in menus">
+    <template class="sidebar-content"
+              v-for="(menu,index) in menus">
       <vs-sidebar-group v-if="menu.child"
                         open
                         :title="menu.title"
@@ -169,5 +168,16 @@ export default {
 .vs-sidebar--background {
   width: 0px !important;
   height: 0px !important;
+}
+
+.vs-sidebar.vs-sidebar-reduce {
+  background: #272727;
+  color: white;
+}
+
+.vs-sidebar--header {
+  height: 40px;
+  background: white;
+  color: black;
 }
 </style>

@@ -109,7 +109,7 @@ export default {
   width: 20%;
   height: calc(100%);
   padding: 10px;
-  border-right: 1px solid gray;
+  background: #272727;
 }
 
 .list-item {
@@ -118,6 +118,7 @@ export default {
   text-align: center;
   padding: 10px;
   text-transform: capitalize;
+  color: white;
 }
 
 .noItems {
@@ -125,7 +126,7 @@ export default {
   text-align: center;
   padding: 10px;
   text-transform: capitalize;
-  color: red;
+  color: white;
 }
 
 .list-item:hover {
@@ -148,5 +149,11 @@ export default {
     height: calc(40%);
     display: block;
   }
+}
+</style>
+
+<style>
+.vs-select--label {
+  color: white !important;
 }
 </style>

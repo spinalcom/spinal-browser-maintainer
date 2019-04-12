@@ -24,6 +24,8 @@ export default {
 
 <style scoped>
 .mainNavbar {
-  margin-bottom: 10px;
+  /* padding: 13px; */
+  height: 40px;
+  padding: 5px;
 }
 </style>

@@ -50,7 +50,7 @@ export default {
   position: relative;
   min-height: calc(100%);
   float: right;
-  width: calc(100% - 60px);
+  width: calc(100% - 50px);
   /* width: calc(100%); */
   height: calc(100%);
 }
@@ -64,6 +64,6 @@ export default {
 
 .mainRow {
   margin: 0px;
-  height: calc(50%);
+  height: calc(100vh - 40px);
 }
 </style>
