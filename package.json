@@ -29,6 +29,7 @@
     "spinal-core-connectorjs_type": "git+https://github.com/spinalcom/spinal-core-connectorjs_type.git",
     "spinal-core-system": "git+https://github.com/spinalcom/spinal-core-system.git",
     "spinal-env-drive-core": "git+https://github.com/spinalcom/spinal-env-drive-core.git",
+    "spinal-env-maintainer-btn-joint": "git+https://github.com/spinalcom/spinal-env-maintainer-btn-joint.git",
     "spinal-env-viewer-graph-service": "git+https://github.com/spinalcom/Spinal-Graph-Service.git",
     "vue": "^2.6.10",
     "vue-sidebar-menu": "^3.6.3",
