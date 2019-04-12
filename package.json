@@ -1,6 +1,6 @@
 {
   "name": "spinal-browser-maintainer",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -10,6 +10,9 @@
     "postinstall": "npm run spinal-register",
     "spinal-register": "spinal-register --browser 'spinal-browser-'",
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "create_maintainer_env": "bin/parcel.config.js"
   },
   "keywords": [],
   "author": "",
