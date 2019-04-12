@@ -109,7 +109,7 @@ export default {
   width: 20%;
   height: calc(100%);
   padding: 10px;
-  background: #272727;
+  background: #333333;
 }
 
 .list-item {
