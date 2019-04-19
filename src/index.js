@@ -25,6 +25,7 @@
 import "babel-polyfill";
 
 import Vue from "vue";
+import VueMaterial from "vue-material";
 
 // import VueBootstrap from "bootstrap-vue";
 // import VueInsProgressBar from "vue-ins-progress-bar";
@@ -43,7 +44,7 @@ import Vuesax from "vuesax";
 import "vuesax/dist/vuesax.css";
 
 Vue.use(Vuesax);
-
+Vue.use(VueMaterial);
 // Vue.use(VueBootstrap);
 // Vue.use(VueInsProgressBar, {
 // position: "fixed",

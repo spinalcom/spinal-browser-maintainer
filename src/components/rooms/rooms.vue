@@ -2,17 +2,11 @@
   <div class="roomsSidebar">
 
     <div class="room_equipment_select">
-      <vs-select width="100%"
-                 class="selectRoom"
-                 label="Rooms/Equipments"
-                 v-model="typeSelected">
-
-        <vs-select-item :key="index"
-                        :value="item.value"
-                        :text="item.title"
-                        v-for="(item,index) in selectOptions" />
-      </vs-select>
-
+      <select-bar width="100%"
+                class="selectRoom"
+                :model="typeSelected"
+                :for="selectOptions"
+      ></select-bar>
     </div>
 
     <div class="list-item"
@@ -35,15 +29,18 @@
          v-if="!floorSelected">
       Please select a floor !
     </div>
-
   </div>
 </template>
 
 <script>
 import { EventBus } from "../../config/event";
+import SelectBar from "../selectbar/selectbar.vue";
 
 export default {
   name: "Rooms",
+  components: {
+    SelectBar
+  },
   props: ["floorSelected", "rooms", "equipments"],
   data() {
     this.selectOptions = [
@@ -65,21 +62,23 @@ export default {
     },
     isolate(item) {
       this.roomsSelected = item.id;
-      EventBus.$emit("click-event", item);
+      EventBus.$emit("click-room", item);
     },
     update() {
+      console.log("up --->", this.rooms);
       this.data = [];
       switch (this.typeSelected) {
         case "rooms":
           var dataFiltered = this.rooms.filter(el => {
             return el.floor === this.floorSelected;
           });
-
+          console.log(dataFiltered[0].rooms, "<---");
+          
           for (let index = 0; index < dataFiltered.length; index++) {
             const element = dataFiltered[index];
             this.data = this.data.concat(element.rooms);
           }
-
+          console.log(this.data);
           break;
 
         default:
@@ -107,8 +106,9 @@ export default {
 <style scoped>
 .roomsSidebar {
   width: 20%;
-  height: calc(100%);
+  height: calc(47%);
   padding: 10px;
+  overflow: auto;
   background: #333333;
 }
 

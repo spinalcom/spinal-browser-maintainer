@@ -7,6 +7,8 @@
                      :rooms="rooms"
                      :equipments="equipments"></rooms-sidebar>
       <app-viewer></app-viewer>
+    <middle-bar></middle-bar>
+    <data-view></data-view>
     </vs-row>
   </div>
 </template>
@@ -15,15 +17,18 @@
 import appViewer from "../viewer/viewer.vue";
 import Header from "../header/header.vue";
 import Rooms from "../rooms/rooms.vue";
+import MiddleBar from "../middlebar/middlebar.vue";
+import DataView from "../dataview/dataview.vue";
 
 export default {
   name: "MainContainer",
   props: ["collapsed", "floorSelected", "rooms", "equipments"],
-
   components: {
     "app-header": Header,
     "rooms-sidebar": Rooms,
-    "app-viewer": appViewer
+    "app-viewer": appViewer,
+    MiddleBar,
+    DataView
   },
   computed: {
     getStyle() {

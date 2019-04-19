@@ -26,15 +26,16 @@
     "jquery": "^3.3.1",
     "lodash.throttle": "4.1.1",
     "parcel-bundler": "^1.12.3",
+    "selectbar": "^1.0.1",
     "spinal-core-connectorjs_type": "git+https://github.com/spinalcom/spinal-core-connectorjs_type.git",
     "spinal-core-system": "git+https://github.com/spinalcom/spinal-core-system.git",
     "spinal-env-drive-core": "git+https://github.com/spinalcom/spinal-env-drive-core.git",
     "spinal-env-maintainer-btn-joint": "git+https://github.com/spinalcom/spinal-env-maintainer-btn-joint.git",
     "spinal-env-viewer-graph-service": "git+https://github.com/spinalcom/Spinal-Graph-Service.git",
+    "store": "^2.0.12",
     "vue": "^2.6.10",
     "vue-sidebar-menu": "^3.6.3",
-    "vuesax": "^3.8.59",
-    "vuex": "^3.1.0"
+    "vuesax": "^3.8.59"
   },
   "devDependencies": {
     "@vue/component-compiler-utils": "^2.6.0",

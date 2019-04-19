@@ -46,11 +46,20 @@ export default {
       EventBus.$on("mouse-leave", () => {
         this.viewer.select();
       });
+
+      EventBus.$on("click-room", item => {
+        this.zoomObjects(item);
+      });
     },
     selectObjects(id) {
       dataService.getBimObjects(id).then(res => {
         this.viewer.select(res);
       });
+    },
+    zoomObjects(id) {
+      dataService.getBimObjects(id).then(res => {
+        this.viewer.fitToView(res);
+      })
     },
     isolateObjects(id) {
       dataService
@@ -88,7 +97,7 @@ export default {
 */
 .viewerContainer {
   width: 79%;
-  height: calc(100%);
+  height: calc(47%);
   position: relative;
   float: right;
 }
