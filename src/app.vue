@@ -53,5 +53,6 @@ export default Vue.extend({
 .container-fluid {
   width: calc(100%);
   height: calc(100%);
+  font-family: sans-serif;
 }
 </style>

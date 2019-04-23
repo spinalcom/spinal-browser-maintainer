@@ -3,9 +3,9 @@
   <div class="container">
     <app-header></app-header>
     <vs-row class="row mainRow">
-      <rooms-sidebar :floorSelected="floorSelected"
+      <test :floorSelected="floorSelected"
                      :rooms="rooms"
-                     :equipments="equipments"></rooms-sidebar>
+                     :equipments="equipments"></test>
       <app-viewer></app-viewer>
     <middle-bar></middle-bar>
     <data-view></data-view>
@@ -19,6 +19,7 @@ import Header from "../header/header.vue";
 import Rooms from "../rooms/rooms.vue";
 import MiddleBar from "../middlebar/middlebar.vue";
 import DataView from "../dataview/dataview.vue";
+import contextualList from "../contextualList/contextualList.vue";
 
 export default {
   name: "MainContainer",
@@ -28,7 +29,8 @@ export default {
     "rooms-sidebar": Rooms,
     "app-viewer": appViewer,
     MiddleBar,
-    DataView
+    DataView,
+    "test": contextualList
   },
   computed: {
     getStyle() {

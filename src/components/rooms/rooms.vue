@@ -56,11 +56,28 @@ export default {
       data: []
     };
   },
+  mounted() {
+    this.getEvents();
+  },
   methods: {
+    getEvents() {
+      EventBus.$on("choose-room", () => {
+        console.log("from rooms.vue1");
+      });
+
+      EventBus.$on("choose-device", () => {
+        console.log("from rooms.vue2");
+      });
+
+     EventBus.$on("choose-ticket", () => {
+        console.log("from rooms.vue3");
+      });
+    },
     mouseOver(item) {
       EventBus.$emit("mouse-over", item);
     },
     isolate(item) {
+      console.log("cliocked rooom ");
       this.roomsSelected = item.id;
       EventBus.$emit("click-room", item);
     },
@@ -105,11 +122,9 @@ export default {
 
 <style scoped>
 .roomsSidebar {
-  width: 20%;
-  height: calc(47%);
-  padding: 10px;
   overflow: auto;
   background: #333333;
+  font-style: sans-serif;
 }
 
 .list-item {
@@ -131,11 +146,11 @@ export default {
 
 .list-item:hover {
   cursor: pointer;
-  color: green;
+  color: #356BAB;
 }
 
 .list-item.selected {
-  border-right: 4px solid green;
+  border-right: 4px solid #356BAB;
 }
 
 .room_equipment_select {
