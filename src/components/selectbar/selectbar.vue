@@ -1,8 +1,10 @@
 <template>
   <div class="selectBar">
-    <md-icon class="md-size-1x" value="room" v-on:click.native="onClick">room</md-icon>
-
-    <md-icon class="md-size-1x" value="devices" v-on:click.native="onClick">devices</md-icon>
+    <md-icon class="md-size-1x material-icons custom-icon" value="room" v-on:click.native="onClick">room</md-icon>
+    <div class="display-icon"></div>
+    <md-icon class="md-size-1x material-icons custom-icon" value="device" v-on:click.native="onClick">devices</md-icon>
+    <div class="display-icon"></div>
+    <md-icon class="md-size-1x material-icons custom-icon" value="ticket" v-on:click.native="onClick">event</md-icon>
 
 <!--     <vs-select v-model="typeSelected">
 
@@ -15,6 +17,7 @@
   </template>
 
 <script>
+import { EventBus } from "../../config/event";
 
 export default {
   name: "SelectBar",
@@ -27,7 +30,16 @@ export default {
   },
   methods: {
     onClick(event) {
-      console.log(event.target.getAttribute("value"));
+
+      let choice = event.target.getAttribute("value");
+
+      if (choice === "room")
+        EventBus.$emit("choose-room");
+      else if (choice === "device")
+        EventBus.$emit("choose-device");
+      else if (choice === "ticket")
+        EventBus.$emit("choose-ticket");
+
     }
   },
   props: ["model", "for"]
@@ -39,7 +51,16 @@ export default {
   width: 100%;
   height: 100%;
   overflow: auto;
-  background: white;
+  background: #333333;
+}
+
+.display-icon {
+  padding-right: 2px;
+  display: inline-block;
+}
+
+.custom-icon {
+  color: white;
 }
 
 </style>

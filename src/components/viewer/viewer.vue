@@ -57,9 +57,16 @@ export default {
       });
     },
     zoomObjects(id) {
-      dataService.getBimObjects(id).then(res => {
-        this.viewer.fitToView(res);
-      })
+      let selection = this.viewer.getSelection();
+      
+      setTimeout(() => {
+        this.viewer.fitToView(selection);
+      }, 1)
+      this.viewer.fitToView([selection]);
+      
+      // dataService.getBimObjects(id).then(res => {
+      //   this.viewer.fitToView(res);
+      // })
     },
     isolateObjects(id) {
       dataService
@@ -69,11 +76,11 @@ export default {
           this.viewer.fitToView(res);
           return;
         })
-        .then(() => {
-          setTimeout(() => {
-            this.viewer.setViewCube("[top,]");
-          }, 1000);
-        });
+        // .then(() => {
+        //   setTimeout(() => {
+        //     this.viewer.setViewCube("[front,]");
+        //   }, 1000);
+        // });
     },
 
     setCameraToTopView() {}

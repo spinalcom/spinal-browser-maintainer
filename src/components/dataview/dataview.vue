@@ -1,6 +1,5 @@
 <template>
   <div class="dataview">
-    <p>cc</p>
   </div>
 </template>
 
@@ -22,7 +21,7 @@ export default {
   margin-left: 4px;
   height: 47%;
   overflow: auto;
-  background: grey;
+  background: white;
 }
 
 </style>
