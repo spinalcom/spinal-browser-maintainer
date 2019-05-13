@@ -8,7 +8,8 @@
     <app-main :collapsed="collapseMenu"
               :floorSelected="floorSelected"
               :rooms="data.rooms"
-              :equipments="data.equipments"></app-main>
+              :equipments="data.equipments"
+              :allData="data"></app-main>
 
   </div>
 </template>
@@ -32,18 +33,27 @@ export default Vue.extend({
     "app-main": MainContainer
   },
   created() {
+    let self = this;
     dataService.getAllData().then(allData => {
-      this.data = allData;
+      self.data = allData;
     });
+    setTimeout(function() {
+      console.log(self.data.rooms);
+  }, 2000)
   },
-
   methods: {
     mounted() {},
     onCollapsed(value) {
       this.collapseMenu = value;
     },
     selecFloor(id) {
-      this.floorSelected = id;
+      let self = this;
+      this.data.floors.forEach(function(el) {
+        if (el.id === id)
+          self.floorSelected = el.name;
+      });
+      //console.log(id, "== id, data", this.data);
+      //this.floorSelected = id;
     }
   }
 });
