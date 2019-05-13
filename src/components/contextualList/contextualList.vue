@@ -23,7 +23,11 @@ export default {
   },
   mounted() {},
   methods: {},
-  watch: {}
+  watch: {
+    rooms() {
+      console.log("rooms update", this.rooms);
+    }
+  }
 };
 </script>
 

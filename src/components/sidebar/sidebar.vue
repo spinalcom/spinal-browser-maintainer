@@ -4,7 +4,6 @@
   <vs-sidebar :reduce="reduce"
               :reduce-not-hover-expand="notExpand"
               parent="body"
-              color="success"
               class="sidebarx mySidebar"
               v-model="active">
 

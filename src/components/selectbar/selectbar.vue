@@ -5,14 +5,6 @@
     <md-icon class="md-size-1x material-icons custom-icon" value="device" v-on:click.native="onClick">devices</md-icon>
     <div class="display-icon"></div>
     <md-icon class="md-size-1x material-icons custom-icon" value="ticket" v-on:click.native="onClick">event</md-icon>
-
-<!--     <vs-select v-model="typeSelected">
-
-        <vs-select-item :key="index"
-                        :value="item.value"
-                        :text="item.title"
-                        v-for="(item,index) in selectOptions" />
-      </vs-select>   -->
     </div>
   </template>
 

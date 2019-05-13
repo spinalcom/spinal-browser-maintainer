@@ -3,12 +3,13 @@
   <div class="container">
     <app-header></app-header>
     <vs-row class="row mainRow">
-      <test :floorSelected="floorSelected"
+      <contextual-list :floorSelected="floorSelected"
                      :rooms="rooms"
-                     :equipments="equipments"></test>
+                     :equipments="equipments"></contextual-list>
       <app-viewer></app-viewer>
     <middle-bar></middle-bar>
-    <data-view></data-view>
+    <data-view :allData="allData">
+    </data-view>
     </vs-row>
   </div>
 </template>
@@ -23,14 +24,14 @@ import contextualList from "../contextualList/contextualList.vue";
 
 export default {
   name: "MainContainer",
-  props: ["collapsed", "floorSelected", "rooms", "equipments"],
+  props: ["collapsed", "floorSelected", "rooms", "equipments", "allData"],
   components: {
     "app-header": Header,
     "rooms-sidebar": Rooms,
     "app-viewer": appViewer,
     MiddleBar,
     DataView,
-    "test": contextualList
+    contextualList
   },
   computed: {
     getStyle() {

@@ -1,13 +1,13 @@
 <template>
   <div class="roomsSidebar">
 
-    <div class="room_equipment_select">
+<!--     <div class="room_equipment_select">
       <select-bar width="100%"
                 class="selectRoom"
                 :model="typeSelected"
                 :for="selectOptions"
       ></select-bar>
-    </div>
+    </div> -->
 
     <div class="list-item"
          v-for="(item,index) of  data"
@@ -56,51 +56,31 @@ export default {
       data: []
     };
   },
-  mounted() {
-    this.getEvents();
-  },
   methods: {
-    getEvents() {
-      EventBus.$on("choose-room", () => {
-        console.log("from rooms.vue1");
-      });
-
-      EventBus.$on("choose-device", () => {
-        console.log("from rooms.vue2");
-      });
-
-     EventBus.$on("choose-ticket", () => {
-        console.log("from rooms.vue3");
-      });
-    },
     mouseOver(item) {
       EventBus.$emit("mouse-over", item);
     },
     isolate(item) {
-      console.log("cliocked rooom ");
       this.roomsSelected = item.id;
       EventBus.$emit("click-room", item);
     },
     update() {
-      console.log("up --->", this.rooms);
       this.data = [];
-      switch (this.typeSelected) {
-        case "rooms":
+      //switch (this.typeSelected) {
+        //case "rooms":
           var dataFiltered = this.rooms.filter(el => {
             return el.floor === this.floorSelected;
           });
-          console.log(dataFiltered[0].rooms, "<---");
-          
+
           for (let index = 0; index < dataFiltered.length; index++) {
             const element = dataFiltered[index];
             this.data = this.data.concat(element.rooms);
           }
-          console.log(this.data);
-          break;
+         // break;
 
-        default:
-          break;
-      }
+        //default:
+         // break;
+     // }
     },
     mouseLeave() {
       EventBus.$emit("mouse-leave");
@@ -130,7 +110,8 @@ export default {
 .list-item {
   width: 100%;
   border-bottom: 1px solid gray;
-  text-align: center;
+  text-align: left;
+  font-size: 81%;
   padding: 10px;
   text-transform: capitalize;
   color: white;

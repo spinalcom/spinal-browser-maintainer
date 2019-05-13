@@ -1,5 +1,12 @@
 <template>
   <div class="middleBar">
+
+    <md-icon class="material-icons custom-icon" value="room" v-on:click.native="onClick">room</md-icon>
+    <div class="display-icon"></div>
+    <md-icon class="material-icons custom-icon" value="device" v-on:click.native="onClick">devices</md-icon>
+    <div class="display-icon"></div>
+    <md-icon class="material-icons custom-icon" value="ticket" v-on:click.native="onClick">event</md-icon>
+
   </div>
 </template>
 
@@ -13,24 +20,36 @@ export default {
       data: []
     }
   },
-  mounted() {
-    this.getEvents();
-  },
+  // mounted() {
+  //   this.getEvents();
+  // },
   methods: {
-    getEvents() {
-      EventBus.$on("choose-room", () => {
-        // this.Dosomething();
-      });
+    onClick() {
 
-      EventBus.$on("choose-device", () => {
-        // this.Dosomething();
-      });
+      let choice = event.target.getAttribute("value");
 
-      EventBus.$on("choose-ticket", () => {
-        // this.Dosomething();
-      });
+      if (choice === "room")
+        EventBus.$emit("choose-room");
+      else if (choice === "device")
+        EventBus.$emit("choose-device");
+      else if (choice === "ticket")
+        EventBus.$emit("choose-ticket");
 
     }
+    // getEvents() {
+    //   EventBus.$on("choose-room", () => {
+    //     // this.Dosomething();
+    //   });
+
+    //   EventBus.$on("choose-device", () => {
+    //     // this.Dosomething();
+    //   });
+
+    //   EventBus.$on("choose-ticket", () => {
+    //     // this.Dosomething();
+    //   });
+
+    // }
   }
 };
 </script>
@@ -45,5 +64,19 @@ export default {
   height: 6%;
   overflow: auto;
 }
+.material-icons {
+  font-size: 230% !important;
+  margin-top: 0.4%;  
+}
+
+.display-icon {
+  padding-right: 2px;
+  display: inline-block;
+}
+
+.custom-icon {
+  color: black;
+}
+
 
 </style>

@@ -43,6 +43,11 @@ export default {
         this.selectObjects(item.id);
       });
 
+      EventBus.$on("select-equipment", itemId => 
+      {
+        this.selectObjects(itemId);
+      });
+
       EventBus.$on("mouse-leave", () => {
         this.viewer.select();
       });
