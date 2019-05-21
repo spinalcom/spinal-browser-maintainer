@@ -32,6 +32,7 @@
     "spinal-env-drive-core": "git+https://github.com/spinalcom/spinal-env-drive-core.git",
     "spinal-env-maintainer-btn-joint": "git+https://github.com/spinalcom/spinal-env-maintainer-btn-joint.git",
     "spinal-env-viewer-graph-service": "git+https://github.com/spinalcom/Spinal-Graph-Service.git",
+    "spinal-service-ticket": "https://github.com/spinalcom/spinal-service-ticket.git",
     "store": "^2.0.12",
     "vue-material": "1.0.0-beta-10.2",
     "vue": "^2.6.10",

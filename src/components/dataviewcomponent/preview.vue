@@ -1,6 +1,7 @@
 <template>
   <div class="datapreview">
-        <vs-table :data="floorData">
+        <vs-table :data="floorData"
+                  @selected="handleSelected">
       <template slot="thead">
         <vs-th>
           Floor
@@ -17,7 +18,7 @@
       </template>
 
       <template slot-scope="{data}">
-        <vs-tr :key="indextr" v-for="(tr, indextr) in data" >
+        <vs-tr :data="indextr" :key="indextr" v-for="(tr, indextr) in data" >
           <vs-td :data="data[indextr].Floor">
             {{data[indextr].Floor}}
           </vs-td>
@@ -83,7 +84,8 @@ export default {
             self.floorData.push({ Floor: self.data.floors[int].name,
                 Room: arr[rooms][index].name,
                 Ticket: ticket,
-                Equipement: equipment });
+                Equipement: equipment,
+                Id: arr[rooms][index].id });
             }
     },
     getLength(value) {
@@ -99,6 +101,19 @@ export default {
               this.selectFloor(floor);
       }
      });
+    },
+    handleSelected(lvl) {
+      //console.log(lvl, this.floorData[lvl]);
+      EventBus.$emit("select-equipment", this.floorData[lvl].Id)
+    },
+    updateComponent() {
+      if (this.floorSelected != "") {
+        for (var ite in this.data.floors)
+          if (this.data.floors[ite].name == this.floorSelected)
+            this.selectFloor(ite);
+          }
+          else
+            this.update();
     }
   },
   mounted() {
@@ -107,16 +122,10 @@ export default {
   },
    watch: {
     data: function() {
-      if (this.floorSelected != "") {
-          for (var ite in this.data.floors)
-            if (this.data.floors[ite].name == this.floorSelected)
-              this.selectFloor(ite);
-        }
-        else
-          this.update();
+      this.updateComponent();
     },
     floorSelected: function() {
-
+      this.updateComponent();
     }
   }
 };

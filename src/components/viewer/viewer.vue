@@ -35,26 +35,22 @@ export default {
   },
   methods: {
     getEvents() {
-      EventBus.$on("click-event", item => {
-        this.isolateObjects(item.id);
-      });
+      EventBus.$on("click-event", item => this.isolateObjects(item.id) );
 
-      EventBus.$on("mouse-over", item => {
-        this.selectObjects(item.id);
-      });
+      EventBus.$on("mouse-over", item => this.selectObjects(item.id) );
 
-      EventBus.$on("select-equipment", itemId => 
+      EventBus.$on("select-equipment", itemId => this.selectObjects(itemId) );
+
+      EventBus.$on("select-tickets-room", items => 
       {
-        this.selectObjects(itemId);
+        this.viewer.clearSelection();
+        let self = this;
+        items.forEach(x => self.selectObjects(x.info.id.get()));
       });
 
-      EventBus.$on("mouse-leave", () => {
-        this.viewer.select();
-      });
+      EventBus.$on("mouse-leave", () => this.viewer.select() );
 
-      EventBus.$on("click-room", item => {
-        this.zoomObjects(item);
-      });
+      EventBus.$on("click-room", item => this.zoomObjects(item) );
     },
     selectObjects(id) {
       dataService.getBimObjects(id).then(res => {
@@ -69,9 +65,6 @@ export default {
       }, 1)
       this.viewer.fitToView([selection]);
       
-      // dataService.getBimObjects(id).then(res => {
-      //   this.viewer.fitToView(res);
-      // })
     },
     isolateObjects(id) {
       dataService

@@ -92,6 +92,15 @@ export default {
     },
     handleSelected(lvl) {
       EventBus.$emit("select-equipment", this.floorData[lvl].Id.get())
+    },
+    updateComponent() {
+      if (this.floorSelected != "") {
+          for (var ite in this.data.floors)
+            if (this.data.floors[ite].name == this.floorSelected)
+              this.selectFloor(ite);
+        }
+        else
+          this.update();
     }
   },
   mounted() {
@@ -100,13 +109,10 @@ export default {
   },
    watch: {
     data: function() {
-      if (this.floorSelected != "") {
-          for (var ite in this.data.floors)
-            if (this.data.floors[ite].name == this.floorSelected)
-              this.selectFloor(ite);
-        }
-        else
-          this.update();
+      this.updateComponent();
+    },
+    floorSelected: function() {
+      this.updateComponent();
     }
   }
 };

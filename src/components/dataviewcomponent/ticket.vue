@@ -6,9 +6,11 @@
         <vs-th v-if="showFloor == 1">
           Floor
         </vs-th>
+        
         <vs-th>
           Room
         </vs-th>
+
         <vs-th>
           Name
         </vs-th>
@@ -18,7 +20,15 @@
         </vs-th>
 
         <vs-th>
+          Importance
+        </vs-th>
+
+        <vs-th>
           Note
+        </vs-th>
+
+        <vs-th>
+          
         </vs-th>
       </template>
 
@@ -40,8 +50,16 @@
             {{data[indextr].Process}}
           </vs-td>
 
+          <vs-td :data="data[indextr].Name" v-bind:style="data[indextr].color">
+            
+          </vs-td>
+
           <vs-td :data="data[indextr].Note">
             {{data[indextr].Note}}
+          </vs-td>
+
+          <vs-td :data="data[indextr].Note">
+            <md-icon class="material-icons custom-icon" value="ticket" v-on:click.native="onClick">event</md-icon>
           </vs-td>
         </vs-tr>
       </template>
@@ -96,9 +114,30 @@ export default {
                     Room: arr[rooms].name,
                     Name: arr[rooms].tickets[allTicket].name,
                     Process: "",
-                    Note: arr[rooms].tickets[allTicket].note });
+                    Note: arr[rooms].tickets[allTicket].note,
+                    Id: arr[rooms].tickets[allTicket].id,
+                    color: { backgroundColor: arr[rooms].tickets[allTicket].color.get()} });
+                  //console.log(arr[rooms].tickets[allTicket])
                   self.addProcess(arr[rooms].tickets[allTicket].processId.get());
                 }
+    },
+    onClick: function(event) {
+      console.log("onclick", event);
+      event.stopPropagation();
+    },
+    predicat: function( node ) {
+      return node.info.type.get() === "BIMObject";
+    },
+    zoomRoom: function(id) {
+      graph.SpinalGraphService.findNodes(id, [
+        "SpinalSystemServiceTicketHasLocation",
+        "hasBIMObject",
+        'hasReferenceObject'
+        ],
+      self.predicat
+      ).then( lst => {
+        EventBus.$emit("select-tickets-room", lst);
+      } );
     },
     addProcess(id) {
       let self = this;
@@ -118,7 +157,16 @@ export default {
      });
     },
     handleSelected(tr) {
-      console.log(tr, "selected");
+      this.zoomRoom(this.floorData[tr].Id.get())
+    },
+    updateComponent() {
+      if (this.floorSelected != "") {
+          for (var ite in this.data.floors)
+            if (this.data.floors[ite].name == this.floorSelected)
+              this.selectFloor(ite);
+        }
+        else
+          this.update();
     }
   },
   mounted() {
@@ -127,13 +175,10 @@ export default {
   },
    watch: {
     data: function() {
-      if (this.floorSelected != "") {
-          for (var ite in this.data.floors)
-            if (this.data.floors[ite].name == this.floorSelected)
-              this.selectFloor(ite);
-        }
-        else
-          this.update();
+      this.updateComponent();
+    },
+    floorSelected: function() {
+      this.updateComponent();
     }
   }
 };

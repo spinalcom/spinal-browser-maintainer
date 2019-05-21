@@ -1,6 +1,5 @@
 
 <template>
-
   <vs-sidebar :reduce="reduce"
               :reduce-not-hover-expand="notExpand"
               parent="body"
@@ -32,9 +31,7 @@
         </vs-sidebar-item>
 
     </template>
-
   </vs-sidebar>
-
 </template>
 
 
