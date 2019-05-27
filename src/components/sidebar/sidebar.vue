@@ -31,6 +31,7 @@
         </vs-sidebar-item>
 
     </template>
+
   </vs-sidebar>
 </template>
 
@@ -169,6 +170,7 @@ export default {
 
 .vs-sidebar.vs-sidebar-reduce {
   background: #272727;
+  height: 49%;
   color: white;
 }
 

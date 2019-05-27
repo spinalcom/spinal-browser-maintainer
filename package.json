@@ -31,16 +31,25 @@
     "spinal-core-system": "git+https://github.com/spinalcom/spinal-core-system.git",
     "spinal-env-drive-core": "git+https://github.com/spinalcom/spinal-env-drive-core.git",
     "spinal-env-maintainer-btn-joint": "git+https://github.com/spinalcom/spinal-env-maintainer-btn-joint.git",
+    "spinal-env-viewer-context-menu-service": "git+https://github.com/spinalcom/spinal-env-viewer-context-menu-service.git",
     "spinal-env-viewer-graph-service": "git+https://github.com/spinalcom/Spinal-Graph-Service.git",
     "spinal-service-ticket": "https://github.com/spinalcom/spinal-service-ticket.git",
     "store": "^2.0.12",
-    "vue-material": "1.0.0-beta-10.2",
     "vue": "^2.6.10",
+    "vue-material": "1.0.0-beta-10.2",
     "vue-sidebar-menu": "^3.6.3",
-    "vuesax": "^3.8.59"
+    "vuesax": "^3.8.59",
+    "vuetify": "^1.5.14"
   },
   "devDependencies": {
+    "@babel/core": "^7.4.5",
     "@vue/component-compiler-utils": "^2.6.0",
     "stylus": "^0.54.5"
+  },
+  "browserify": {
+    "transform": [
+      "vueify",
+      "babelify"
+    ]
   }
 }

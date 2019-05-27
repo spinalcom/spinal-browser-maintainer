@@ -1,17 +1,17 @@
 <template>
   <div class="dataview" v-if="dashboard === 'default'">
       <preview-data :allData="allData"
-                    :floorSelected="floorSelected">
+                  :floorSelected="floorSelected">
       </preview-data>
   </div>
   <div class="dataview" v-else-if="dashboard === 'ticket'">
       <ticket-data :allData="allData"
-                   :floorSelected="floorSelected">
+                  :floorSelected="floorSelected">
       </ticket-data>
   </div>
   <div class="dataview" v-else-if="dashboard === 'equipment'">
       <equipment-data :allData="allData"
-                      :floorSelected="floorSelected">
+                  :floorSelected="floorSelected">
       </equipment-data>
   </div>
 </template>
@@ -71,12 +71,11 @@ export default {
 };
 </script>
 
-
 <style scoped>
 .dataview {
-  width: 100%;
-  margin-left: 4px;
-  height: 47%;
+  width: 95%;
+  margin-left: 164px;
+  height: calc(50vh);
   overflow: auto;
   background: white;
 }

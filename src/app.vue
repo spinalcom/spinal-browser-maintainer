@@ -5,6 +5,20 @@
     <app-sidebar :floors="data.floors"
                  @selectFloor="selecFloor"></app-sidebar>
 
+    <app-sidebar 
+    class="sidebarContext-display"
+    :floors="data.floors"
+                 @selectFloor="selecFloor"></app-sidebar>
+
+    <sidebar-context class="sidebarContext-display">
+    </sidebar-context>
+  
+    <sidebar-category class="sidebarContext-display">
+    </sidebar-category>
+
+    <sidebar-process class="sidebarContext-display">
+    </sidebar-process>
+
     <app-main :collapsed="collapseMenu"
               :floorSelected="floorSelected"
               :rooms="data.rooms"
@@ -17,8 +31,12 @@
 <script>
 import Vue from "vue";
 import sidebar from "./components/sidebar/sidebar.vue";
+import sidebarContext from "./components/sidebar/sidebarContext.vue";
+import sidebarCategory from "./components/sidebar/sidebarCategory.vue";
+import sidebarProcess from "./components/sidebar/sidebarProcess.vue";
 import MainContainer from "./components/container/container.vue";
 import dataService from "./config/data";
+import contextualList from "./components/contextualList/contextualList.vue";
 
 export default Vue.extend({
   data() {
@@ -30,7 +48,11 @@ export default Vue.extend({
   },
   components: {
     "app-sidebar": sidebar,
-    "app-main": MainContainer
+    "app-main": MainContainer,
+    contextualList,
+    sidebarContext,
+    sidebarCategory,
+    sidebarProcess
   },
   created() {
     let self = this;
@@ -64,5 +86,10 @@ export default Vue.extend({
   width: calc(100%);
   height: calc(100%);
   font-family: sans-serif;
+}
+
+.sidebarContext-display {
+  position:absolute;
+  display: block;
 }
 </style>

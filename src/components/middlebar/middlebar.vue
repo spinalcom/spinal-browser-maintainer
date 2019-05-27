@@ -20,11 +20,11 @@ export default {
       data: []
     }
   },
-  // mounted() {
-  //   this.getEvents();
-  // },
+  mounted() {
+     this.getEvents();
+  },
   methods: {
-    onClick() {
+    onClick: function() {
 
       let choice = event.target.getAttribute("value");
 
@@ -35,7 +35,10 @@ export default {
       else if (choice === "ticket")
         EventBus.$emit("choose-ticket");
 
-    }
+    },
+
+
+
     // getEvents() {
     //   EventBus.$on("choose-room", () => {
     //     // this.Dosomething();
@@ -50,12 +53,19 @@ export default {
     //   });
 
     // }
+    update: function(el) {
+      console.log("update", el);
+    },
+    getEvents: function() {
+      EventBus.$on("selectBar", type => this.update(type));
+    }
   }
 };
 </script>
 
 <style scoped>
 .middleBar {
+  background-color: white;
   width: 100%;
   border: solid;
   border-width: 1px;

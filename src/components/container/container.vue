@@ -6,9 +6,9 @@
       <contextual-list :floorSelected="floorSelected"
                      :rooms="rooms"
                      :equipments="equipments"></contextual-list>
-      <app-viewer></app-viewer>
-    <middle-bar></middle-bar>
-    <data-view :allData="allData">
+      <app-viewer class="middleBar-dataView-display"></app-viewer>
+      <!--<middle-bar class="middleBar-dataView-display"></middle-bar>= -->
+      <data-view :allData="allData">
     </data-view>
     </vs-row>
   </div>
@@ -69,6 +69,10 @@ export default {
     height: (100%);
   }
 } */
+
+.middleBar-dataView-display {
+  margin-left: 10px;
+}
 
 .mainRow {
   margin: 0px;
