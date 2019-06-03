@@ -2,8 +2,8 @@
 <template>
   <div class="sidebarCategory">
 
-      <div v-for="element in icons" >
-        <v-icon v-on:click="onClick" class="icon-display" :data="element.data">{{element.icon}}</v-icon>
+      <div v-for="element in elements" >
+        <v-icon v-on:click="onClick" class="icon-display" :parent="parent" :data="element.data">{{element.icon}}</v-icon>
       </div>
 
   </div>
@@ -15,14 +15,8 @@ import { EventBus } from "../../config/event";
 export default {
   data() {
     return {
-      icons: [
-      { icon: "home",
-        data: "data1" },
-      { icon : "info",
-        data: "data2" },
-      { icon : "event",
-        data: "data3" }
-      ]
+      elements: [],
+      parent: ""
     };
   },
   props: ["floors"],
@@ -31,14 +25,16 @@ export default {
   },
   methods: {
     update: function(el) {
-      console.log("update Category", el);
+      this.parent = el;
+      this.elements = [];
+      this.elements.push({ icon: "add_circle",
+                           data: "process" })
     },
     getEvents: function() {
       EventBus.$on("selectContext", type => this.update(type));
     },
     onClick: function(event) {
-     // console.log("click on ", event.target.getAttribute('data'));
-      EventBus.$emit("selectCategory", event.target.getAttribute('data'));
+      EventBus.$emit("selectCategory", event.target.getAttribute('data'), event.target.getAttribute("parent"));
     }
   }
 };
@@ -46,14 +42,13 @@ export default {
 
 <style>
 .sidebarCategory {
-  background: blue;
-  width: 70px;
+  width: 50px;
   height: 51%;
   display: flex;
   overflow: auto;
   padding-left: 15px;
   margin-top: calc(49vh);
-  margin-left: calc(4.2vw);
+  margin-left: calc(4.7vh);
   z-index: 200;
 }
 .icon-display {

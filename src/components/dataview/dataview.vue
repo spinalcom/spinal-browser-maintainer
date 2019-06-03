@@ -32,7 +32,7 @@ export default {
   data() {
     return {
       data: [],
-      dashboard: "default",
+      dashboard: "",
       floorSelected: ''
     }
   },
@@ -52,6 +52,11 @@ export default {
      EventBus.$on("choose-ticket", () => {
         this.dashboard = 'ticket';
       });
+
+      EventBus.$on("selectCategory", (data, parent) => {
+        console.log("select categ");
+        this.dashboard = "ticket"
+      })
 
       EventBus.$on("click-event", (it) => {
         let self = this;

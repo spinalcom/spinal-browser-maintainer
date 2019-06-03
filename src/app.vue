@@ -33,7 +33,7 @@ import Vue from "vue";
 import sidebar from "./components/sidebar/sidebar.vue";
 import sidebarContext from "./components/sidebar/sidebarContext.vue";
 import sidebarCategory from "./components/sidebar/sidebarCategory.vue";
-import sidebarProcess from "./components/sidebar/sidebarProcess.vue";
+import sidebarProcess from "./components/sidebar/sidebarElement.vue";
 import MainContainer from "./components/container/container.vue";
 import dataService from "./config/data";
 import contextualList from "./components/contextualList/contextualList.vue";

@@ -2,7 +2,7 @@
 <template>
   <div class="sidebarProcess">
 
-      <div v-for="element in icons" >
+      <div v-for="element in elements" >
         <v-icon v-on:click="onClick" class="icon-display" :data="element.data">{{element.icon}}</v-icon>
       </div>
 
@@ -11,18 +11,12 @@
 
 <script>
 import { EventBus } from "../../config/event";
+import { SpinalServiceTicket } from 'spinal-service-ticket';
 
 export default {
   data() {
     return {
-      icons: [
-      { icon: "home",
-        data: "data1" },
-      { icon : "info",
-        data: "data2" },
-      { icon : "event",
-        data: "data3" }
-      ]
+      elements: []
     };
   },
   props: ["floors"],
@@ -30,14 +24,15 @@ export default {
     this.getEvents();
   },
   methods: {
-   update: function(el) {
-      console.log("update process", el);
+   update: function(el, parentName) {
+      console.log("update process", el, parentName);
+      SpinalServiceTicket.init();
+      SpinalServiceTicket.getAllProcessAsync().then(ok => console.log("-------", ok))
     },
     getEvents: function() {
-      EventBus.$on("selectCategory", type => this.update(type));
+      EventBus.$on("selectCategory", (type, parentName) => this.update(type, parentName));
     },
     onClick: function(event) {
-     // console.log("click on ", event.target.getAttribute('data'));
       EventBus.$emit("selectProcess", event.target.getAttribute('data'));
     }
   }
@@ -46,14 +41,14 @@ export default {
 
 <style>
 .sidebarProcess {
-  background: red;
-  width: 70px;
+  background: grey;
+  width: 55px;
   height: 51%;
   display: flex;
   overflow: auto;
   padding-left: 15px;
   margin-top: calc(49vh);
-  margin-left: calc(8.2vw);
+  margin-left: calc(9.5vh);
   z-index: 400;
 }
 .icon-display {

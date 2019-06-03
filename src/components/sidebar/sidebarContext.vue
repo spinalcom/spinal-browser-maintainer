@@ -2,7 +2,7 @@
 <template>
   <div class="sidebarContext">
 
-      <div v-for="element in icons" >
+      <div v-for="element in elements" >
         <v-icon v-on:click="onClick" class="icon-display" :data="element.data">{{element.icon}}</v-icon>
       </div>
 
@@ -15,13 +15,9 @@ import { EventBus } from "../../config/event";
 export default {
   data() {
     return {
-      icons: [
-      { icon: "home",
-        data: "data1" },
-      { icon : "info",
-        data: "data2" },
-      { icon : "event",
-        data: "data3" }
+      elements: [
+      { icon: "event",
+        data: "tickets" }
       ]
     };
   },
@@ -38,7 +34,7 @@ export default {
 <style>
 .sidebarContext {
   background: grey;
-  width: 70px;
+  width: 50px;
   height: 51%;
   display: flex;
   overflow: auto;
