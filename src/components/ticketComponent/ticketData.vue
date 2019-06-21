@@ -52,6 +52,7 @@ export default {
       EventBus.$on("select-process", process => {
       		self.active = false;
       		self.selectProcess = process;
+      		console.log("receivede event process");
       		self.triTicket();
      });
      EventBus.$on("getBackToProcess", () => self.active = true );
@@ -73,6 +74,7 @@ export default {
 		this.selectedSteps = this.steps;
 	},
 	addProcess(Name) {
+		console.log("add proces --------------------")
 		if (this.process.indexOf(Name) == -1)
 			this.process.push(Name);
 	},
@@ -123,8 +125,8 @@ export default {
 		let self =  this;
 		let tmp;
 		return new Promise((resolve) => {
-		self.allTickets = [];
-		self.process = [];
+		//self.allTickets = [];
+		//self.process = [];
 
 			for (var floorLvl in self.allData.rooms)
 				for (var allRooms in self.allData.rooms[floorLvl].rooms) {
@@ -159,6 +161,18 @@ export default {
   		console.log("levelSelected updated", this.levelSelected);
   		this.triTicket();
   		this.extractProcess();
+  	},
+  	allData() {
+  		console.log("watch alldata", this.allData);
+  		this.allTickets = [];
+		this.process = [];
+  		this.getAllTickets().then(() => {
+  			this.extractProcess();
+  			this.triTicket();
+  		});
+  	},
+  	process() {
+  		console.log("update proces", this,process);
   	}
   }
 };

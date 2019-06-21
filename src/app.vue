@@ -38,6 +38,7 @@
 </template>
 
 <script>
+import { EventBus } from "./config/event";
 import Vue from "vue";
 import appViewer from "./components/viewer/viewer.vue";
 import appHeader from "./components/header/header.vue";
@@ -51,13 +52,15 @@ import sidebarProcess from "./components/sidebar/sidebarElement.vue";
 import MainContainer from "./components/container/container.vue";
 import dataService from "./config/data";
 import contextualList from "./components/contextualList/contextualList.vue";
+let fct;
 
 export default Vue.extend({
   data() {
     return {
       collapseMenu: false,
       data: null,
-      floorSelected: null
+      floorSelected: null,
+      test: {}
     };
   },
   components: {
@@ -78,12 +81,60 @@ export default Vue.extend({
     dataService.getAllData().then(allData => {
       self.data = allData;
     });
+
     setTimeout(function() {
-      console.log(self.data.rooms);
-  }, 2000)
+      self.bindAllData();
+  }, 3000)
   },
   methods: {
     mounted() {},
+    bindAllData() {
+      let self = this;
+      this.test = this.fakeUpdate;
+      console.log("binding", dataService.ContextNode, dataService.ProcessNodes, dataService.StepsNodes);
+
+      dataService.ContextNode.bind(function() {
+        dataService.getAllData().then(allData => {
+          self.test(allData);
+          //self.data = allData;
+
+        });
+      });
+
+      for (var ProcessNode in dataService.ProcessNodes) {
+        dataService.ProcessNodes[ProcessNode].bind(function() {
+          dataService.getAllData().then(allData => {
+            self.test(allData);
+            //self.data = allData;
+          });
+        });
+      }
+     
+      for (var Node in dataService.StepsNodes) {
+        dataService.StepsNodes[Node].bind(function() {
+          dataService.getAllData().then(allData => {
+            self.test(allData);
+            //self.data = allData;
+          });
+        });
+      }
+
+      setTimeout(function() {
+        self.test = self.updateData;
+      }, 3000)
+
+    },
+    fakeUpdate(data) {
+      console.log("fake update");
+    },
+    updateData(data) {
+      console.log("update aldata");
+      let self = this;
+      setTimeout(function() {
+        self.data = data;
+      }, 500);
+      //EventBus.$emit("test", data);
+    },
     onCollapsed(value) {
       this.collapseMenu = value;
     },

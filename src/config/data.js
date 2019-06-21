@@ -5,6 +5,9 @@ import graph from "./GraphService";
 const geographicConstants = geographicService.constants;
 
 let dataService = {
+  ContextNode: {},
+  ProcessNodes: {},
+  StepsNodes: {},
   async getFloor() {
     await graph.init();
     let context = await graph.SpinalGraphService.getContext(
@@ -27,6 +30,18 @@ let dataService = {
     })
 
   },
+  // async bindTicketService(node) {
+  //   return new Promise(resolve => {
+  //     let context = await graph.SpinalGraphService.getContext(
+  //       SERVICE_NAME );
+  //   });
+  // },
+  // bindTicketProcess() {
+  //   return new Promise(resolve => {
+  //     let context = await graph.SpinalGraphService.getContext(
+  //       SERVICE_NAME );
+  //   });
+  // },
   async getTickets(rooms) {
     await graph.init();
 
@@ -34,10 +49,12 @@ let dataService = {
       SERVICE_NAME );
     if (typeof context === "undefined")
       return Promise.resolve([]);
+    this.ContextNode = context;
 
-    console.log("context service ==");
-    console.log(context);
-    graph.SpinalGraphService.getChildren(context.info.id).then(ok => console.log("-----", ok));
+    let self = this;
+    graph.SpinalGraphService.getChildren(context.info.id).then(allProcess => {
+      self.getAllSteps(allProcess);
+      self.ProcessNodes = allProcess; });
 
     for (var lvl in rooms)
         for (var room_nbr in rooms[lvl].rooms)
@@ -45,6 +62,16 @@ let dataService = {
             this.getTicketsPerRoom(lvl, room_nbr, rooms);
     return Promise.resolve([]);
 
+  },
+  getAllSteps(allProcess) {
+    let self = this;
+    for (var process in allProcess) {
+      graph.SpinalGraphService.getChildren(allProcess[process].id.get()).then(child => {
+        for (var nodeId in child) {
+          self.StepsNodes[child[nodeId].id.get()] = graph.SpinalGraphService.getRealNode(child[nodeId].id.get());
+        }
+      })
+    }
   },
   getTicketsPerRoom(lvl, room_nbr, rooms) {
     graph.SpinalGraphService.getChildren(rooms[lvl].rooms[room_nbr].id, SPINAL_TICKET_SERVICE_TARGET_RELATION_NAME)
