@@ -1,8 +1,7 @@
 
 <template>
   <div class="container">
-    <app-header></app-header>
-    <vs-row class="row mainRow">
+    <div class=" mainRow">
       <contextual-list :floorSelected="floorSelected"
                      :rooms="rooms"
                      :equipments="equipments"></contextual-list>
@@ -10,13 +9,12 @@
       <!--<middle-bar class="middleBar-dataView-display"></middle-bar>= -->
       <data-view :allData="allData">
     </data-view>
-    </vs-row>
+    </div>
   </div>
 </template>
 
 <script>
 import appViewer from "../viewer/viewer.vue";
-import Header from "../header/header.vue";
 import Rooms from "../rooms/rooms.vue";
 import MiddleBar from "../middlebar/middlebar.vue";
 import DataView from "../dataview/dataview.vue";
@@ -26,7 +24,6 @@ export default {
   name: "MainContainer",
   props: ["collapsed", "floorSelected", "rooms", "equipments", "allData"],
   components: {
-    "app-header": Header,
     "rooms-sidebar": Rooms,
     "app-viewer": appViewer,
     MiddleBar,
@@ -56,11 +53,11 @@ export default {
 <style scoped>
 .container {
   position: relative;
-  min-height: calc(100%);
+  /*min-height: calc(100%);*/
   float: right;
-  width: calc(100% - 50px);
+  width: calc(100% - 200px);
   /* width: calc(100%); */
-  height: calc(100%);
+  /*height: calc(100%);*/
 }
 
 /* @media screen and (min-width: 900px) {
@@ -76,6 +73,6 @@ export default {
 
 .mainRow {
   margin: 0px;
-  height: calc(100vh - 40px);
+  height: calc(109vh - 40px);
 }
 </style>

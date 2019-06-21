@@ -51,6 +51,11 @@ export default {
       EventBus.$on("mouse-leave", () => this.viewer.select() );
 
       EventBus.$on("click-room", item => this.zoomObjects(item) );
+
+      EventBus.$on("reset-select", () => {
+        this.viewer.isolate(0);
+        this.viewer.fitToView(0); 
+      });
     },
     selectObjects(id) {
       dataService.getBimObjects(id).then(res => {
@@ -101,19 +106,11 @@ export default {
 }
 */
 .viewerContainer {
-  width: 79%;
-  height: calc(47%);
+  width: 51%;
+  height: calc(96%);
   position: relative;
-  float: right;
+  float: left;
+  padding-left: 160px;
 }
 
-@media screen and (max-width: 900px) {
-  #autodesk_forge_viewer {
-    width: 100%;
-    height: calc(60%);
-    padding: 0px;
-    margin-top: 10px;
-    display: block;
-  }
-}
 </style>

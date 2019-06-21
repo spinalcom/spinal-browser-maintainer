@@ -66,12 +66,12 @@ export default {
 <style scoped>
 .middleBar {
   background-color: white;
-  width: 100%;
+  width: 78%;
   border: solid;
+  float: right;
   border-width: 1px;
-  margin-right: 1%;
   margin-left: 4px;
-  height: 6%;
+  height: 5%;
   overflow: auto;
 }
 .material-icons {

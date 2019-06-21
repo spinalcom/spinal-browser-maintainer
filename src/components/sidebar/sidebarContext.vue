@@ -33,13 +33,13 @@ export default {
 
 <style>
 .sidebarContext {
-  background: grey;
-  width: 50px;
-  height: 51%;
+  background: #333333;
+  width: 11%;
+  height: 46.4%;
   display: flex;
   overflow: auto;
   padding-left: 15px;
-  margin-top: calc(49vh);
+  margin-top: calc(49.6vh);
 }
 .icon-display {
   margin-top: 2vh;

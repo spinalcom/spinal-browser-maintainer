@@ -28,7 +28,7 @@ import "babel-polyfill";
 import Vue from "vue";
 import VueMaterial from "vue-material";
 import Vuetify from 'vuetify';
-//import 'vuetify/dist/vuetify.min.css'
+import 'vuetify/dist/vuetify.min.css'
 
 // import VueBootstrap from "bootstrap-vue";
 // import VueInsProgressBar from "vue-ins-progress-bar";
@@ -43,17 +43,11 @@ import App from "./app.vue";
 
 // Vue.use(VueSidebarMenu);import vu
 
-import Vuesax from "vuesax";
-import "vuesax/dist/vuesax.css";
+//import Vuesax from "vuesax";
+//import "vuesax/dist/vuesax.css";
 
 Vue.use(Vuetify);
-Vue.use(Vuesax);
+//Vue.use(Vuesax);
 Vue.use(VueMaterial);
-// Vue.use(VueBootstrap);
-// Vue.use(VueInsProgressBar, {
-// position: "fixed",
-// show: true,
-// height: "3px"
-// });
 
 new Vue(App).$mount("#app");

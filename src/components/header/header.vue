@@ -27,5 +27,8 @@ export default {
   /* padding: 13px; */
   height: 40px;
   padding: 5px;
+  border-bottom: black;
+  border-style: solid;
+  border-width: 0px 0px 1px 0px;
 }
 </style>

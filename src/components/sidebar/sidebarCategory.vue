@@ -42,13 +42,14 @@ export default {
 
 <style>
 .sidebarCategory {
-  width: 50px;
-  height: 51%;
+  width: calc(15%);
+  height: 46.2%;
   display: flex;
+  background-color: grey;
   overflow: auto;
   padding-left: 15px;
-  margin-top: calc(49vh);
-  margin-left: calc(4.7vh);
+  margin-top: calc(49.8vh);
+  margin-left: calc(11%);
   z-index: 200;
 }
 .icon-display {

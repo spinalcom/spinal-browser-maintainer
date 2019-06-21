@@ -38,8 +38,8 @@
     "vue": "^2.6.10",
     "vue-material": "1.0.0-beta-10.2",
     "vue-sidebar-menu": "^3.6.3",
-    "vuesax": "^3.8.59",
-    "vuetify": "^1.5.14"
+    "vuetify": "^1.5.14",
+    "vue-router": "3.0.6"
   },
   "devDependencies": {
     "@babel/core": "^7.4.5",
@@ -51,8 +51,8 @@
     "stylus": "^0.54.5"
   },
   "browserslist": [
-   "last 1 chrome versions"
- ],
+    "last 1 chrome versions"
+  ],
   "browserify": {
     "transform": [
       "vueify",
