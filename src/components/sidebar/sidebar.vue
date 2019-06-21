@@ -1,5 +1,6 @@
 
 <template>
+<!--  
   <vs-sidebar :reduce="reduce"
               :reduce-not-hover-expand="notExpand"
               parent="body"
@@ -29,11 +30,38 @@
 
           {{child.title}}
         </vs-sidebar-item>
-
     </template>
-  </vs-sidebar>
-</template>
+  </vs-sidebar> -->
 
+  <div class="mySidebarx" v-if="selectedLevel">
+      <p id="HeaderTitle">Building</p>
+
+        <div 
+          v-for="item in floors"
+          :key="item.name"
+          @click="onItemClick(item)"
+          @mouseover="mouseOver(item)"
+          @mouseleave="mouseLeave()"
+        >
+        <p class="sitebarElement">{{ item.name }}</p>
+        </div>
+  </div>
+  <div v-else class="mySidebarx">
+    <p id="HeaderTitle" @click="backToFloor">< {{ floor }}</p>
+    <div 
+       v-for="item in roomsDisplayed"
+      :key="item.name"
+      @click="onItemClick(item)"
+      >
+      <p class="sitebarElement"
+        :key="item"
+        @mouseover="mouseOver(item)"
+        @mouseleave="mouseLeave()"
+        @click="isolate(item)">{{ item.name }}</p>
+    </div>
+  </div>
+
+</template>
 
 <script>
 import { EventBus } from "../../config/event";
@@ -44,10 +72,12 @@ export default {
       active: true,
       notExpand: false,
       reduce: true,
-      menus: []
+      menus: [],
+      selectedLevel: true,
+      roomsDisplayed: []
     };
   },
-  props: ["floors"],
+  props: ["floors", "rooms"],
   mounted() {
     let content = {
       title: "Floors",
@@ -72,17 +102,16 @@ export default {
     }
 
     this.menus.push(content);
-
-    this.disableReload();
-    // spinalGraphService.getOccupations();
   },
 
   methods: {
     onItemClick(item) {
+      console.log("cloicked", item);
       switch (item.type) {
-        case "floor":
+        case "geographicFloor":
           this.$emit("selectFloor", item.id);
           EventBus.$emit("click-event", item);
+          this.openFloor(item.name);
           break;
 
         default:
@@ -90,46 +119,74 @@ export default {
       }
       return;
     },
+    backToFloor() {
+      this.selectedLevel = true;
+      EventBus.$emit("reset-select");
+    },
+    openFloor(floorSelected) {
+      if (this.selectedLevel)
+        this.selectedLevel = false;
+      else
+        this.selectedLevel = true;
+      console.log("selecte floor ", floorSelected, this.rooms);
+      for (var i in this.rooms) {
+        if ( this.rooms[i].floor == floorSelected )
+          this.roomsDisplayed = this.rooms[i].rooms;
+        }
+
+      this.floor = floorSelected;
+    },
     onMouseOver(item) {
       EventBus.$emit("mouse-over", item);
     },
     onMouseLeave() {
       EventBus.$emit("mouse-leave");
     },
-    disableReload() {
-      setTimeout(() => {
-        this.$refs["sidebar-item"].forEach(sidebars => {
-          sidebars.$el.getElementsByTagName("a")[0].addEventListener(
-            "click",
-            function(e) {
-              e.preventDefault();
-            },
-            false
-          );
-
-          sidebars.$el.addEventListener(
-            "mouseover",
-            function() {
-              sidebars.$emit("mouseover");
-            },
-            false
-          );
-
-          sidebars.$el.addEventListener(
-            "mouseleave",
-            function() {
-              sidebars.$emit("mouseleave");
-            },
-            false
-          );
-        });
-      }, 1000);
+    mouseOver(item) {
+      EventBus.$emit("mouse-over", item);
+    },
+    isolate(item) {
+      this.roomsSelected = item.id;
+      EventBus.$emit("click-room", item);
+    },
+    mouseLeave() {
+      EventBus.$emit("mouse-leave");
     }
   }
 };
 </script>
 
-<style lang="stylus">
+<style>
+#HeaderTitle {
+    color: white;
+    background-color: grey;
+    margin-left: -6px;
+    height: 34px;
+    padding-top: 9px;
+    padding-left: 5px;
+    margin-top: -6px;
+}
+
+.mySidebarx {
+  z-index: 100;
+  background-color: #272727;
+  height: 96%;
+  width: 160px;
+  padding-left: 8px;
+  padding-top: 4px;
+  overflow: auto;
+
+}
+
+.sitebarElement {
+  color: white;
+  padding-top: 3px;
+}
+
+.sidebarDivider {
+  width: 92%;
+}
+
 .header-sidebar {
   display: flex;
   align-items: center;
@@ -169,6 +226,7 @@ export default {
 
 .vs-sidebar.vs-sidebar-reduce {
   background: #272727;
+  height: 49%;
   color: white;
 }
 

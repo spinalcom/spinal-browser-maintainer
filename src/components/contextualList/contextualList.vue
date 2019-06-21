@@ -33,8 +33,10 @@ export default {
 
 <style scoped>
 .contextualList {
-  width: 20%;
-  height: calc(47%);
+  display: inline-block;
+  width: 13%;
+  height: calc(50%);
+  margin-left: -5.9%;
   padding: 10px;
   overflow: auto;
   background: #333333;
@@ -43,6 +45,7 @@ export default {
 @media screen and (max-width: 900px) {
   .contextualList {
     width: 100%;
+    display: inline-block;
     height: calc(40%);
     display: block;
   }

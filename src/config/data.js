@@ -35,6 +35,10 @@ let dataService = {
     if (typeof context === "undefined")
       return Promise.resolve([]);
 
+    console.log("context service ==");
+    console.log(context);
+    graph.SpinalGraphService.getChildren(context.info.id).then(ok => console.log("-----", ok));
+
     for (var lvl in rooms)
         for (var room_nbr in rooms[lvl].rooms)
           if (typeof rooms[lvl].rooms[room_nbr].id !== "undefined")
