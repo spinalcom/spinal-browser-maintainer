@@ -33,9 +33,9 @@
       </v-tooltip>
     </template>
     <template v-slot:items="props">
-       	<td @mouseover="overTableRow(props)" @mouseleave="mouseLeave()">{{ props.item.name.get() }}</td>
-      	<td @mouseover="overTableRow(props)" @mouseleave="mouseLeave()" class="text-xs-right">{{ ticketDate(props.item.creationDate.get()) }}</td>
-      	<td class="text-xs-right" :style="{'color':props.item.color.get()}" @mouseover="overTableRow(props)" @mouseleave="mouseLeave()">{{ props.item.stepName }}</td>
+       	<td @mouseover="overTableRow(props)" @mouseleave="mouseLeave()" @click="onClick(props)">{{ props.item.name.get() }}</td>
+      	<td @mouseover="overTableRow(props)" @mouseleave="mouseLeave()" @click="onClick(props)" class="text-xs-right">{{ ticketDate(props.item.creationDate.get()) }}</td>
+      	<td class="text-xs-right" :style="{'color':props.item.color.get()}" @click="onClik(props)" @mouseover="overTableRow(props)" @mouseleave="mouseLeave()">{{ props.item.stepName }}</td>
     </template>
 
   </v-data-table>
@@ -71,7 +71,8 @@ export default {
 			sortBy: 'creationDate',
 			totalItems: 0,
 			rowsPerPageItems: [17]
-		}
+		},
+		clicked: false
       }
     },
     props: ["allTickets", "steps", "selectedSteps", "title"],
@@ -99,6 +100,14 @@ export default {
 		},
 		mouseLeave() {
 			EventBus.$emit("mouse-leave");
+		},
+		onClick(item) {
+			if (clicked === false) {
+				let ticket = {}
+				ticket.id = item.item.bimId.get();
+				EventBus.$emit("click-ticket-event", ticket);
+			} else
+			console.log("already")
 		},
 		showTicketsColor() {
 			console.log("display color", this.allTickets);

@@ -90,7 +90,7 @@ export default {
         }
       switch (item.type) {
         case "geographicFloor":
-          this.$emit("selectFloor", item.id);
+     //     this.$emit("selectFloor", item.id);
           EventBus.$emit("click-event", item);
           this.openFloor(item.name);
           break;
@@ -109,7 +109,6 @@ export default {
         this.selectedLevel = false;
       else
         this.selectedLevel = true;
-      console.log("selecte floor ", floorSelected, this.floors);
 
       for (var i in this.rooms) {
         if ( this.rooms[i].floor == floorSelected )

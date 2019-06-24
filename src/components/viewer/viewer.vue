@@ -37,6 +37,8 @@ export default {
     getEvents() {
       EventBus.$on("click-event", item => this.isolateObjects(item.id) );
 
+      EventBus.$on("click-ticket-event", item => this.isolateObjects(item.id) );
+
       EventBus.$on("mouse-over", item => this.selectObjects(item.id) );
 
       EventBus.$on("select-equipment", itemId => this.selectObjects(itemId) );

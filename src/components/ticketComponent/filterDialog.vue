@@ -31,7 +31,6 @@ import { EventBus } from "../../config/event";
   export default {
     data () {
       return {
-        dialogm1: '',
         dialog: false,
         allSteps: ["All"],
         selected: ["All"]
@@ -39,22 +38,18 @@ import { EventBus } from "../../config/event";
     },
     props: ['steps', "selectedSteps"],
     mounted: function() {
-      console.log("mounted dialog", this.steps, this.selectedSteps);
       for (var el in this.steps)
         if (this.allSteps.indexOf(this.steps[el]) == -1 && el !== undefined)
           this.allSteps.push(this.steps[el]);
-   //     console.log(this.allSteps);
     },
     methods: {
       clickOnSave() {
-      //  console.log("save !");
-       // console.log(this.selected);
         this.triSelection();
         this.dialog = false;
       },
       triSelection() {
         if (this.selected.indexOf("All") !== -1)
-          EventBus.$emit("select-steps", this.steps );
+          EventBus.$emit("select-steps", this.allSteps );
         else
           EventBus.$emit("select-steps", this.selected );
       }

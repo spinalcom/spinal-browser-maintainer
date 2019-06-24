@@ -67,11 +67,12 @@ export default {
      })
 	},
 	extractProcess() {
+		this.steps = [];
 		for (var ticket in this.selectedTicket) {
 			if (this.steps.indexOf(this.selectedTicket[ticket]['stepName']) == -1 && this.selectedTicket[ticket]['stepName'] !== undefined)
 				this.steps.push(this.selectedTicket[ticket]['stepName']);
 		}
-		this.selectedSteps = this.steps;
+		//this.selectedSteps = this.steps;
 	},
 	triTicket() {
 		this.selectedTicket = []
