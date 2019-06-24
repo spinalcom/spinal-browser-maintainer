@@ -1,38 +1,5 @@
 
 <template>
-<!--  
-  <vs-sidebar :reduce="reduce"
-              :reduce-not-hover-expand="notExpand"
-              parent="body"
-              class="sidebarx mySidebar"
-              v-model="active">
-
-    <div class="header-sidebar"
-         slot="header">
-      <vs-icon icon="menu"
-               round></vs-icon>
-    </div>
-
-    <template class="sidebar-content"
-              v-for="(menu,index) in menus">
-      <vs-sidebar-group v-if="menu.child"
-                        open
-                        :title="menu.title"
-                        :key="index">
-        <vs-sidebar-item ref="sidebar-item"
-                         v-for="(child,index2) in menu.child"
-                         :index="index2"
-                         :key="index2"
-                         :icon="child.icon"
-                         @click="onItemClick(child)"
-                         @mouseover="onMouseOver(child)"
-                         @mouseleave="onMouseLeave">
-
-          {{child.title}}
-        </vs-sidebar-item>
-    </template>
-  </vs-sidebar> -->
-
   <div class="mySidebarx" v-if="selectedLevel">
       <p id="HeaderTitle">Building</p>
 
@@ -54,13 +21,12 @@
       @click="onItemClick(item)"
       >
       <p class="sitebarElement"
-        :key="item"
+        :key="item.name"
         @mouseover="mouseOver(item)"
         @mouseleave="mouseLeave()"
         @click="isolate(item)">{{ item.name }}</p>
     </div>
   </div>
-
 </template>
 
 <script>
@@ -128,7 +94,8 @@ export default {
         this.selectedLevel = false;
       else
         this.selectedLevel = true;
-      console.log("selecte floor ", floorSelected, this.rooms);
+      console.log("selecte floor ", floorSelected, this.floors);
+
       for (var i in this.rooms) {
         if ( this.rooms[i].floor == floorSelected )
           this.roomsDisplayed = this.rooms[i].rooms;

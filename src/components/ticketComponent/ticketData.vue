@@ -75,12 +75,10 @@ export default {
 	},
 	triTicket() {
 		this.selectedTicket = []
-		console.log("tri ticket=-------------- ", this.selectedSteps);
 		if (this.levelSelected === "") {
 			for (var ticket in this.allTickets)
 				for (var el in this.allTickets[ticket])
 					if (this.allTickets[ticket][el]['processName'] === this.selectProcess) {
-						console.log(this.selectedSteps.indexOf(this.allTickets[ticket][el]['stepName']) !== -1 || this.selectedSteps.indexOf("init") !== -1 , this.init)
 						if (this.selectedSteps.indexOf(this.allTickets[ticket][el]['stepName']) !== -1 || this.init === true )
 							this.selectedTicket.push(this.allTickets[ticket][el]);
 					}
