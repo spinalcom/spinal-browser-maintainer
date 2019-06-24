@@ -8,7 +8,7 @@
           :key="item.name"
           @click="onItemClick(item)"
           @mouseover="mouseOver(item)"
-          @mouseleave="mouseLeave()"
+          @mouseleave="mouseLeave"
         >
         <p class="sitebarElement">{{ item.name }}</p>
         </div>
@@ -18,13 +18,13 @@
     <div 
        v-for="item in roomsDisplayed"
       :key="item.name"
-      @click="onItemClick(item)"
+      @click="onItemClick(item, $event)"
       >
       <p class="sitebarElement"
-        :key="item.name"
+        :value="item"
         @mouseover="mouseOver(item)"
-        @mouseleave="mouseLeave()"
-        @click="isolate(item)">{{ item.name }}</p>
+        @mouseleave="mouseLeave"
+        @click="isolate">{{ item.name }}</p>
     </div>
   </div>
 </template>
@@ -40,7 +40,9 @@ export default {
       reduce: true,
       menus: [],
       selectedLevel: true,
-      roomsDisplayed: []
+      roomsDisplayed: [],
+      roomSelected: '',
+      oldTarget: {}
     };
   },
   props: ["floors", "rooms"],
@@ -71,8 +73,23 @@ export default {
   },
 
   methods: {
-    onItemClick(item) {
-      console.log("cloicked", item);
+    onItemClick(item, target) {
+      console.log("cloicked", item, target);
+     //console.log(this.oldTarget, "(--------");
+      if (target !== undefined)
+        if (this.roomSelected !== item.id) {
+          if (this.oldTarget.target !== undefined) {
+            this.oldTarget.target.style.color = 'white';
+          }
+          this.roomSelected = item.id;
+          target.target.style.color = '#356BAB';
+          this.oldTarget = target;
+          //console.log(target.target);
+        } else {
+          this.roomSelected = '';
+          target.target.style.color = 'white';
+          this.oldTarget = {};
+        }
       switch (item.type) {
         case "geographicFloor":
           this.$emit("selectFloor", item.id);
@@ -102,12 +119,6 @@ export default {
         }
 
       this.floor = floorSelected;
-    },
-    onMouseOver(item) {
-      EventBus.$emit("mouse-over", item);
-    },
-    onMouseLeave() {
-      EventBus.$emit("mouse-leave");
     },
     mouseOver(item) {
       EventBus.$emit("mouse-over", item);
