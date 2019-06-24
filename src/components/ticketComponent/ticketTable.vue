@@ -1,7 +1,7 @@
 <template>
 <div>
 	<button class="backButton" @click="backToProcess">< Back</button>
-	<icon>title</icon>
+	<icon id="title">{{title}}</icon>
 	<filter-dialog :steps="steps" 
 				   :selectedSteps="selectedSteps" ></filter-dialog>
 	<button id="selectEyeForTickets" @click="showTicketsColor"><v-icon>remove_red_eye</v-icon></button>
@@ -35,7 +35,7 @@
     <template v-slot:items="props">
        	<td @mouseover="overTableRow(props)" @mouseleave="mouseLeave()">{{ props.item.name.get() }}</td>
       	<td @mouseover="overTableRow(props)" @mouseleave="mouseLeave()" class="text-xs-right">{{ ticketDate(props.item.creationDate.get()) }}</td>
-      	<td class="text-xs-right" @mouseover="overTableRow(props)" @mouseleave="mouseLeave()">{{ props.item.processName }}</td>
+      	<td class="text-xs-right" :style="{'color':props.item.color.get()}" @mouseover="overTableRow(props)" @mouseleave="mouseLeave()">{{ props.item.stepName }}</td>
     </template>
 
   </v-data-table>
@@ -62,7 +62,7 @@ export default {
             value: 'name'
           },
           { text: 'Creation Date', value: 'creation date', align: 'center' },
-          { text: 'Steps', value: 'steps', align: 'center'}
+          { text: 'Step', value: 'step', align: 'center'}
           ],
 		pagination: {
 			descending: true,
@@ -74,7 +74,7 @@ export default {
 		}
       }
     },
-    props: ["allTickets", "steps", "selectedSteps"],
+    props: ["allTickets", "steps", "selectedSteps", "title"],
     mounted() {
 		//console.log("table has mounted", this.allTickets.forEach(function(el) { console.log(el.name.get())}), this.allTickets);
     },
@@ -128,7 +128,12 @@ export default {
 	border: solid;
 	padding: 3px;
 }
-
+#title {
+	margin-left: 28%;
+}
+.customColor {
+	color: var(--accent-color);
+}
 .v-alert {
 	color: black;
 }

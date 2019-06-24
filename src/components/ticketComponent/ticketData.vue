@@ -7,7 +7,8 @@
 	<div v-else>
 		<ticket-table :allTickets="selectedTicket"
 					  :steps="steps"
-					  :selectedSteps="selectedSteps">
+					  :selectedSteps="selectedSteps"
+					  :title="selectProcess">
 		</ticket-table>
 	</div>
 </template>
@@ -52,7 +53,6 @@ export default {
       EventBus.$on("select-process", process => {
       		self.active = false;
       		self.selectProcess = process;
-      		console.log("receivede event process");
       		self.triTicket();
      });
      EventBus.$on("getBackToProcess", () => self.active = true );
@@ -91,6 +91,7 @@ export default {
 							if (this.selectedSteps.indexOf(this.allTickets[level][ticket]['stepName']) !== -1 || this.init === true )
 								this.selectedTicket.push(this.allTickets[level][ticket]);
 		this.extractProcess();
+		console.log("------->", this.selectedTicket)
 	},
 	addStep(node, processName) {
 		let self = this;
@@ -112,7 +113,6 @@ export default {
 			}
 
 		});
-
 	},
 	getAllTickets() {
 		let self =  this;
