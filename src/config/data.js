@@ -119,18 +119,31 @@ let dataService = {
       })
     })
   },
+  getProcessName(obj) {
+    let allProcess = [];
+    obj['process'] = allProcess;
+    let self = this;
+    setTimeout(function() {
+      for (var node in self.ProcessNodes) {
+        allProcess.push(self.ProcessNodes[node].name.get());
+      }
+    }, 2000);
+  },
   async getAllData() {
 
     let floors = await this.getFloor();
     let rooms = await this.getRooms(floors);
     this.getTickets(rooms);
     this.getEquipments(rooms);
+    let processName = {};
+    this.getProcessName(processName);
     
     //setTimeout(function() { console.log(rooms, "-", floors)}, 2000);
 
     return {
       floors: floors,
       rooms: rooms,
+      process: processName['process'],
       equipements: ''
     }
   },

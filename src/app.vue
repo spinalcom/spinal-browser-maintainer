@@ -60,7 +60,8 @@ export default Vue.extend({
       collapseMenu: false,
       data: null,
       floorSelected: null,
-      test: {}
+      test: {},
+      bindObj: []
     };
   },
   components: {
@@ -90,48 +91,59 @@ export default Vue.extend({
     mounted() {},
     bindAllData() {
       let self = this;
-      this.test = this.fakeUpdate;
-      console.log("binding", dataService.ContextNode, dataService.ProcessNodes, dataService.StepsNodes);
+     // console.log("binding", dataService.ContextNode, dataService.ProcessNodes, dataService.StepsNodes);
 
-      dataService.ContextNode.bind(function() {
+      this.bindObj.push(dataService.ContextNode);
+      this.bindObj.push(dataService.ContextNode.bind(function() {
+        self.refreshBind();
         dataService.getAllData().then(allData => {
-          self.test(allData);
+          self.updateData(allData);
           //self.data = allData;
 
         });
-      });
+      }, false));
 
       for (var ProcessNode in dataService.ProcessNodes) {
-        dataService.ProcessNodes[ProcessNode].bind(function() {
+        this.bindObj.push(dataService.ProcessNodes[ProcessNode]);
+        this.bindObj.push(dataService.ProcessNodes[ProcessNode].bind(function() {
+          self.refreshBind();
           dataService.getAllData().then(allData => {
-            self.test(allData);
+            self.updateData(allData);
             //self.data = allData;
           });
-        });
+        }, false));
       }
-     
+
       for (var Node in dataService.StepsNodes) {
-        dataService.StepsNodes[Node].bind(function() {
+        this.bindObj.push(dataService.StepsNodes[Node]);
+        this.bindObj.push(dataService.StepsNodes[Node].bind(function() {
+          self.refreshBind();
           dataService.getAllData().then(allData => {
-            self.test(allData);
+            self.updateData(allData);
             //self.data = allData;
           });
-        });
+        }, false));
       }
 
       setTimeout(function() {
-        self.test = self.updateData;
-      }, 3000)
+   //     console.log("binobj = ", self.bindObj);
+      }, 2000)
 
     },
-    fakeUpdate(data) {
-      console.log("fake update");
+    refreshBind() {
+      let iterator = 0;
+
+      while(iterator > this.bindObj.length) {
+        this.bindObj[iterator].unbind(this.bindObj[iterator + 1])
+        iterator=iterator+2;
+      }
+
     },
     updateData(data) {
-      console.log("update aldata");
       let self = this;
       setTimeout(function() {
         self.data = data;
+        self.bindAllData();
       }, 500);
       //EventBus.$emit("test", data);
     },

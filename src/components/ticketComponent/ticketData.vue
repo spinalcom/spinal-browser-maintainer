@@ -1,6 +1,6 @@
 <template class="renderDataTicket">
 	<div v-if="active">
-		<process-component :processList="process">
+		<process-component :processList="allData.process">
 			
 		</process-component>
 	</div>
@@ -73,11 +73,6 @@ export default {
 		}
 		this.selectedSteps = this.steps;
 	},
-	addProcess(Name) {
-		console.log("add proces --------------------")
-		if (this.process.indexOf(Name) == -1)
-			this.process.push(Name);
-	},
 	triTicket() {
 		this.selectedTicket = []
 		console.log("tri ticket=-------------- ", this.selectedSteps);
@@ -136,7 +131,6 @@ export default {
 							self.allData.rooms[floorLvl].rooms[allRooms].tickets.forEach(el => {
 								tmp = graph.SpinalGraphService.getRealNode(el.processId.get());
 								el['processName'] = tmp.info.name.get();
-								self.addProcess(el['processName']);
 								self.addStep(el, tmp.info.name.get());
 								self.allTickets[self.allData.rooms[floorLvl].floor].push(el);
 							})
@@ -144,10 +138,11 @@ export default {
 						else
 							self.allData.rooms[floorLvl].rooms[allRooms].tickets.forEach(el => {
 								tmp = graph.SpinalGraphService.getRealNode(el.processId.get());
+								if (tmp !== undefined) {
 								el['processName'] = tmp.info.name.get();
-								self.addProcess(el['processName']);
 								self.addStep(el, tmp.info.name.get());
 								self.allTickets[self.allData.rooms[floorLvl].floor].push(el);
+								}
 							});
 					}
 					if (floorLvl == (self.allData.rooms.length - 1) && allRooms == (self.allData.rooms[floorLvl].rooms.length - 1) )
