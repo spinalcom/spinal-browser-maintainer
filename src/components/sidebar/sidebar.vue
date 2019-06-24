@@ -75,7 +75,6 @@ export default {
   methods: {
     onItemClick(item, target) {
       console.log("cloicked", item, target);
-     //console.log(this.oldTarget, "(--------");
       if (target !== undefined)
         if (this.roomSelected !== item.id) {
           if (this.oldTarget.target !== undefined) {
@@ -84,7 +83,6 @@ export default {
           this.roomSelected = item.id;
           target.target.style.color = '#356BAB';
           this.oldTarget = target;
-          //console.log(target.target);
         } else {
           this.roomSelected = '';
           target.target.style.color = 'white';

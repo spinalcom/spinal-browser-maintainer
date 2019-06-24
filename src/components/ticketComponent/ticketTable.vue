@@ -1,8 +1,10 @@
 <template>
 <div>
 	<button class="backButton" @click="backToProcess">< Back</button>
+	<icon>title</icon>
 	<filter-dialog :steps="steps" 
 				   :selectedSteps="selectedSteps" ></filter-dialog>
+	<button id="selectEyeForTickets" @click="showTicketsColor"><v-icon>remove_red_eye</v-icon></button>
   <v-data-table
     :headers="headers"
     :items="allTickets"
@@ -98,6 +100,9 @@ export default {
 		mouseLeave() {
 			EventBus.$emit("mouse-leave");
 		},
+		showTicketsColor() {
+			console.log("display color", this.allTickets);
+		},
 		timeConverter(UNIX_timestamp){
 			var a = new Date(UNIX_timestamp);
 			var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -117,6 +122,13 @@ export default {
     };
 </script>
 <style scoped>
+#selectEyeForTickets {
+	float: right;
+	margin-top: 7px;
+	border: solid;
+	padding: 3px;
+}
+
 .v-alert {
 	color: black;
 }
