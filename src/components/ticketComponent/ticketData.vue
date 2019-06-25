@@ -82,10 +82,7 @@ export default {
 			for (var el in this.overTickets) {
 				this.overTickets[el].over = 'false';
 			}
-			console.log("reset overTickets", this.overTickets);
 		}
-		else
-			this.eventRoom = false;
 		return;
 	}
 
@@ -97,13 +94,11 @@ export default {
 			for (var el in items.tickets) {
 				items.tickets[el].over = true;
 			}
-			console.log("over on ", items, this.selectProcess);
 		}
 	}
 	},
 	resetOverOnTableElement() {
 		this.eventRoom = false;
-		console.log("reset over on item", this.eventRoom);
 	},
 	triTicket() {
 		this.selectedTicket = []
@@ -192,8 +187,8 @@ export default {
 		this.allTickets = [];
 		this.process = [];
 		this.getAllTickets().then(() => {
-			this.extractProcess();
 			this.triTicket();
+			this.extractProcess();
 		});
 	},
 	process() {

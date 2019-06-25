@@ -4,8 +4,14 @@
 
 		<div v-for="element in processList" class="displayButtonChooseProcess">
 			<button class="buttonProcessDisplay" @click="selectProcess"> 
+<!-- 				<v-badge right color="red">
+      <template v-slot:badge>
+        <span class="processBadge">6</span>
+      </template> -->
 				{{ element }}
-			</button>
+<!-- 			</v-badge>
+ -->			</button>
+
 		</div>
 	</div>
 </template>
@@ -28,12 +34,15 @@ export default {
 	}
 };
 </script>
-<style>
+<style scoped>
 .displayProcessElementTitle {
 	margin-left: 48%;
 }
 .overflowDisplayProcess {
 	overflow: auto;
+}
+.processBadge {
+	margin-left: 0px;
 }
 .displayButtonChooseProcess {
 
