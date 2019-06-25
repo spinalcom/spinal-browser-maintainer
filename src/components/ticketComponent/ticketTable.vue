@@ -35,9 +35,8 @@
     <template v-slot:items="props">
        	<td @mouseover="overTableRow(props)" @mouseleave="mouseLeave()" @click="onClick(props)">{{ props.item.name.get() }}</td>
       	<td @mouseover="overTableRow(props)" @mouseleave="mouseLeave()" @click="onClick(props)" class="text-xs-right">{{ ticketDate(props.item.creationDate.get()) }}</td>
-      	<td class="text-xs-right" :style="{'color':props.item.color.get()}" @click="onClik(props)" @mouseover="overTableRow(props)" @mouseleave="mouseLeave()">{{ props.item.stepName }}</td>
+      	<td class="text-xs-right" :style="{'color':props.item.color.get()}" @click="onClick(props)" @mouseover="overTableRow(props)" @mouseleave="mouseLeave()"><span :style="getstyle(props.item)">{{ props.item.stepName }}</span></td>
     </template>
-
   </v-data-table>
 </div>
 </template>
@@ -98,6 +97,31 @@ export default {
 				EventBus.$emit("select-tickets-room", lst);
 			} );
 		},
+		hexToRgb(hex) {
+		// Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
+		var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+		hex = hex.replace(shorthandRegex, function(m, r, g, b) {
+			return r + r + g + g + b + b;
+		});
+
+		var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+			return result ? {
+				r: parseInt(result[1], 16),
+				g: parseInt(result[2], 16),
+				b: parseInt(result[3], 16)
+			} : null;
+		},
+		getContrastYIQ(hexcolor) {
+			const rgb = this.hexToRgb(hexcolor);
+			var yiq = ((rgb.r * 299) + (rgb.g * 587) + (rgb.b * 114)) / 1000;
+			return (yiq >= 128) ? 'black' : 'white';
+		},
+		getstyle(step) {
+		return {
+			"background-color": step.color.get(),
+			color: this.getContrastYIQ(step.color.get())
+			};
+		},
 		mouseLeave() {
 			EventBus.$emit("mouse-leave");
 		},
@@ -135,6 +159,7 @@ export default {
 #selectEyeForTickets {
 	float: right;
 	margin-top: 7px;
+	border-radius: 50%;
 	border: solid;
 	padding: 3px;
 }

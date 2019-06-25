@@ -213,7 +213,7 @@ export default {
 
       setTimeout(function() {
         self.setColorMaterial()
-      }, 500);
+      }, 1);
        window.addEventListener("click", this.eventForColor, true);
     },
     predicat: function( node ) {
@@ -242,7 +242,7 @@ export default {
         } else if (self.ticketToZoom[iterator] === undefined && loop === 1) {
           clearInterval(x);
         }
-      }, 100);
+      }, 10);
     },
     isolateObjects(id) {
       dataService

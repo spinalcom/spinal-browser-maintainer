@@ -1,7 +1,7 @@
 <template class="renderDataTicket">
 	<div v-if="active">
-		<process-component :processList="allData.process">
-			
+		<p v-if="eventRoom">test</p>
+		<process-component v-else :processList="allData.process">
 		</process-component>
 	</div>
 	<div v-else>
@@ -31,12 +31,14 @@ export default {
       selectedTicket: [],
       selectedSteps: [],
       init: true,
-      selectProcess: ""
+      selectProcess: "",
+      eventRoom: false,
+      overTickets: []
     };
   },
   components: {
-  	processComponent,
-  	ticketTable
+	processComponent,
+	ticketTable
   },
   props: ["allData"],
   mounted() {
@@ -51,19 +53,21 @@ export default {
       let self = this;
       EventBus.$on("click-event", item => self.levelSelected = item.name );
       EventBus.$on("select-process", process => {
-      		self.active = false;
-      		self.selectProcess = process;
-      		self.triTicket();
+		self.active = false;
+		self.selectProcess = process;
+		self.triTicket();
      });
      EventBus.$on("getBackToProcess", () => self.active = true );
-     EventBus.$on("select-steps", selected =>  { 
-     	self.selectedSteps = selected;
-     	self.init = false;
-     	self.triTicket();
+     EventBus.$on("select-steps", selected => {
+		self.selectedSteps = selected;
+		self.init = false;
+		self.triTicket();
      });
+     EventBus.$on("click-room", item => self.addOverOnTableElement(item) );
      EventBus.$on("reset-select", () => {
-     	self.levelSelected = "";
-     	self.triTicket();
+		self.resetOverOnTableElement();
+		self.levelSelected = "";
+		self.triTicket();
      })
 	},
 	extractProcess() {
@@ -72,7 +76,24 @@ export default {
 			if (this.steps.indexOf(this.selectedTicket[ticket]['stepName']) == -1 && this.selectedTicket[ticket]['stepName'] !== undefined)
 				this.steps.push(this.selectedTicket[ticket]['stepName']);
 		}
-		//this.selectedSteps = this.steps;
+	},
+	addOverOnTableElement(items) {
+	if (items === 'reset') {
+		this.eventRoom = false;
+		return;
+	}
+
+	if (items.tickets !== undefined) {
+		if (this.selectProcess === "") {
+			this.eventRoom = true;
+		} else {
+		console.log("over on ", items, this.selectProcess);
+		}
+	}
+	},
+	resetOverOnTableElement() {
+		this.eventRoom = false;
+		console.log("reset over on item");
 	},
 	triTicket() {
 		this.selectedTicket = []
@@ -92,7 +113,7 @@ export default {
 							if (this.selectedSteps.indexOf(this.allTickets[level][ticket]['stepName']) !== -1 || this.init === true )
 								this.selectedTicket.push(this.allTickets[level][ticket]);
 		this.extractProcess();
-		console.log("------->", this.selectedTicket)
+		//console.log("------->", this.selectedTicket)
 	},
 	addStep(node, processName) {
 		let self = this;
@@ -116,7 +137,7 @@ export default {
 		});
 	},
 	getAllTickets() {
-		let self =  this;
+		let self = this;
 		let tmp;
 		return new Promise((resolve) => {
 		//self.allTickets = [];
@@ -151,23 +172,23 @@ export default {
 	}
   },
   watch: {
-  	levelSelected() {
-  		console.log("levelSelected updated", this.levelSelected);
-  		this.triTicket();
-  		this.extractProcess();
-  	},
-  	allData() {
-  		console.log("watch alldata", this.allData);
-  		this.allTickets = [];
+	levelSelected() {
+		console.log("levelSelected updated", this.levelSelected);
+		this.triTicket();
+		this.extractProcess();
+	},
+	allData() {
+		console.log("watch alldata", this.allData);
+		this.allTickets = [];
 		this.process = [];
-  		this.getAllTickets().then(() => {
-  			this.extractProcess();
-  			this.triTicket();
-  		});
-  	},
-  	process() {
-  		console.log("update proces", this,process);
-  	}
+		this.getAllTickets().then(() => {
+			this.extractProcess();
+			this.triTicket();
+		});
+	},
+	process() {
+		console.log("update proces", this,process);
+	}
   }
 };
 </script>

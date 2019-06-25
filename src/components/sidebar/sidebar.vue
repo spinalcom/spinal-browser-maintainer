@@ -18,13 +18,21 @@
     <div 
        v-for="item in roomsDisplayed"
       :key="item.name"
-      @click="onItemClick(item, $event)"
       >
+      
+      <v-badge right color="red">
+      <template v-slot:badge v-if="item.tickets">
+        <span>{{ numberForBadge(item.tickets) }}</span>
+      </template>
+
       <p class="sitebarElement"
         :value="item"
         @mouseover="mouseOver(item)"
         @mouseleave="mouseLeave"
-        @click="isolate">{{ item.name }}</p>
+        @click="onItemClick(item, $event)">{{ item.name }}</p>
+
+        </v-badge>
+
     </div>
   </div>
 </template>
@@ -42,7 +50,8 @@ export default {
       selectedLevel: true,
       roomsDisplayed: [],
       roomSelected: '',
-      oldTarget: {}
+      oldTarget: {},
+      selectedProcess: ""
     };
   },
   props: ["floors", "rooms"],
@@ -69,12 +78,15 @@ export default {
       });
     }
 
+    EventBus.$on("select-process", processName => this.selectedProcess = processName);
+    EventBus.$on("getBackToProcess", () => this.selectedProcess = '');
+
     this.menus.push(content);
   },
 
   methods: {
     onItemClick(item, target) {
-      console.log("cloicked", item, target);
+      //console.log("cloicked", item, target);
       if (target !== undefined)
         if (this.roomSelected !== item.id) {
           if (this.oldTarget.target !== undefined) {
@@ -87,10 +99,11 @@ export default {
           this.roomSelected = '';
           target.target.style.color = 'white';
           this.oldTarget = {};
+          EventBus.$emit("click-room", 'reset');
+          return;
         }
       switch (item.type) {
         case "geographicFloor":
-     //     this.$emit("selectFloor", item.id);
           EventBus.$emit("click-event", item);
           this.openFloor(item.name);
           break;
@@ -98,7 +111,21 @@ export default {
         default:
           break;
       }
+      this.roomsSelected = item.id;
+      EventBus.$emit("click-room", item);
       return;
+    },
+    numberForBadge(tickets) {
+      let count = 0;
+      console.log("-->", tickets);
+      if (this.selectedProcess !== '') {
+        for (var el in tickets)
+          if (tickets[el].processName == this.selectedProcess)
+            count++;
+          return count;
+      } else {
+        return tickets.length;
+      }
     },
     backToFloor() {
       this.selectedLevel = true;
@@ -146,7 +173,7 @@ export default {
   z-index: 100;
   background-color: #272727;
   height: 96%;
-  width: 160px;
+  width: 191px;
   padding-left: 8px;
   padding-top: 4px;
   overflow: auto;
