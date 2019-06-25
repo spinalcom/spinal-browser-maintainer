@@ -33,9 +33,10 @@
       </v-tooltip>
     </template>
     <template v-slot:items="props">
-       	<td @mouseover="overTableRow(props)" @mouseleave="mouseLeave()" @click="onClick(props)">{{ props.item.name.get() }}</td>
-      	<td @mouseover="overTableRow(props)" @mouseleave="mouseLeave()" @click="onClick(props)" class="text-xs-right">{{ ticketDate(props.item.creationDate.get()) }}</td>
-      	<td class="text-xs-right" :style="{'color':props.item.color.get()}" @click="onClick(props)" @mouseover="overTableRow(props)" @mouseleave="mouseLeave()"><span :style="getstyle(props.item)">{{ props.item.stepName }}</span></td>
+       	<td @mouseover="overTableRow(props)" @mouseleave="mouseLeave()" @click="onClick(props)" :style="isOver(props.item)">{{ props.item.name.get() }}</td>
+      	<td @mouseover="overTableRow(props)" @mouseleave="mouseLeave()" @click="onClick(props)" :style="isOver(props.item)" class="text-xs-right">{{ ticketDate(props.item.creationDate.get()) }}</td>
+      	<td class="text-xs-right" :style="{'color':props.item.color.get()}" @click="onClick(props)" :style="isOver(props.item)" @mouseover="overTableRow(props)" @mouseleave="mouseLeave()">
+      		<span :style="getstyle(props.item)">{{ props.item.stepName }}</span></td>
     </template>
   </v-data-table>
 </div>
@@ -96,6 +97,11 @@ export default {
 			).then( lst => {
 				EventBus.$emit("select-tickets-room", lst);
 			} );
+		},
+		isOver(item) {
+			console.log("is over ------------", item);
+			if (item.over === true)
+				return 'background-color:grey';
 		},
 		hexToRgb(hex) {
 		// Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")

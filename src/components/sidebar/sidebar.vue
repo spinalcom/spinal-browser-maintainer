@@ -21,7 +21,7 @@
       >
       
       <v-badge right color="red">
-      <template v-slot:badge v-if="item.tickets">
+      <template v-slot:badge v-if="numberForBadge(item.tickets)!==0">
         <span>{{ numberForBadge(item.tickets) }}</span>
       </template>
 
@@ -117,15 +117,17 @@ export default {
     },
     numberForBadge(tickets) {
       let count = 0;
-      console.log("-->", tickets);
-      if (this.selectedProcess !== '') {
-        for (var el in tickets)
-          if (tickets[el].processName == this.selectedProcess)
-            count++;
-          return count;
-      } else {
-        return tickets.length;
-      }
+      if (tickets !== undefined) {
+        if (this.selectedProcess !== '') {
+          for (var el in tickets)
+            if (tickets[el].processName == this.selectedProcess)
+              count++;
+            return count;
+        } else {
+          return tickets.length;
+        }
+      } else
+      return 0;
     },
     backToFloor() {
       this.selectedLevel = true;

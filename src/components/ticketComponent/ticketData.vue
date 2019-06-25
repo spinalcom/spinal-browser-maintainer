@@ -1,7 +1,6 @@
 <template class="renderDataTicket">
 	<div v-if="active">
-		<p v-if="eventRoom">test</p>
-		<process-component v-else :processList="allData.process">
+		<process-component :processList="allData.process">
 		</process-component>
 	</div>
 	<div v-else>
@@ -79,7 +78,14 @@ export default {
 	},
 	addOverOnTableElement(items) {
 	if (items === 'reset') {
-		this.eventRoom = false;
+		if (this.overTickets.length !== 0) {
+			for (var el in this.overTickets) {
+				this.overTickets[el].over = 'false';
+			}
+			console.log("reset overTickets", this.overTickets);
+		}
+		else
+			this.eventRoom = false;
 		return;
 	}
 
@@ -87,13 +93,17 @@ export default {
 		if (this.selectProcess === "") {
 			this.eventRoom = true;
 		} else {
-		console.log("over on ", items, this.selectProcess);
+			this.overTickets = items.tickets;
+			for (var el in items.tickets) {
+				items.tickets[el].over = true;
+			}
+			console.log("over on ", items, this.selectProcess);
 		}
 	}
 	},
 	resetOverOnTableElement() {
 		this.eventRoom = false;
-		console.log("reset over on item");
+		console.log("reset over on item", this.eventRoom);
 	},
 	triTicket() {
 		this.selectedTicket = []
