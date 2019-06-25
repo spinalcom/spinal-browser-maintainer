@@ -102,15 +102,16 @@ export default {
 			EventBus.$emit("mouse-leave");
 		},
 		onClick(item) {
-			if (clicked === false) {
+			//if (this.clicked === false) {
 				let ticket = {}
 				ticket.id = item.item.bimId.get();
 				EventBus.$emit("click-ticket-event", ticket);
-			} else
-			console.log("already")
+			//} else
+			//console.log("already")
 		},
 		showTicketsColor() {
 			console.log("display color", this.allTickets);
+			EventBus.$emit("display-colors", this.allTickets);
 		},
 		timeConverter(UNIX_timestamp){
 			var a = new Date(UNIX_timestamp);
