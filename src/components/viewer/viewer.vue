@@ -43,7 +43,7 @@ export default {
     getEvents() {
       EventBus.$on("click-event", item => this.isolateObjects(item.id) );
 
-      EventBus.$on("click-ticket-event", item => this.isolateObjects(item.id) );
+      EventBus.$on("click-ticket-event", item => this.zoomObjects(item.id) );
 
       EventBus.$on("mouse-over", item => this.selectObjects(item.id) );
 
