@@ -1,11 +1,14 @@
 <template>
   <div class="viewerContainer"
        id="autodesk_forge_viewer">
-
   </div>
 
+<!--  <spinal-forge-viewer-vue class="viewerContainer"  id="autodesk_forge_viewer"
+  :model-property="{ path: ForgeViewer.options.docid }" 
+  :onInitialize="testFunction">
+ </spinal-forge-viewer-vue>
+ -->
 </template>
-
 
 <script>
 // import Vue from "vue";
@@ -15,6 +18,8 @@ import { EventBus } from "../../config/event";
 import dataService from "../../config/data";
 import { setTimeout } from "timers";
 import graph from "../../config/GraphService"
+/*import {SpinalForgeViewerVue} from "spinal-forge-viewer-vue"
+*/
 
 let forgeViewer = new ForgeViewer();
 
@@ -29,6 +34,9 @@ export default {
       materials: {}
     };
   },
+/*  components: {
+    SpinalForgeViewerVue
+  },*/
   async mounted() {
     this.getEvents();
 
@@ -66,6 +74,9 @@ export default {
         this.viewer.isolate(0);
         this.viewer.fitToView(0); 
       });
+    },
+    testFunction(viewer) {
+      console.log(viewer);
     },
     createSetColor() {
       let _self = this;
