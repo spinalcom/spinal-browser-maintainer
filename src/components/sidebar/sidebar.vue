@@ -7,14 +7,14 @@
           v-for="item in floors"
           :key="item.name"
           @click="onItemClick(item)"
-          @mouseover="mouseOver(item)"
-          @mouseleave="mouseLeave"
+          @mouseover="mouseOver(item, $event)"
+          @mouseleave="mouseLeave($event, true)"
         >
         <p class="sitebarElement">{{ item.name }}</p>
         </div>
   </div>
   <div v-else class="mySidebarx">
-    <p id="HeaderTitle" @click="backToFloor">< {{ floor }}</p>
+    <p id="HeaderTitle" @click="backToFloor">← {{ floor }}</p>
     <div 
        v-for="item in roomsDisplayed"
       :key="item.name"
@@ -27,7 +27,7 @@
 
       <p class="sitebarElement"
         :value="item"
-        @mouseover="mouseOver(item)"
+        @mouseover="mouseOver(item, $event)"
         @mouseleave="mouseLeave"
         @click="onItemClick(item, $event)">{{ item.name }}</p>
 
@@ -93,7 +93,7 @@ export default {
             this.oldTarget.target.style.color = 'white';
           }
           this.roomSelected = item.id;
-          target.target.style.color = '#356BAB';
+          target.target.style.color = '#2D3D93';
           this.oldTarget = target;
         } else {
           this.roomSelected = '';
@@ -146,14 +146,23 @@ export default {
 
       this.floor = floorSelected;
     },
-    mouseOver(item) {
+    mouseOver(item, event) {
+      if (event.target.style.color != "rgb(45, 61, 147)") {
+        event.target.style.color = '#356BAB';
+      }
       EventBus.$emit("mouse-over", item);
     },
     isolate(item) {
       this.roomsSelected = item.id;
       EventBus.$emit("click-room", item);
     },
-    mouseLeave() {
+    mouseLeave(event, parent) {
+      if (event.target.style.color != "rgb(45, 61, 147)") {
+        if (parent == true)
+          event.target.children[0].style.color = "white";
+        else
+          event.target.style.color = "white";
+      }
       EventBus.$emit("mouse-leave");
     }
   }
