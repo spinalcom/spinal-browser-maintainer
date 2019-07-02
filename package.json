@@ -33,12 +33,13 @@
     "spinal-env-maintainer-btn-joint": "git+https://github.com/spinalcom/spinal-env-maintainer-btn-joint.git",
     "spinal-env-viewer-context-menu-service": "git+https://github.com/spinalcom/spinal-env-viewer-context-menu-service.git",
     "spinal-env-viewer-graph-service": "git+https://github.com/spinalcom/Spinal-Graph-Service.git",
+    "spinal-forge-viewer-vue": "git+https://github.com/spinalcom/spinal-forge-viewer-vue.git",
     "store": "^2.0.12",
     "vue": "^2.6.10",
     "vue-material": "1.0.0-beta-10.2",
+    "vue-router": "3.0.6",
     "vue-sidebar-menu": "^3.6.3",
-    "vuetify": "^1.5.14",
-    "vue-router": "3.0.6"
+    "vuetify": "^1.5.14"
   },
   "devDependencies": {
     "@babel/core": "^7.4.5",

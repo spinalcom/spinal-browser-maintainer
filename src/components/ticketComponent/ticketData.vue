@@ -1,14 +1,19 @@
 <template class="renderDataTicket">
-	<div v-if="active">
+	<div v-if="active == 'default'">
 		<process-component :processList="allData.process">
 		</process-component>
 	</div>
-	<div v-else>
+	<div v-else-if="active == 'table'">
 		<ticket-table :allTickets="selectedTicket"
 					  :steps="steps"
 					  :selectedSteps="selectedSteps"
 					  :title="selectProcess">
 		</ticket-table>
+	</div>
+	<div v-else-if="active == 'detail'">
+		<ticket-details :ticket="ticketDetails">
+			
+		</ticket-details>
 	</div>
 </template>
 
@@ -17,15 +22,17 @@ import { EventBus } from "../../config/event";
 import graph from "../../config/GraphService";
 import processComponent from "./processComponent.vue";
 import ticketTable from "./ticketTable.vue";
+import ticketDetails from "./ticketDetails";
 
 export default {
 	name: "ticketData",
 	data() {
     return {
-      active: true,
+      active: "default",
       levelSelected: "",
       process: [],
       steps: [],
+      ticketDetails: {},
       allTickets: [],
       selectedTicket: [],
       selectedSteps: [],
@@ -37,7 +44,8 @@ export default {
   },
   components: {
 	processComponent,
-	ticketTable
+	ticketTable,
+	ticketDetails
   },
   props: ["allData"],
   mounted() {
@@ -52,22 +60,28 @@ export default {
       let self = this;
       EventBus.$on("click-event", item => self.levelSelected = item.name );
       EventBus.$on("select-process", process => {
-		self.active = false;
+		self.active = "table";
 		self.selectProcess = process;
 		self.triTicket();
      });
-     EventBus.$on("getBackToProcess", () => self.active = true );
+     EventBus.$on("getBackToProcess", () => self.active = "default" );
      EventBus.$on("select-steps", selected => {
 		self.selectedSteps = selected;
 		self.init = false;
 		self.triTicket();
      });
      EventBus.$on("click-room", item => self.addOverOnTableElement(item) );
+     EventBus.$on("ticket-details", item => self.showDetails(item));
+     EventBus.$on("close-details", () => self.active = "default");
      EventBus.$on("reset-select", () => {
 		self.resetOverOnTableElement();
 		self.levelSelected = "";
 		self.triTicket();
      })
+	},
+	showDetails(item){
+		this.ticketDetails = item;
+		this.active = 'detail';
 	},
 	extractProcess() {
 		this.steps = [];

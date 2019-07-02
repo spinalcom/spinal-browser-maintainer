@@ -1,6 +1,6 @@
 <template>
 <div>
-	<button class="backButton" @click="backToProcess">< Back</button>
+	<button class="backButton" @click="backToProcess"><v-icon color="white">arrow_back</v-icon>  Back</button>
 	<icon id="title">{{title}}</icon>
 	<filter-dialog :steps="steps" 
 				   :selectedSteps="selectedSteps" ></filter-dialog>
@@ -34,6 +34,7 @@
     </template>
     <template v-slot:items="props">
        	<td @mouseover="overTableRow(props)" @mouseleave="mouseLeave()" @click="onClick(props)" :style="isOver(props.item)">{{ props.item.name.get() }}</td>
+       	<td><v-icon @click="selectDetails(props)">details</v-icon></td>
       	<td @mouseover="overTableRow(props)" @mouseleave="mouseLeave()" @click="onClick(props)" :style="isOver(props.item)" class="text-xs-right">{{ ticketDate(props.item.creationDate.get()) }}</td>
 <!--       	<td class="text-xs-right" :style="{'color':props.item.color.get()}" @click="onClick(props)" :style="isOver(props.item)" @mouseover="overTableRow(props)" @mouseleave="mouseLeave()">
       		<span :style="getstyle(props.item)">{{ props.item.stepName }}</span></td> -->
@@ -61,6 +62,8 @@ export default {
             sortable: false,
             value: 'name'
           },
+          { text:"Application",
+      		align: 'left'},
           { text: 'Creation Date', value: 'creation date', align: 'center' }
           // { text: 'Step', value: 'step', align: 'center'}
           ],
@@ -130,6 +133,10 @@ export default {
 		mouseLeave() {
 			EventBus.$emit("mouse-leave");
 		},
+		selectDetails(item) {
+			console.log(item);
+			EventBus.$emit("ticket-details", item.item);
+		},
 		onClick(item) {
 			//if (this.clicked === false) {
 				let ticket = {}
@@ -185,6 +192,9 @@ export default {
     margin-left: 8px;
     font-size: 17px;
     font-family: sans-serif;
+    padding-top: 4px;
+    width: 90px;
+    padding-bottom: 8px;
 }
 
 .layout {
