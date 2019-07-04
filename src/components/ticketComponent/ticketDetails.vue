@@ -1,14 +1,14 @@
 <template>
 <div>
-	<button class="backButton" @click="backToProcess"><v-icon color="white">arrow_back</v-icon> Back</button>
-
-	<p>name : {{ ticket.name.get() }}</p>
-	<p>categorie: {{ ticket.categories.get() }}</p>
-	<p>process: {{ ticket.processName }}</p>
-	<p>step: {{ ticket.stepName }}</p>
-	<p>username: {{ ticket.username.get() }}</p>
-	<p>color: {{ ticket.color.get() }}</p>
-	<p>creation date: {{ timeConverter(ticket.creationDate.get()) }}</p>
+	<button class="backButton" @click="backToProcess"><v-icon color="white">arrow_back</v-icon></button>
+	<div id="displayDetails">
+		<p>name : {{ ticket.name.get() }}</p>
+		<p>categorie: {{ ticket.categories.get() }}</p>
+		<p>process: {{ ticket.processName }}</p>
+		<p class="displayInline">step: {{ ticket.stepName }}</p><p class="colorPatchDisplay displayInline" :style="{backgroundColor: ticket.color.get()}" ></p>
+		<p>username: {{ ticket.username.get() }}</p>
+		<p>creation date: {{ timeConverter(ticket.creationDate.get()) }}</p>
+	</div>
 </div>
 </template>
 
@@ -46,6 +46,19 @@ export default {
 </script>
 
 <style>
+.displayInline {
+	display: inline-flex;
+}
+#displayDetails {
+	text-align: center;
+	margin-top: calc(40%);
+}
+.colorPatchDisplay {
+	width: 100px;
+	padding-top : 14px;
+	margin-left: 10px;
+	border-style: solid;
+}
 .backButton {
 	background-color: black;
     color: white;

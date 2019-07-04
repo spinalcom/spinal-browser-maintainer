@@ -1,6 +1,6 @@
 <template>
 <div>
-	<button class="backButton" @click="backToProcess"><v-icon color="white">arrow_back</v-icon>  Back</button>
+	<button class="backButton" @click="backToProcess"><v-icon color="white">arrow_back</v-icon></button>
 	<icon id="title">{{title}}</icon>
 	<filter-dialog :steps="steps" 
 				   :selectedSteps="selectedSteps" ></filter-dialog>

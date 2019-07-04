@@ -1,6 +1,7 @@
 <template class="renderDataTicket">
 	<div v-if="active == 'default'">
-		<process-component :processList="allData.process">
+		<process-component :processList="allData.process"
+							:allData="allData">
 		</process-component>
 	</div>
 	<div v-else-if="active == 'table'">

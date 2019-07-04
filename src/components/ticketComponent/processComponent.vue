@@ -26,11 +26,14 @@ export default {
 
 		}
 	},
-	props: ["processList"],
+	props: ["processList", "allData"],
 	methods: {
 		selectProcess(target) {
 			EventBus.$emit("select-process", target.target.innerText);
 		}
+	},
+	mounted() {
+		console.log(this.allData)
 	}
 };
 </script>
