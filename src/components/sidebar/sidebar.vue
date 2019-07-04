@@ -9,8 +9,12 @@
           @click="onItemClick(item)"
           @mouseover="mouseOver(item, $event)"
           @mouseleave="mouseLeave($event, true)"
+          :title="item.name"
         >
-        <p class="sitebarElement">{{ item.name }}</p>
+        <p class="sitebarElement">
+<!--         <v-divider color="white"></v-divider>
+ -->
+        {{ shortenText(item.name) }}</p>
         </div>
   </div>
   <div v-else class="mySidebarx">
@@ -19,7 +23,8 @@
        v-for="item in roomsDisplayed"
       :key="item.name"
       >
-      
+ <!--        <v-divider color="white"></v-divider>
+ -->      
       <v-badge right color="red">
       <template v-slot:badge v-if="numberForBadge(item.tickets)!==0">
         <span>{{ numberForBadge(item.tickets) }}</span>
@@ -27,10 +32,11 @@
 
       <p class="sitebarElement"
         :value="item"
+        :title="item.name"
         @mouseover="mouseOver(item, $event)"
         @mouseleave="mouseLeave"
-        @click="onItemClick(item, $event)">{{ item.name }}</p>
-
+        @click="onItemClick(item, $event)">{{ shortenText(item.name) }}
+        </p>
         </v-badge>
 
     </div>
@@ -90,14 +96,14 @@ export default {
       if (target !== undefined)
         if (this.roomSelected !== item.id) {
           if (this.oldTarget.target !== undefined) {
-            this.oldTarget.target.style.color = 'white';
+            this.oldTarget.target.style.backgroundColor = '#272727';
           }
           this.roomSelected = item.id;
-          target.target.style.color = '#2D3D93';
+          target.target.style.backgroundColor = '#2D3D93';
           this.oldTarget = target;
         } else {
           this.roomSelected = '';
-          target.target.style.color = 'white';
+          target.target.style.backgroundColor = '#272727';
           this.oldTarget = {};
           EventBus.$emit("click-room", 'reset');
           return;
@@ -114,6 +120,9 @@ export default {
       this.roomsSelected = item.id;
       EventBus.$emit("click-room", item);
       return;
+    },
+    shortenText(text) {
+      return text.replace(/(.{24})..+/, "$1…");
     },
     numberForBadge(tickets) {
       let count = 0;
@@ -186,7 +195,7 @@ export default {
   height: 96%;
   width: 191px;
   padding-left: 8px;
-  padding-top: 4px;
+  padding-top: 0px;
   overflow: auto;
 
 }
