@@ -11,9 +11,9 @@
           @mouseleave="mouseLeave($event, true)"
           :title="item.name"
         >
+        <v-divider color="white"></v-divider>
         <p class="sitebarElement">
-<!--         <v-divider color="white"></v-divider>
- -->
+
         {{ shortenText(item.name) }}</p>
         </div>
   </div>
@@ -23,8 +23,8 @@
        v-for="item in roomsDisplayed"
       :key="item.name"
       >
- <!--        <v-divider color="white"></v-divider>
- -->      
+        <v-divider color="white"></v-divider>
+      
       <v-badge right color="red">
       <template v-slot:badge v-if="numberForBadge(item.tickets)!==0">
         <span>{{ numberForBadge(item.tickets) }}</span>
@@ -143,6 +143,7 @@ export default {
       EventBus.$emit("reset-select");
     },
     openFloor(floorSelected) {
+      console.log("select floor", this.floors, this.rooms)
       if (this.selectedLevel)
         this.selectedLevel = false;
       else
@@ -167,8 +168,9 @@ export default {
     },
     mouseLeave(event, parent) {
       if (event.target.style.color != "rgb(45, 61, 147)") {
+        console.log(event.target);
         if (parent == true)
-          event.target.children[0].style.color = "white";
+          event.target.children[1].style.color = "white";
         else
           event.target.style.color = "white";
       }
@@ -178,7 +180,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 #HeaderTitle {
     color: white;
     background-color: grey;
@@ -187,6 +189,10 @@ export default {
     padding-top: 9px;
     padding-left: 5px;
     margin-top: -6px;
+}
+
+p {
+  margin-bottom: 10px !important;
 }
 
 .mySidebarx {
@@ -203,6 +209,8 @@ export default {
 .sitebarElement {
   color: white;
   padding-top: 3px;
+  padding-bottom: 3px;
+  margin-top: 7px;
 }
 
 .sidebarDivider {

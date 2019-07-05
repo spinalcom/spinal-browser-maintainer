@@ -7,7 +7,7 @@
                 class="sidebarContext-display"
                 :floors="data.floors"
                 @selectFloor="selecFloor"
-                :rooms=data.rooms ></app-sidebar>
+                :rooms="data.rooms" ></app-sidebar>
 
      <!--  <contextual-list class="roomcontext"
                      :floorSelected="floorSelected"
@@ -52,7 +52,6 @@ import sidebarProcess from "./components/sidebar/sidebarElement.vue";
 import MainContainer from "./components/container/container.vue";
 import dataService from "./config/data";
 import contextualList from "./components/contextualList/contextualList.vue";
-let fct;
 
 export default Vue.extend({
   data() {
@@ -88,7 +87,9 @@ export default Vue.extend({
   }, 3000)
   },
   methods: {
-    mounted() {},
+    mounted() {
+      console.log(this.data);
+    },
     bindAllData() {
       let self = this;
      // console.log("binding", dataService.ContextNode, dataService.ProcessNodes, dataService.StepsNodes);
