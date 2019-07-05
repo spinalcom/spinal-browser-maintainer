@@ -33,14 +33,17 @@ import { EventBus } from "../../config/event";
       return {
         dialog: false,
         allSteps: ["All"],
-        selected: ["All"]
+        selected: ["All"],
+        previousSelect: ["All"]
       }
     },
     props: ['steps', "selectedSteps"],
     mounted: function() {
       for (var el in this.steps)
-        if (this.allSteps.indexOf(this.steps[el]) == -1 && el !== undefined)
+        if (this.allSteps.indexOf(this.steps[el]) == -1 && el !== undefined) {
           this.allSteps.push(this.steps[el]);
+          this.selected = this.allSteps;
+        }
     },
     methods: {
       clickOnSave() {
@@ -63,6 +66,9 @@ import { EventBus } from "../../config/event";
       },
       allSteps() {
         console.log("update allsteps");
+      },
+      selected() {
+        console.log(this.selected);
       }
     }
   };
