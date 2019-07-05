@@ -34,10 +34,10 @@
     </template>
     <template v-slot:items="props">
        	<td @mouseover="overTableRow(props)" @mouseleave="mouseLeave()" @click="onClick(props)" :style="isOver(props.item)">{{ props.item.name.get() }}</td>
-       	<td><v-icon @click="selectDetails(props)">details</v-icon></td>
       	<td @mouseover="overTableRow(props)" @mouseleave="mouseLeave()" @click="onClick(props)" :style="isOver(props.item)" class="text-xs-right">{{ ticketDate(props.item.creationDate.get()) }}</td>
-<!--       	<td class="text-xs-right" :style="{'color':props.item.color.get()}" @click="onClick(props)" :style="isOver(props.item)" @mouseover="overTableRow(props)" @mouseleave="mouseLeave()">
-      		<span :style="getstyle(props.item)">{{ props.item.stepName }}</span></td> -->
+      	<td class="text-xs-right" :style="{'color':props.item.color.get()}" @click="onClick(props)" :style="isOver(props.item)" @mouseover="overTableRow(props)" @mouseleave="mouseLeave()">
+      		<span :style="getstyle(props.item)">{{ props.item.stepName }}</span></td>
+       	<td><v-icon @click="selectDetails(props)">details</v-icon></td>
     </template>
   </v-data-table>
 </div>
@@ -62,10 +62,10 @@ export default {
             sortable: false,
             value: 'name'
           },
+          { text: 'Creation Date', value: 'creation date', align: 'center' },
+          { text: 'Step', value: 'step', align: 'center'},
           { text:"Application",
-      		align: 'left'},
-          { text: 'Creation Date', value: 'creation date', align: 'center' }
-          // { text: 'Step', value: 'step', align: 'center'}
+      		align: 'right'}
           ],
 		pagination: {
 			descending: true,

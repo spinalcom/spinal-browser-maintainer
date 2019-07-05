@@ -73,7 +73,7 @@ export default {
      });
      EventBus.$on("click-room", item => self.addOverOnTableElement(item) );
      EventBus.$on("ticket-details", item => self.showDetails(item));
-     EventBus.$on("close-details", () => self.active = "default");
+     EventBus.$on("close-details", () => self.active = "table");
      EventBus.$on("reset-select", () => {
 		self.resetOverOnTableElement();
 		self.levelSelected = "";

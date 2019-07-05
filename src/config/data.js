@@ -8,6 +8,7 @@ let dataService = {
   ContextNode: {},
   ProcessNodes: {},
   StepsNodes: {},
+  total: {},
   async getFloor() {
     await graph.init();
     let context = await graph.SpinalGraphService.getContext(
@@ -42,7 +43,7 @@ let dataService = {
   //       SERVICE_NAME );
   //   });
   // },
-  async getTickets(rooms) {
+  async getTickets(rooms, processInfo) {
     await graph.init();
 
     let context = await graph.SpinalGraphService.getContext(
@@ -59,9 +60,30 @@ let dataService = {
     for (var lvl in rooms)
         for (var room_nbr in rooms[lvl].rooms)
           if (typeof rooms[lvl].rooms[room_nbr].id !== "undefined")
-            this.getTicketsPerRoom(lvl, room_nbr, rooms);
+            this.getTicketsPerRoom(lvl, room_nbr, rooms, processInfo);
+
+    this.getProcessByLevel(rooms);
     return Promise.resolve([]);
 
+  },
+  getProcessByLevel(floor) {
+    setTimeout(function() {
+
+    for (var level in floor)
+      for (var ticket in floor[level].rooms)
+        if (floor[level].rooms[ticket].tickets !== undefined) {
+          floor[level]['processNumber'] = {};
+          for (var el in floor[level].rooms[ticket].tickets)
+            if (floor[level].rooms[ticket].tickets[el]['processName'] !== undefined)
+              if (floor[level]['processNumber'][ floor[level].rooms[ticket].tickets[el]['processName'] ] === undefined)
+                floor[level]['processNumber'][ floor[level].rooms[ticket].tickets[el]['processName'] ] = 1;
+              else {
+                floor[level]['processNumber'][ floor[level].rooms[ticket].tickets[el]['processName'] ] = 
+                floor[level]['processNumber'][ floor[level].rooms[ticket].tickets[el]['processName'] ] + 1
+              }
+        }
+
+    }, 3000);
   },
   getAllSteps(allProcess) {
     let self = this;
@@ -73,15 +95,36 @@ let dataService = {
       })
     }
   },
-  getTicketsPerRoom(lvl, room_nbr, rooms) {
+  getTicketsPerRoom(lvl, room_nbr, rooms, processInfo) {
     graph.SpinalGraphService.getChildren(rooms[lvl].rooms[room_nbr].id, SPINAL_TICKET_SERVICE_TARGET_RELATION_NAME)
       .then(children => {
         if (children.length > 0) {
             rooms[lvl].rooms[room_nbr]['tickets'] = [];
             rooms[lvl].rooms[room_nbr]['tickets'] = children.slice(0, children.length);
+            this.addInfoToTicket(children.slice(0, children.length), processInfo);
         }
     })
-    },
+  },
+  addInfoToTicket(tickets, processInfo) {
+    let processe;
+    this.total['count'] = {};
+    let self = this;
+    setTimeout(function() {
+    for (var ticket in tickets) {
+      processe = graph.SpinalGraphService.getRealNode(tickets[ticket].processId.get())
+
+      //console.log(processInfo, processe);
+      if (processe !== undefined) {
+        if (self.total['count'][processe.info.name.get()] === undefined) {
+          self.total['count'][processe.info.name.get()] = 1;
+        }
+        else {
+          self.total['count'][processe.info.name.get()] = self.total['count'][processe.info.name.get()] + 1;
+        }
+      }
+    }
+    }, 2000)
+  },
   async getRooms(floors) {
     await graph.init();
 
@@ -103,8 +146,8 @@ let dataService = {
     return Promise.resolve([]);
   },
   addEquipmentInRoom(id, floor, index, floor_lvl, room) {
-    graph.SpinalGraphService.getChildren(id, 'hasBIMObject' ).then(equipmments => { 
-      floor[index][floor_lvl][room]['equipements'] = []; 
+    graph.SpinalGraphService.getChildren(id, 'hasBIMObject' ).then(equipmments => {
+      floor[index][floor_lvl][room]['equipements'] = [];
       floor[index][floor_lvl][room]['equipements'] = equipmments
     });
   },
@@ -121,21 +164,24 @@ let dataService = {
   },
   getProcessName(obj) {
     let allProcess = [];
+    let icons = [];
     obj['process'] = allProcess;
+    obj['icon'] = icons;
     let self = this;
     setTimeout(function() {
       for (var node in self.ProcessNodes) {
         allProcess.push(self.ProcessNodes[node].name.get());
+        icons[self.ProcessNodes[node].name.get()] = self.ProcessNodes[node].icon.get()
       }
     }, 2000);
   },
   async getAllData() {
+    let processName = {};
 
     let floors = await this.getFloor();
     let rooms = await this.getRooms(floors);
-    this.getTickets(rooms);
+    this.getTickets(rooms, processName);
     this.getEquipments(rooms);
-    let processName = {};
     this.getProcessName(processName);
     
     //setTimeout(function() { console.log(rooms, "-", floors)}, 2000);
@@ -144,6 +190,8 @@ let dataService = {
       floors: floors,
       rooms: rooms,
       process: processName['process'],
+      processIcons: processName['icon'],
+      totalTickets: this.total,
       equipements: ''
     }
   },

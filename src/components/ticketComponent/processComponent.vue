@@ -9,6 +9,7 @@
         <span class="processBadge">6</span>
       </template> -->
 				{{ element }}
+				<p class="displayCountBadge">{{ displayBadge(element) }}</p>
 <!-- 			</v-badge>
  -->			</button>
 
@@ -23,21 +24,66 @@ export default {
 	name: "processComponent",
 	data() {
 		return {
-
+			BadgeValue: {}
 		}
 	},
 	props: ["processList", "allData"],
 	methods: {
 		selectProcess(target) {
-			EventBus.$emit("select-process", target.target.innerText);
+			let txt = target.target.innerHTML.split(/</g)[0].split('\n').join('');
+			txt = txt.split('\t').join('');
+			EventBus.$emit("select-process", txt);
+		},
+		calculateTotal(bool, item) {
+			console.log("calcul");
+			if (bool) {
+				let rooms = this.allData.rooms;
+					for (var room in rooms)
+						if (rooms[room].floor === item.name)
+							this.BadgeValue = rooms[room].processNumber;
+			} else {
+				console.log("123454321", this.allData.totalTickets.count);
+				this.BadgeValue = this.allData.totalTickets.count;
+			}
+		},
+		displayBadge(value) {
+			if (this.BadgeValue === undefined) {
+				return ' ';
+			}
+			if (this.BadgeValue[value] === undefined)
+				return ' ';
+			else
+				return this.BadgeValue[value];
+		},
+		getEvent() {
+			EventBus.$on("reset-select", () => this.calculateTotal(false));
+			EventBus.$on("click-room", (item) => this.calculateTotal(true, item));
+		}
+	},
+	watch: {
+		BadgeValue() {
+			console.log("update badge value");
 		}
 	},
 	mounted() {
-		console.log(this.allData)
+		this.getEvent();
+		console.log('---------_>', this.BadgeValue);
+		this.calculateTotal(false)
+		// let self = this;
+		// setTimeout(function() {
+		// 	self.calculateTotal(false);
+		// 	console.log("-->->_>", self.BadgeValue);
+		// }, 1000);
 	}
 };
 </script>
 <style scoped>
+.displayCountBadge {
+	display: initial;
+	background-color: red;
+	border-radius: 50%;
+	height: 4px;
+}
 .displayProcessElementTitle {
 	margin-left: 48%;
 }
