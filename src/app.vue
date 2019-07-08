@@ -9,31 +9,10 @@
                 @selectFloor="selecFloor"
                 :rooms="data.rooms" 
                 :allData="data" ></app-sidebar>
-
-     <!--  <contextual-list class="roomcontext"
-                     :floorSelected="floorSelected"
-                     :rooms="data.rooms"
-                     :equipments="data.equipments"></contextual-list> -->
       <app-viewer ></app-viewer>
 
       <ticket-data class="dataViewDisplay"
                    :allData="data" ></ticket-data>
-
-
-    <!-- ?? <app-main :collapsed="collapseMenu" -->
-<!--           :floorSelected="floorSelected"
-          :rooms="data.rooms"
-          :equipments="data.equipments"
-          :allData="data"></app-main> -->
-
-<!--      <sidebar-context class="sidebarContext-display">
-    </sidebar-context>
-  
-     <sidebar-category class="sidebarContext-display">
-    </sidebar-category>  -->
-
-    <!-- <data-view :allData="allData" class="dataViewDisplay"></data-view> -->
-
 
   </div>
 </template>
