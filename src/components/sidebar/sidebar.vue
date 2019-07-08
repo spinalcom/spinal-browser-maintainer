@@ -118,10 +118,10 @@ export default {
         }
       }
       if (count == 0) {
-        console.log("return", item.name , count);
+        //console.log("return", item.name , count);
         return 0;
       }
-        console.log("else", count);
+        //console.log("else", count);
         return count;
       }
       return 0;
