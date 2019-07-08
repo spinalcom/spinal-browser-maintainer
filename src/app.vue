@@ -7,7 +7,8 @@
                 class="sidebarContext-display"
                 :floors="data.floors"
                 @selectFloor="selecFloor"
-                :rooms="data.rooms" ></app-sidebar>
+                :rooms="data.rooms" 
+                :allData="data" ></app-sidebar>
 
      <!--  <contextual-list class="roomcontext"
                      :floorSelected="floorSelected"

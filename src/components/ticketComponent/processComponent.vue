@@ -9,7 +9,7 @@
         <span class="processBadge">6</span>
       </template> -->
 				{{ element }}
-				<p class="displayCountBadge">{{ displayBadge(element) }}</p>
+				<p class="displayCountBadge" v-if="displayBadge(element) !== ' '">{{ displayBadge(element) }}</p>
 <!-- 			</v-badge>
  -->			</button>
 
@@ -83,6 +83,7 @@ export default {
 	background-color: red;
 	border-radius: 50%;
 	height: 4px;
+	padding: 2px;
 }
 .displayProcessElementTitle {
 	margin-left: 48%;

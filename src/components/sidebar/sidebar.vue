@@ -12,9 +12,19 @@
           :title="item.name"
         >
         <v-divider color="white"></v-divider>
-        <p class="sitebarElement">
 
+
+      <v-badge right>
+      <template class="badgeElementInSidebar" v-slot:badge v-if="calculeTotalTicket(item)!==0">
+        <span>{{ calculeTotalTicket(item) }}</span>
+      </template>
+
+        <p class="sitebarElement">
         {{ shortenText(item.name) }}</p>
+
+
+        </v-badge>
+
         </div>
   </div>
   <div v-else class="mySidebarx">
@@ -60,7 +70,7 @@ export default {
       selectedProcess: ""
     };
   },
-  props: ["floors", "rooms"],
+  props: ["floors", "rooms", "allData"],
   mounted() {
     let content = {
       title: "Floors",
@@ -91,6 +101,32 @@ export default {
   },
 
   methods: {
+    calculeTotalTicket(item) {
+      let self = this;
+      setTimeout(function() {
+      let count = 0;
+      if (item !== undefined) {
+      for (var i in self.allData.rooms) {
+       // console.log(item.name, self.allData.rooms[i].floor);
+        if (self.allData.rooms[i].floor === item.name) {
+         // console.log("open", self.allData.rooms[i].processNumber);
+          for (var el in self.allData.rooms[i].processNumber) {
+           // console.log("count = ", count);
+            //if (this.allData.rooms[i].rooms[el].tick)
+            count = count + self.allData.rooms[i].processNumber[el];
+          }
+        }
+      }
+      if (count == 0) {
+        console.log("return", item.name , count);
+        return 0;
+      }
+        console.log("else", count);
+        return count;
+      }
+      return 0;
+    }, 3000)
+    },
     onItemClick(item, target) {
       //console.log("cloicked", item, target);
       if (target !== undefined)
@@ -168,9 +204,8 @@ export default {
     },
     mouseLeave(event, parent) {
       if (event.target.style.color != "rgb(45, 61, 147)") {
-        console.log(event.target);
         if (parent == true)
-          event.target.children[1].style.color = "white";
+          event.target.children[1].children[0].style.color = "white";
         else
           event.target.style.color = "white";
       }
@@ -204,6 +239,9 @@ p {
   padding-top: 0px;
   overflow: auto;
 
+}
+.badgeElementInSidebar {
+  margin-top: 18px;
 }
 
 .sitebarElement {
