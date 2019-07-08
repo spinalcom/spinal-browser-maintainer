@@ -297,4 +297,15 @@ export default {
   padding-left: 160px;
 }
 
+@media screen and (max-width: 992px) {
+  .viewerContainer {
+    width: 85%;
+    height: calc(46%);
+    position: relative;
+    float: left;
+    padding-left: 160px;
+  }
+}
+
+
 </style>

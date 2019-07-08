@@ -9,7 +9,7 @@
                 @selectFloor="selecFloor"
                 :rooms="data.rooms" 
                 :allData="data" ></app-sidebar>
-      <app-viewer ></app-viewer>
+      <app-viewer class="app-viewer-display"></app-viewer>
 
       <ticket-data class="dataViewDisplay"
                    :allData="data" ></ticket-data>
@@ -156,6 +156,17 @@ export default Vue.extend({
   height: calc(100%);
   font-family: sans-serif;
 }
+@media screen and (max-width: 992px) {
+  .dataViewDisplay {
+    background-color: grey;
+    height: calc(49%) !important;
+    margin-left: calc(189px) !important;
+    margin-top: calc(50%);
+    margin-left: 4%;
+  }
+}
+
+
 
 .sidebarContext-display {
   position:absolute;
@@ -164,8 +175,8 @@ export default Vue.extend({
 .dataViewDisplay {
   margin-left: calc(160px + 51.4%);
   background-color: rgba(1,2,1,0);
-  height: 93%;
-  width: 38%;
+/*  height: 93%;
+  width: 78%;*/
 /*  margin-left: 11%;
   background-color: rgba(1,2,1,0);
   display: inline;
