@@ -1,7 +1,9 @@
 <template class="renderDataTicket">
 	<div v-if="active == 'default'">
 		<process-component :processList="allData.process"
-							:allData="allData">
+							:allData="allData"
+							:backFrom="backFrom"
+							>
 		</process-component>
 	</div>
 	<div v-else-if="active == 'table'">
@@ -40,7 +42,8 @@ export default {
       init: true,
       selectProcess: "",
       eventRoom: false,
-      overTickets: []
+      overTickets: [],
+      backFrom: ""
     };
   },
   components: {
@@ -65,7 +68,11 @@ export default {
 		self.selectProcess = process;
 		self.triTicket();
      });
-     EventBus.$on("getBackToProcess", () => self.active = "default" );
+     EventBus.$on("getBackToProcess", (lvl) =>  {
+		self.active = "default";
+		if (lvl === true)
+			self.backFrom = self.levelSelected;
+     });
      EventBus.$on("select-steps", selected => {
 		self.selectedSteps = selected;
 		self.init = false;
@@ -75,6 +82,7 @@ export default {
      EventBus.$on("ticket-details", item => self.showDetails(item));
      EventBus.$on("close-details", () => self.active = "table");
      EventBus.$on("reset-select", () => {
+     	self.backFrom = '';
 		self.resetOverOnTableElement();
 		self.levelSelected = "";
 		self.triTicket();

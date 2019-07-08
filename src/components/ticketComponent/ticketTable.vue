@@ -35,8 +35,8 @@
     <template v-slot:items="props">
        	<td @mouseover="overTableRow(props)" @mouseleave="mouseLeave()" @click="onClick(props)" :style="isOver(props.item)">{{ props.item.name.get() }}</td>
       	<td @mouseover="overTableRow(props)" @mouseleave="mouseLeave()" @click="onClick(props)" :style="isOver(props.item)" class="text-xs-right">{{ ticketDate(props.item.creationDate.get()) }}</td>
-      	<td class="text-xs-right" :style="{'color':props.item.color.get()}" @click="onClick(props)" :style="isOver(props.item)" @mouseover="overTableRow(props)" @mouseleave="mouseLeave()">
-      		<span :style="getstyle(props.item)">{{ props.item.stepName }}</span></td>
+      	<td class="text-xs-right" @click="onClick(props)" :style="isOver(props.item)" @mouseover="overTableRow(props)" @mouseleave="mouseLeave()">
+      		<p class="colorPatchDisplay displayInline" :style="{backgroundColor: props.item.color.get()}" ></p> {{ props.item.stepName }}</td>
        	<td><v-icon @click="selectDetails(props)">details</v-icon></td>
     </template>
   </v-data-table>
@@ -64,7 +64,7 @@ export default {
           },
           { text: 'Creation Date', value: 'creation date', align: 'center' },
           { text: 'Step', value: 'step', align: 'center'},
-          { text:"Application",
+          { text:"Details",
       		align: 'right'}
           ],
 		pagination: {
@@ -84,7 +84,7 @@ export default {
     },
     methods: {
 		backToProcess() {
-			EventBus.$emit("getBackToProcess")
+			EventBus.$emit("getBackToProcess", true)
 		},
 		predicat: function( node ) {
 			return node.info.type.get() === "BIMObject";
@@ -168,6 +168,16 @@ export default {
     };
 </script>
 <style scoped>
+
+.displayInline {
+	display: inline;
+	padding-left: 20px;
+}
+.colorPatchDisplay {
+	border-color: black;
+	border-style: solid;
+}
+
 #selectEyeForTickets {
 	float: right;
 	margin-top: 7px;

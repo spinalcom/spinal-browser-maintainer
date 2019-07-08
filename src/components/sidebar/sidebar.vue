@@ -28,7 +28,7 @@
         </div>
   </div>
   <div v-else class="mySidebarx">
-    <p id="HeaderTitle" @click="backToFloor">← {{ floor }}</p>
+    <p id="floorSelectedTitleId" @click="backToFloor">← {{ floor }}</p>
     <div 
        v-for="item in roomsDisplayed"
       :key="item.name"
@@ -230,6 +230,12 @@ p {
   margin-bottom: 10px !important;
 }
 
+#floorSelectedTitleId {
+  background-color: #2D3D93;
+  border-radius: 0px 0px 10% 10%;
+  color: white;
+  height: 22px;
+}
 .mySidebarx {
   z-index: 100;
   background-color: #272727;

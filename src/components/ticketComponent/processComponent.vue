@@ -27,7 +27,7 @@ export default {
 			BadgeValue: {}
 		}
 	},
-	props: ["processList", "allData"],
+	props: ["processList", "allData", "backFrom"],
 	methods: {
 		selectProcess(target) {
 			let txt = target.target.innerHTML.split(/</g)[0].split('\n').join('');
@@ -35,7 +35,16 @@ export default {
 			EventBus.$emit("select-process", txt);
 		},
 		calculateTotal(bool, item) {
-			console.log("calcul");
+			console.log("calcul", this.backFrom, this.allData.rooms);
+
+			if (this.backFrom !== '') {
+				let rooms = this.allData.rooms;
+					for (var room in rooms)
+						if (rooms[room].floor === this.backFrom)
+							this.BadgeValue = rooms[room].processNumber;
+						return;
+			}
+
 			if (bool) {
 				let rooms = this.allData.rooms;
 					for (var room in rooms)
@@ -63,17 +72,15 @@ export default {
 	watch: {
 		BadgeValue() {
 			console.log("update badge value");
+		},
+		backFrom() {
+			this.calculateTotal(false, this.backFrom);
 		}
 	},
 	mounted() {
 		this.getEvent();
 		console.log('---------_>', this.BadgeValue);
 		this.calculateTotal(false)
-		// let self = this;
-		// setTimeout(function() {
-		// 	self.calculateTotal(false);
-		// 	console.log("-->->_>", self.BadgeValue);
-		// }, 1000);
 	}
 };
 </script>
