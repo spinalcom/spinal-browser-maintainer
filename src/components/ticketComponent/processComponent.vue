@@ -102,7 +102,6 @@ export default {
 	margin-left: 0px;
 }
 .displayButtonChooseProcess {
-
 	margin-left: 44%;
 }
 .buttonProcessDisplay {
@@ -112,5 +111,10 @@ export default {
 	width: 52%;
 	padding: 2%;
 	margin-top: 2%;
+}
+@media screen and (max-width: 983px) {
+ .overflowDisplayProcess {
+    overflow: initial !important;
+ }
 }
 </style>

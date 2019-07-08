@@ -186,7 +186,7 @@ export default {
 	padding: 3px;
 }
 #title {
-	margin-left: 28%;
+	margin-left: calc(10vh);
 }
 .customColor {
 	color: var(--accent-color);
@@ -211,4 +211,34 @@ export default {
 	float: right !important;
 	font-family: sans-serif !important;
 }
+
+@media screen and (max-width: 1402px) {
+ #title {
+	margin-left: calc(0vh) !important;
+   font-size: 14px;
+ }
+}
+@media screen and (max-width: 992px) {
+ .backButton {
+ 	float: left;
+	margin-left: 0% !important;
+ }
+ #title {
+	margin-left: calc(30%) !important;
+   font-size: 17px;
+ }
+}
+
+@media screen and (max-width: 983px) {
+ .backButton {
+ 	margin-top: 0vw;
+ }
+}
+@media screen and (max-width: 963px) {
+ .backButton {
+ 	margin-left: -80% !important;
+ }
+}
+
+
 </style>

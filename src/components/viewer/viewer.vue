@@ -300,7 +300,7 @@ export default {
 @media screen and (max-width: 992px) {
   .viewerContainer {
     width: 85%;
-    height: calc(46%);
+    height: 470px !important;
     position: relative;
     float: left;
     padding-left: 160px;
