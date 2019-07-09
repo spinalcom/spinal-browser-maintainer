@@ -65,7 +65,7 @@ export default {
           { text: 'Creation Date', value: 'creation date', align: 'center' },
           { text: 'Step', value: 'step', align: 'center'},
           { text:"Details",
-      		align: 'right'}
+			align: 'right'}
           ],
 		pagination: {
 			descending: true,
@@ -174,15 +174,15 @@ export default {
 	padding-left: 20px;
 }
 .colorPatchDisplay {
-	border-color: black;
+/*	border-color: black;
 	border-style: solid;
-}
+*/}
 
 #selectEyeForTickets {
 	float: right;
 	margin-top: 7px;
-	border-radius: 50%;
-	border: solid;
+/*	border-radius: 50%;
+	border: solid;*/
 	padding: 3px;
 }
 #title {
@@ -205,6 +205,9 @@ export default {
     padding-top: 4px;
     width: 90px;
     padding-bottom: 8px;
+}
+.v-badge__badge  {
+	margin-top: 11px;
 }
 
 .layout {

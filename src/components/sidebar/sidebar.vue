@@ -34,12 +34,11 @@
       :key="item.name"
       >
         <v-divider color="white"></v-divider>
-      
-      <v-badge right color="red">
-      <template v-slot:badge v-if="numberForBadge(item.tickets)!==0">
-        <span>{{ numberForBadge(item.tickets) }}</span>
-      </template>
-
+      <div class="test">
+<!--       <v-badge right color="red">
+        <template  v-slot:badge v-if="numberForBadge(item.tickets)!==0">
+          <span >{{ numberForBadge(item.tickets) }}</span>
+        </template> -->
       <p class="sitebarElement"
         :value="item"
         :title="item.name"
@@ -47,8 +46,13 @@
         @mouseleave="mouseLeave"
         @click="onItemClick(item, $event)">{{ shortenText(item.name) }}
         </p>
-        </v-badge>
 
+        <div class="displayBadge" v-if="numberForBadge(item.tickets)!==0">
+            <p>{{ numberForBadge(item.tickets) }}</p>
+        </div>
+
+<!--         </v-badge>
+ -->        </div>
     </div>
   </div>
 </template>
@@ -158,7 +162,7 @@ export default {
       return;
     },
     shortenText(text) {
-      return text.replace(/(.{24})..+/, "$1…");
+      return text.replace(/(.{20})..+/, "$1…");
     },
     numberForBadge(tickets) {
       let count = 0;
@@ -224,6 +228,15 @@ export default {
     padding-top: 9px;
     padding-left: 5px;
     margin-top: -6px;
+    margin-left: 0px;
+    margin-bottom: 0px !important;
+}
+.test span {
+  /*margin-top: 10px;*/
+}
+
+.span.v-badge__badge.red {
+  margin-top: 1px !important;
 }
 
 p {
@@ -235,6 +248,7 @@ p {
   border-radius: 0px 0px 10% 10%;
   color: white;
   height: 22px;
+  margin-bottom: 0px !important;
 }
 .mySidebarx {
   z-index: 100;
@@ -242,19 +256,30 @@ p {
   height: 96%;
   width: 191px;
   padding-left: 8px;
-  padding-top: 0px;
   overflow: auto;
 
 }
 .badgeElementInSidebar {
   margin-top: 18px;
 }
+.displayBadge {
+  display: inline-flex;
+  height: 20px;
+  width: 20px;
+  padding-top: 3px;
+  padding-left: 5px;
+  border-radius: 50%;
+  background-color: red;
+}
 
 .sitebarElement {
+  width: 100px;
   color: white;
+  display: inline;
   padding-top: 3px;
   padding-bottom: 3px;
   margin-top: 7px;
+  cursor: pointer;
 }
 
 .sidebarDivider {

@@ -86,11 +86,13 @@ export default {
 </script>
 <style scoped>
 .displayCountBadge {
-	display: initial;
+	display: inline-grid;
 	background-color: red;
 	border-radius: 50%;
-	height: 4px;
-	padding: 2px;
+	height: 20px;
+	width: 20px;
+	margin-bottom: 0px;
+	padding-top: 2px;
 }
 .displayProcessElementTitle {
 	margin-left: 48%;
@@ -111,6 +113,7 @@ export default {
 	width: 52%;
 	padding: 2%;
 	margin-top: 2%;
+	cursor: pointer;
 }
 @media screen and (max-width: 983px) {
  .overflowDisplayProcess {
