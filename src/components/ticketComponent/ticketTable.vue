@@ -37,7 +37,7 @@
       	<td @mouseover="overTableRow(props)" @mouseleave="mouseLeave()" @click="onClick(props)" :style="isOver(props.item)" class="text-xs-right">{{ ticketDate(props.item.creationDate.get()) }}</td>
       	<td class="text-xs-right" @click="onClick(props)" :style="isOver(props.item)" @mouseover="overTableRow(props)" @mouseleave="mouseLeave()">
       		<p class="colorPatchDisplay displayInline" :style="{backgroundColor: props.item.color.get()}" ></p> {{ props.item.stepName }}</td>
-       	<td><v-icon @click="selectDetails(props)">details</v-icon></td>
+       	<td style="float:right" ><v-icon @click="selectDetails(props)">not_listed_location</v-icon></td>
     </template>
   </v-data-table>
 </div>
@@ -239,6 +239,20 @@ export default {
  	margin-left: -80% !important;
  }
 }
+@media screen and (max-width: 963px) {
+ .backButton {
+ 	margin-left: calc(1%) !important;
+ }
+}
+@media screen and (max-width: 954px) {
+ .backButton {
+ 	margin-top: calc(1vh);
+	margin-left: -80% !important;
+ }
+}
+
+
+
 
 
 </style>
