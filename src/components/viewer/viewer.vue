@@ -218,9 +218,7 @@ export default {
                } );
                iterator++
 
-
             }
-
 
       setTimeout(function() {
         self.setColorMaterial()
@@ -291,7 +289,7 @@ export default {
 */
 .viewerContainer {
   width: 51%;
-  height: calc(96%);
+  height: calc(93.5%);
   position: relative;
   float: left;
   padding-left: 160px;
