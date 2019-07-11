@@ -36,8 +36,8 @@
        	<td @mouseover="overTableRow(props)" @mouseleave="mouseLeave()" @click="onClick(props)" :style="isOver(props.item)">{{ props.item.name.get() }}</td>
       	<td @mouseover="overTableRow(props)" @mouseleave="mouseLeave()" @click="onClick(props)" :style="isOver(props.item)" class="text-xs-right">{{ ticketDate(props.item.creationDate.get()) }}</td>
       	<td class="text-xs-right" @click="onClick(props)" :style="isOver(props.item)" @mouseover="overTableRow(props)" @mouseleave="mouseLeave()">
-      		<p class="colorPatchDisplay displayInline" :style="{backgroundColor: props.item.color.get()}" ></p> {{ props.item.stepName }}</td>
-       	<td style="float:right" ><v-icon @click="selectDetails(props)">not_listed_location</v-icon></td>
+      		{{ props.item.stepName }}<p class="colorPatchDisplay displayInline" :style="{backgroundColor: props.item.color.get()}" ></p></td>
+       	<td style="float:right; padding-top:10px" ><v-icon @click="selectDetails(props)">not_listed_location</v-icon></td>
     </template>
   </v-data-table>
 </div>
@@ -174,6 +174,8 @@ export default {
 	padding-left: 20px;
 }
 .colorPatchDisplay {
+	border-style: none;
+	padding-top: 2px;
 /*	border-color: black;
 	border-style: solid;
 */}
