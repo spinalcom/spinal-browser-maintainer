@@ -253,7 +253,7 @@ p {
 .mySidebarx {
   z-index: 100;
   background-color: #272727;
-  height: 96%;
+  height: 93.7%;
   width: 191px;
   padding-left: 8px;
   overflow: auto;
@@ -270,15 +270,16 @@ p {
   padding-left: 5px;
   border-radius: 50%;
   background-color: red;
+  float: right;
+  margin-top: 8px;
 }
 
 .sitebarElement {
-  width: 100px;
+  width: 143px;
   color: white;
-  display: inline;
-  padding-top: 3px;
-  padding-bottom: 3px;
-  margin-top: 7px;
+  display: inline-grid;
+  margin-bottom: 10px;
+  margin-top: 10px;
   cursor: pointer;
 }
 
