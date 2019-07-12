@@ -11,7 +11,7 @@
           @mouseleave="mouseLeave($event, true)"
           :title="item.name"
         >
-        <v-divider color="white"></v-divider>
+        <v-divider style="width: 190px" color="white"></v-divider>
 
 
       <v-badge right>
@@ -33,7 +33,7 @@
        v-for="item in roomsDisplayed"
       :key="item.name"
       >
-        <v-divider color="white"></v-divider>
+        <v-divider style="width: 190px" color="white"></v-divider>
       <div class="test">
 <!--       <v-badge right color="red">
         <template  v-slot:badge v-if="numberForBadge(item.tickets)!==0">
@@ -224,9 +224,9 @@ export default {
     color: white;
     background-color: grey;
     margin-left: -6px;
-    height: 34px;
+    height: 24px;
     padding-top: 9px;
-    padding-left: 5px;
+    padding-left: 9px;
     margin-top: -6px;
     margin-left: 0px;
     margin-bottom: 0px !important;
@@ -244,10 +244,12 @@ p {
 }
 
 #floorSelectedTitleId {
-  background-color: #2D3D93;
+  background-color: grey;
   border-radius: 0px 0px 10% 10%;
   color: white;
-  height: 22px;
+  height: 24px;
+  padding-left: 2px;
+  padding-top: 2px;
   margin-bottom: 0px !important;
 }
 .mySidebarx {
@@ -255,7 +257,6 @@ p {
   background-color: #272727;
   height: 93.7%;
   width: 191px;
-  padding-left: 8px;
   overflow: auto;
 
 }
@@ -275,11 +276,12 @@ p {
 }
 
 .sitebarElement {
-  width: 143px;
+  width: 150px;
   color: white;
   display: inline-grid;
   margin-bottom: 10px;
   margin-top: 10px;
+  padding-left: 8px;
   cursor: pointer;
 }
 
