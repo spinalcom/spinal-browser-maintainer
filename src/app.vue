@@ -164,6 +164,9 @@ export default Vue.extend({
     margin-top: calc(50%);
     margin-left: 4%;
   }
+  .container-fluid {
+    box-sizing: unset !important;
+  }
 }
 
 

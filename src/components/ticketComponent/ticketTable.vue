@@ -1,10 +1,12 @@
 <template>
 <div>
-	<button class="backButton" @click="backToProcess"><v-icon color="white">arrow_back</v-icon></button>
-	<icon id="title">{{title}}</icon>
-	<filter-dialog :steps="steps" 
+	<div>
+		<button class="backButton" @click="backToProcess"><v-icon color="white">arrow_back</v-icon></button>
+		<icon id="title">{{title}}</icon>
+		<filter-dialog :steps="steps" 
 				   :selectedSteps="selectedSteps" ></filter-dialog>
-	<button id="selectEyeForTickets" @click="showTicketsColor"><v-icon>remove_red_eye</v-icon></button>
+		<button id="selectEyeForTickets" @click="showTicketsColor"><v-icon>remove_red_eye</v-icon></button>
+	</div>
   <v-data-table
     :headers="headers"
     :items="allTickets"
@@ -169,6 +171,11 @@ export default {
 </script>
 <style scoped>
 
+.newdisplay {
+	background-color: black;
+	color: white;
+}
+
 .displayInline {
 	display: inline;
 	padding-left: 20px;
@@ -197,6 +204,7 @@ export default {
 	color: black;
 }
 .backButton {
+	box-sizing: border-box !important;
 	background-color: black;
     color: white;
     padding: 9px;
@@ -223,40 +231,18 @@ export default {
    font-size: 14px;
  }
 }
-@media screen and (max-width: 992px) {
- .backButton {
- 	float: left;
-	margin-left: 0% !important;
- }
+
+@media screen and (max-width: 993px) {
  #title {
-	margin-left: calc(30%) !important;
-   font-size: 17px;
+	margin-left: calc(10vh) !important;
  }
 }
 
-@media screen and (max-width: 983px) {
- .backButton {
- 	margin-top: 0vw;
+@media screen and (max-width: 750px) {
+ #title {
+	margin-left: calc(2vh) !important;
  }
 }
-@media screen and (max-width: 963px) {
- .backButton {
- 	margin-left: -80% !important;
- }
-}
-@media screen and (max-width: 963px) {
- .backButton {
- 	margin-left: calc(1%) !important;
- }
-}
-@media screen and (max-width: 954px) {
- .backButton {
- 	margin-top: calc(1vh);
-	margin-left: -80% !important;
- }
-}
-
-
 
 
 

@@ -223,6 +223,7 @@ export default {
       setTimeout(function() {
         self.setColorMaterial()
       }, 1);
+      
        window.addEventListener("click", this.eventForColor, true);
     },
     predicat: function( node ) {
