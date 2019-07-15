@@ -13,17 +13,13 @@
         >
         <v-divider style="width: 190px" color="white"></v-divider>
 
-
-      <v-badge right>
-      <template class="badgeElementInSidebar" v-slot:badge v-if="calculeTotalTicket(item)!==0">
-        <span>{{ calculeTotalTicket(item) }}</span>
-      </template>
-
         <p class="sitebarElement">
         {{ shortenText(item.name) }}</p>
 
+        <div class="displayBadge" v-if="item.count!==0">
+          <p>{{ item.count }}</p>
+        </div>
 
-        </v-badge>
 
         </div>
   </div>
@@ -35,10 +31,6 @@
       >
         <v-divider style="width: 190px" color="white"></v-divider>
       <div class="test">
-<!--       <v-badge right color="red">
-        <template  v-slot:badge v-if="numberForBadge(item.tickets)!==0">
-          <span >{{ numberForBadge(item.tickets) }}</span>
-        </template> -->
       <p class="sitebarElement"
         :value="item"
         :title="item.name"
@@ -103,36 +95,35 @@ export default {
 
     this.menus.push(content);
   },
-
+  created() {
+    console.log("coucou", this.floors);
+    for (var item in this.floors) {
+      this.calculeTotalTicket(this.floors[item]);
+    }
+  },
   methods: {
     calculeTotalTicket(item) {
       let self = this;
-      setTimeout(function() {
+        
       let count = 0;
       if (item !== undefined) {
       for (var i in self.allData.rooms) {
-       // console.log(item.name, self.allData.rooms[i].floor);
         if (self.allData.rooms[i].floor === item.name) {
-         // console.log("open", self.allData.rooms[i].processNumber);
           for (var el in self.allData.rooms[i].processNumber) {
-           // console.log("count = ", count);
-            //if (this.allData.rooms[i].rooms[el].tick)
             count = count + self.allData.rooms[i].processNumber[el];
           }
         }
       }
       if (count == 0) {
-        //console.log("return", item.name , count);
+        item['count'] = 0;
         return 0;
       }
-        //console.log("else", count);
+        item['count'] = count;
         return count;
       }
       return 0;
-    }, 3000)
     },
     onItemClick(item, target) {
-      //console.log("cloicked", item, target);
       if (target !== undefined)
         if (this.roomSelected !== item.id) {
           if (this.oldTarget.target !== undefined) {
@@ -183,7 +174,6 @@ export default {
       EventBus.$emit("reset-select");
     },
     openFloor(floorSelected) {
-      console.log("select floor", this.floors, this.rooms)
       if (this.selectedLevel)
         this.selectedLevel = false;
       else
@@ -209,7 +199,7 @@ export default {
     mouseLeave(event, parent) {
       if (event.target.style.color != "rgb(45, 61, 147)") {
         if (parent == true)
-          event.target.children[1].children[0].style.color = "white";
+          event.target.children[1].style.color = "white";
         else
           event.target.style.color = "white";
       }
@@ -224,7 +214,7 @@ export default {
     color: white;
     background-color: grey;
     margin-left: -6px;
-    height: 24px;
+    height: 32px;
     padding-top: 9px;
     padding-left: 9px;
     margin-top: -6px;
@@ -255,13 +245,15 @@ p {
 .mySidebarx {
   z-index: 100;
   background-color: #272727;
-  height: 93.7%;
+  height: calc(93.7%);
   width: 191px;
   overflow: auto;
 
 }
 .badgeElementInSidebar {
   margin-top: 18px;
+
+  background-color: white;
 }
 .displayBadge {
   display: inline-flex;
