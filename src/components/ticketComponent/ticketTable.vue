@@ -5,7 +5,9 @@
 		<icon id="title">{{title}}</icon>
 		<filter-dialog :steps="steps" 
 				   :selectedSteps="selectedSteps" ></filter-dialog>
+		<button id="selectEyeForTickets" @click="exportCsv"><v-icon>get_app</v-icon></button>
 		<button id="selectEyeForTickets" @click="showTicketsColor"><v-icon>remove_red_eye</v-icon></button>
+
 	</div>
   <v-data-table
     :headers="headers"
@@ -35,9 +37,9 @@
       </v-tooltip>
     </template>
     <template v-slot:items="props">
-       	<td @mouseover="overTableRow(props)" @mouseleave="mouseLeave()" @click="onClick(props)" :style="isOver(props.item)">{{ props.item.name.get() }}</td>
-      	<td @mouseover="overTableRow(props)" @mouseleave="mouseLeave()" @click="onClick(props)" :style="isOver(props.item)" class="text-xs-right">{{ ticketDate(props.item.creationDate.get()) }}</td>
-      	<td class="text-xs-right" @click="onClick(props)" :style="isOver(props.item)" @mouseover="overTableRow(props)" @mouseleave="mouseLeave()">
+       	<td @mouseover="overTableRow(props)" @mouseleave="mouseLeave()" @click="onClick(props, $event)" :style="isOver(props.item)">{{ props.item.name.get() }}</td>
+      	<td @mouseover="overTableRow(props)" @mouseleave="mouseLeave()" @click="onClick(props, $event)" :style="isOver(props.item)" class="text-xs-right">{{ ticketDate(props.item.creationDate.get()) }}</td>
+      	<td class="text-xs-right" @click="onClick(props, $event)" :style="isOver(props.item)" @mouseover="overTableRow(props)" @mouseleave="mouseLeave()">
       		{{ props.item.stepName }}<p class="colorPatchDisplay displayInline" :style="{backgroundColor: props.item.color.get()}" ></p></td>
        	<td style="float:right; padding-top:10px" ><v-icon @click="selectDetails(props)">not_listed_location</v-icon></td>
     </template>
@@ -77,14 +79,18 @@ export default {
 			totalItems: 0,
 			rowsPerPageItems: [17]
 		},
-		clicked: false
+		clicked: false,
+		oldTarget: {}
       }
     },
     props: ["allTickets", "steps", "selectedSteps", "title"],
     mounted() {
-		//console.log("table has mounted", this.allTickets.forEach(function(el) { console.log(el.name.get())}), this.allTickets);
+		console.log("table has mounted", this.allTickets ,this.allTickets.forEach(function(el) { console.log(el.name.get())}), this.allTickets);
     },
     methods: {
+    	onResize() {
+    		//if (window.innerHeight)
+    	},
 		backToProcess() {
 			EventBus.$emit("getBackToProcess", true)
 		},
@@ -104,8 +110,8 @@ export default {
 			} );
 		},
 		isOver(item) {
-			if (item.over === true)
-				return 'background-color:grey';
+			// if (item.over === true)
+			// 	return 'background-color:grey';
 		},
 		hexToRgb(hex) {
 		// Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
@@ -136,20 +142,51 @@ export default {
 			EventBus.$emit("mouse-leave");
 		},
 		selectDetails(item) {
-			console.log(item);
 			EventBus.$emit("ticket-details", item.item);
 		},
-		onClick(item) {
+		onClick(item, event) {
 			//if (this.clicked === false) {
-				let ticket = {}
-				ticket.id = item.item.bimId.get();
-				EventBus.$emit("click-ticket-event", ticket);
+				console.log("lelekekkeke", event)
+				if (this.clicked === false) {
+					event.target.parentElement.style.backgroundColor = "#2D3D93";
+					event.target.parentElement.style.color = "white";
+					this.oldTarget = event.target;
+					this.clicked = true;
+				} else {
+					this.oldTarget.parentElement.style.color = "black";
+					this.oldTarget.parentElement.style.backgroundColor = "white";
+					this.clicked = false;
+				}
+
+				// let ticket = {}
+				// ticket.id = item.item.bimId.get();
+				// let self = this;
+				// graph.SpinalGraphService.findNodes(item.item.id, [
+				// 	"SpinalSystemServiceTicketHasLocation",
+				// 	"hasBIMObject",
+				// 	'hasReferenceObject'
+				// ],
+				// 	self.predicat
+				// ).then( lst => {
+				// 	console.log("-->", lst)
+				// 	EventBus.$emit("test", lst[0].info.id.get());
+				// } );
+
+				// EventBus.$emit("test", ticket.id)
+				console.log(item);
+				EventBus.$emit("display-colors", [item.item]);
+				//EventBus.$emit("click-ticket-event", item.item.id.get());
+				//this.overTableRow(item);
 			//} else
 			//console.log("already")
 		},
 		showTicketsColor() {
 			console.log("display color", this.allTickets);
 			EventBus.$emit("display-colors", this.allTickets);
+		},
+		exportCsv() {
+			//console.log("export");
+			EventBus.$emit("export");
 		},
 		timeConverter(UNIX_timestamp){
 			var a = new Date(UNIX_timestamp);

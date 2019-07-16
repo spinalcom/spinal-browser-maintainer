@@ -80,6 +80,7 @@ export default {
      });
      EventBus.$on("click-room", item => self.addOverOnTableElement(item) );
      EventBus.$on("ticket-details", item => self.showDetails(item));
+     EventBus.$on("export", () => self.exportCsv());
      EventBus.$on("close-details", () => self.active = "table");
      EventBus.$on("reset-select", () => {
      	self.backFrom = '';
@@ -87,6 +88,10 @@ export default {
 		self.levelSelected = "";
 		self.triTicket();
      })
+	},
+	exportCsv() {
+		console.log(this.allData, this.allTickets, this.selectedTicket)
+		//this.download("test.tzt", [[1,1,1],[2,2,2]]);
 	},
 	showDetails(item){
 		this.ticketDetails = item;
@@ -197,6 +202,19 @@ export default {
 						resolve(true);
 				}
 		});
+	},
+	download( filename, arr ) {
+		let element = document.createElement( 'a' );
+		let doc = '';
+		for (var key in arr) {
+			doc += `${arr[key]}\n`;
+		}
+		element.setAttribute( 'href', 'data:text/plain;charset=utf-8,' + encodeURIComponent( doc ) );
+		element.setAttribute( 'download', filename );
+		element.style.display = 'none';
+		document.body.appendChild( element );
+		element.click();
+		document.body.removeChild( element );
 	}
   },
   watch: {

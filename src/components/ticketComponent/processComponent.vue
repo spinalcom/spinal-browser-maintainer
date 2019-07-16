@@ -24,7 +24,8 @@ export default {
 	name: "processComponent",
 	data() {
 		return {
-			BadgeValue: {}
+			BadgeValue: {},
+			actualizeBadge: true
 		}
 	},
 	props: ["processList", "allData", "backFrom"],
@@ -36,20 +37,26 @@ export default {
 		},
 		calculateTotal(bool, item) {
 			console.log("calcul", this.backFrom, this.allData.rooms);
+			let self = this;
 
 			if (this.backFrom !== '') {
 				let rooms = this.allData.rooms;
 					for (var room in rooms)
-						if (rooms[room].floor === this.backFrom)
+						if (rooms[room].floor === this.backFrom) {
+							console.log("first if");
 							this.BadgeValue = rooms[room].processNumber;
+						}
 						return;
 			}
 
 			if (bool) {
 				let rooms = this.allData.rooms;
+				console.log(this.allData.rooms);
 					for (var room in rooms)
-						if (rooms[room].floor === item.name)
+						if (rooms[room].floor === item.name) {
+							console.log("second if");
 							this.BadgeValue = rooms[room].processNumber;
+						}
 			} else {
 				console.log("123454321", this.allData.totalTickets.count);
 				this.BadgeValue = this.allData.totalTickets.count;
@@ -78,9 +85,14 @@ export default {
 		}
 	},
 	mounted() {
+		let self = this;
+		console.log("------------------------->", this.processList)
 		this.getEvent();
-		console.log('---------_>', this.BadgeValue);
-		this.calculateTotal(false)
+		this.calculateTotal(false);
+		setTimeout(function(){
+			self.actualizeBadge = false;
+			self.actualizeBadge = true;
+		}, 3000)
 	}
 };
 </script>
