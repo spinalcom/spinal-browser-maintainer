@@ -57,6 +57,8 @@ export default {
 
       EventBus.$on("select-equipment", itemId => this.selectObjects(itemId) );
 
+      EventBus.$on("test", id => this.selectObjects(id));
+
       EventBus.$on("select-tickets-room", items => 
       {
         this.viewer.clearSelection();
@@ -84,7 +86,6 @@ export default {
       objectIds,
       color
     ) {
-        console.log("setcolor", objectIds, color);
         for (var i = 0; i < objectIds.length; i++) {
           var dbid = objectIds[i];
 
