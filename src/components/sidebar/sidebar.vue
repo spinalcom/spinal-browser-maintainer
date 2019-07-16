@@ -1,14 +1,15 @@
 
 <template>
+  <div class="mySidebarx" v-if="rendering">
   <div class="mySidebarx" v-if="selectedLevel">
       <p id="HeaderTitle">Building</p>
 
         <div 
-          v-for="item in floors"
+          v-for="(item, index) in floors"
           :key="item.name"
           @click="onItemClick(item)"
-          @mouseover="mouseOver(item, $event)"
-          @mouseleave="mouseLeave($event, true)"
+          @mouseover="mouseOver(item)"
+          @mouseleave="mouseLeave()"
           :title="item.name"
         >
         <v-divider style="width: 190px" color="white"></v-divider>
@@ -16,10 +17,9 @@
         <p class="sitebarElement">
         {{ shortenText(item.name) }}</p>
 
-        <div class="displayBadge" v-if="item.count!==0">
-          <p>{{ item.count }}</p>
+        <div class="displayBadge" v-if="rooms[index].count!==undefined">
+          <p style="color:white !important">{{ rooms[index].count }}</p>
         </div>
-
 
         </div>
   </div>
@@ -34,19 +34,20 @@
       <p class="sitebarElement"
         :value="item"
         :title="item.name"
-        @mouseover="mouseOver(item, $event)"
+        @mouseover="mouseOver(item)"
         @mouseleave="mouseLeave"
         @click="onItemClick(item, $event)">{{ shortenText(item.name) }}
         </p>
 
         <div class="displayBadge" v-if="numberForBadge(item.tickets)!==0">
-            <p>{{ numberForBadge(item.tickets) }}</p>
+            <p style="color:white !important">{{ numberForBadge(item.tickets) }}</p>
         </div>
 
 <!--         </v-badge>
  -->        </div>
     </div>
   </div>
+</div>
 </template>
 
 <script>
@@ -63,7 +64,8 @@ export default {
       roomsDisplayed: [],
       roomSelected: '',
       oldTarget: {},
-      selectedProcess: ""
+      selectedProcess: "",
+      rendering: true
     };
   },
   props: ["floors", "rooms", "allData"],
@@ -96,6 +98,11 @@ export default {
     this.menus.push(content);
   },
   created() {
+    let self = this;
+    setTimeout(function() {
+      self.rendering = false;
+      self.rendering = true;
+    }, 2000)
     console.log("coucou", this.floors);
     for (var item in this.floors) {
       this.calculeTotalTicket(this.floors[item]);
@@ -104,7 +111,7 @@ export default {
   methods: {
     calculeTotalTicket(item) {
       let self = this;
-        
+
       let count = 0;
       if (item !== undefined) {
       for (var i in self.allData.rooms) {
@@ -127,14 +134,14 @@ export default {
       if (target !== undefined)
         if (this.roomSelected !== item.id) {
           if (this.oldTarget.target !== undefined) {
-            this.oldTarget.target.style.backgroundColor = '#272727';
+            this.oldTarget.target.parentElement.style.backgroundColor = '#272727';
           }
           this.roomSelected = item.id;
-          target.target.style.backgroundColor = '#2D3D93';
+          target.target.parentElement.style.backgroundColor = '#2D3D93';
           this.oldTarget = target;
         } else {
           this.roomSelected = '';
-          target.target.style.backgroundColor = '#272727';
+          target.target.parentElement.style.backgroundColor = '#272727';
           this.oldTarget = {};
           EventBus.$emit("click-room", 'reset');
           return;
@@ -186,23 +193,14 @@ export default {
 
       this.floor = floorSelected;
     },
-    mouseOver(item, event) {
-      if (event.target.style.color != "rgb(45, 61, 147)") {
-        event.target.style.color = '#356BAB';
-      }
+    mouseOver(item) {
       EventBus.$emit("mouse-over", item);
     },
     isolate(item) {
       this.roomsSelected = item.id;
       EventBus.$emit("click-room", item);
     },
-    mouseLeave(event, parent) {
-      if (event.target.style.color != "rgb(45, 61, 147)") {
-        if (parent == true)
-          event.target.children[1].style.color = "white";
-        else
-          event.target.style.color = "white";
-      }
+    mouseLeave() {
       EventBus.$emit("mouse-leave");
     }
   }
@@ -275,6 +273,9 @@ p {
   margin-top: 10px;
   padding-left: 8px;
   cursor: pointer;
+}
+.sitebarElement:hover {
+  color: #356BAB;  
 }
 
 .sidebarDivider {
