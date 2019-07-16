@@ -31,9 +31,11 @@ export default {
 	props: ["processList", "allData", "backFrom"],
 	methods: {
 		selectProcess(target) {
-			let txt = target.target.innerHTML.split(/</g)[0].split('\n').join('');
-			txt = txt.split('\t').join('');
-			EventBus.$emit("select-process", txt);
+			if (target.target.className !== "displayCountBadge") {
+				let txt = target.target.innerHTML.split(/</g)[0].split('\n').join('');
+				txt = txt.split('\t').join('');
+				EventBus.$emit("select-process", txt);
+			}
 		},
 		calculateTotal(bool, item) {
 			console.log("calcul", this.backFrom, this.allData.rooms);
