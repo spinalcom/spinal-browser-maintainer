@@ -99,6 +99,7 @@ let dataService = {
     graph.SpinalGraphService.getChildren(rooms[lvl].rooms[room_nbr].id, SPINAL_TICKET_SERVICE_TARGET_RELATION_NAME)
       .then(children => {
         if (children.length > 0) {
+            rooms[lvl]['count'] = children.length;
             rooms[lvl].rooms[room_nbr]['tickets'] = [];
             rooms[lvl].rooms[room_nbr]['tickets'] = children.slice(0, children.length);
             this.addInfoToTicket(children.slice(0, children.length), processInfo);
@@ -113,7 +114,6 @@ let dataService = {
     for (var ticket in tickets) {
       processe = graph.SpinalGraphService.getRealNode(tickets[ticket].processId.get())
 
-      //console.log(processInfo, processe);
       if (processe !== undefined) {
         if (self.total['count'][processe.info.name.get()] === undefined) {
           self.total['count'][processe.info.name.get()] = 1;
@@ -185,7 +185,6 @@ let dataService = {
     this.getProcessName(processName);
     
     //setTimeout(function() { console.log(rooms, "-", floors)}, 2000);
-
     return {
       floors: floors,
       rooms: rooms,
