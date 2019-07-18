@@ -91,11 +91,16 @@ export default {
 	},
 	exportCsv() {
 		let result = [];
-		console.log(this.allData, this.allTickets, this.selectedTicket, this.levelSelected)
+		result.push(["floor", "room", "process", "name", "step", "creation date", "author", "note"])
+		console.log( this.selectedTicket, this.levelSelected)
 		for (var node in this.selectedTicket) {
 			console.log("-->", this.selectedTicket[node]);
+			result.push([ this.selectedTicket[node].floorName, this.selectedTicket[node].roomName, this.selectedTicket[node].processName, this.selectedTicket[node].name.get(),
+							this.selectedTicket[node].stepName, this.timeConverter(this.selectedTicket[node].creationDate.get()), this.selectedTicket[node].username.get(),	
+							this.selectedTicket[node].note.get() ]);
 		}
-		//this.download("test.tzt", [[1,1,1],[2,2,2]]);
+
+		this.download("ticket_export.csv", result);
 	},
 	showDetails(item){
 		this.ticketDetails = item;
@@ -150,7 +155,6 @@ export default {
 							if (this.selectedSteps.indexOf(this.allTickets[level][ticket]['stepName']) !== -1 || this.init === true )
 								this.selectedTicket.push(this.allTickets[level][ticket]);
 		this.extractProcess();
-		//console.log("------->", this.selectedTicket)
 	},
 	addStep(node, processName) {
 		let self = this;
@@ -173,10 +177,24 @@ export default {
 
 		});
 	},
+	timeConverter(UNIX_timestamp){
+		var a = new Date(UNIX_timestamp);
+		var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+		var year = a.getFullYear();
+		var month = months[a.getMonth()];
+		var date = a.getDate();
+		var hour = a.getHours();
+		var min = a.getMinutes();
+		var sec = a.getSeconds();
+		var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec ;
+		return time;
+	},
 	getAllTickets() {
 		let self = this;
 		let tmp;
 		return new Promise((resolve) => {
+		//self.allTickets = [];
+		//self.process = [];
 
 			for (var floorLvl in self.allData.rooms)
 				for (var allRooms in self.allData.rooms[floorLvl].rooms) {
@@ -185,8 +203,9 @@ export default {
 							self.allTickets[self.allData.rooms[floorLvl].floor] = [];
 							self.allData.rooms[floorLvl].rooms[allRooms].tickets.forEach(el => {
 								tmp = graph.SpinalGraphService.getRealNode(el.processId.get());
-								el['roomName'] = tmp.info.name.get();
-								el['floorName'] = self.allData.rooms[floorLvl].rooms[allRooms].name;
+								el['processName'] = tmp.info.name.get();
+								el['floorName'] = self.allData.rooms[floorLvl].floor;
+								el['roomName'] = self.allData.rooms[floorLvl].rooms[allRooms].name;
 								self.addStep(el, tmp.info.name.get());
 								self.allTickets[self.allData.rooms[floorLvl].floor].push(el);
 							})
@@ -195,8 +214,9 @@ export default {
 							self.allData.rooms[floorLvl].rooms[allRooms].tickets.forEach(el => {
 								tmp = graph.SpinalGraphService.getRealNode(el.processId.get());
 								if (tmp !== undefined) {
-								el['roomName'] = tmp.info.name.get();
-								el['floorName'] = self.allData.rooms[floorLvl].rooms[allRooms].name;
+								el['processName'] = tmp.info.name.get();
+								el['floorName'] = self.allData.rooms[floorLvl].floor;
+								el['roomName'] = self.allData.rooms[floorLvl].rooms[allRooms].name;
 								self.addStep(el, tmp.info.name.get());
 								self.allTickets[self.allData.rooms[floorLvl].floor].push(el);
 								}

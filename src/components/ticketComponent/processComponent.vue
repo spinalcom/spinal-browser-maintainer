@@ -38,7 +38,7 @@ export default {
 			}
 		},
 		calculateTotal(bool, item) {
-			console.log("calcul", this.backFrom, this.allData.rooms);
+			//console.log("calcul", this.backFrom, this.allData.rooms);
 			let self = this;
 
 			if (this.backFrom !== '') {
@@ -53,18 +53,19 @@ export default {
 
 			if (bool) {
 				let rooms = this.allData.rooms;
-				console.log(this.allData.rooms);
+				//console.log(this.allData.rooms);
 					for (var room in rooms)
 						if (rooms[room].floor === item.name) {
 							console.log("second if");
 							this.BadgeValue = rooms[room].processNumber;
 						}
 			} else {
-				console.log("123454321", this.allData.totalTickets.count);
+				//console.log("123454321", this.allData.totalTickets.count);
 				this.BadgeValue = this.allData.totalTickets.count;
 			}
 		},
 		displayBadge(value) {
+			console.log()
 			if (this.BadgeValue === undefined) {
 				return ' ';
 			}
@@ -79,16 +80,12 @@ export default {
 		}
 	},
 	watch: {
-		BadgeValue() {
-			console.log("update badge value");
-		},
 		backFrom() {
 			this.calculateTotal(false, this.backFrom);
 		}
 	},
 	mounted() {
 		let self = this;
-		console.log("------------------------->", this.processList)
 		this.getEvent();
 		this.calculateTotal(false);
 		setTimeout(function(){
