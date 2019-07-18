@@ -68,7 +68,15 @@ export default {
 
       EventBus.$on("mouse-leave", () => this.viewer.select() );
 
-      EventBus.$on("click-room", item => this.zoomObjects(item) );
+      EventBus.$on("click-details", item =>  { 
+        this.selectObjects(item)        
+        let self = this;
+        setTimeout(function() {
+          self.zoomObjects(item);
+        }, 100);
+        });
+
+      EventBus.$on("click-room", item => this.zoomObjects(item));
 
       EventBus.$on("display-colors", items => this.displayTicketsColor(items) );
 
@@ -242,7 +250,6 @@ export default {
       var iterator = 0;
       let color;
       let loop = 0;
-      console.log("good ------------", this.viewer);
       var x = setInterval(function() {
         color = self.colors[iterator].replace(/#/g, "0x");
         self.viewer.setColorMaterial(self.ticketToZoom[iterator], color)
