@@ -160,7 +160,7 @@ export default {
       return;
     },
     shortenText(text) {
-      return text.replace(/(.{20})..+/, "$1…");
+      return text.replace(/(.{18})..+/, "$1…");
     },
     numberForBadge(tickets) {
       let count = 0;
