@@ -90,7 +90,11 @@ export default {
      })
 	},
 	exportCsv() {
-		console.log(this.allData, this.allTickets, this.selectedTicket)
+		let result = [];
+		console.log(this.allData, this.allTickets, this.selectedTicket, this.levelSelected)
+		for (var node in this.selectedTicket) {
+			console.log("-->", this.selectedTicket[node]);
+		}
 		//this.download("test.tzt", [[1,1,1],[2,2,2]]);
 	},
 	showDetails(item){
@@ -173,8 +177,6 @@ export default {
 		let self = this;
 		let tmp;
 		return new Promise((resolve) => {
-		//self.allTickets = [];
-		//self.process = [];
 
 			for (var floorLvl in self.allData.rooms)
 				for (var allRooms in self.allData.rooms[floorLvl].rooms) {
@@ -183,7 +185,8 @@ export default {
 							self.allTickets[self.allData.rooms[floorLvl].floor] = [];
 							self.allData.rooms[floorLvl].rooms[allRooms].tickets.forEach(el => {
 								tmp = graph.SpinalGraphService.getRealNode(el.processId.get());
-								el['processName'] = tmp.info.name.get();
+								el['roomName'] = tmp.info.name.get();
+								el['floorName'] = self.allData.rooms[floorLvl].rooms[allRooms].name;
 								self.addStep(el, tmp.info.name.get());
 								self.allTickets[self.allData.rooms[floorLvl].floor].push(el);
 							})
@@ -192,7 +195,8 @@ export default {
 							self.allData.rooms[floorLvl].rooms[allRooms].tickets.forEach(el => {
 								tmp = graph.SpinalGraphService.getRealNode(el.processId.get());
 								if (tmp !== undefined) {
-								el['processName'] = tmp.info.name.get();
+								el['roomName'] = tmp.info.name.get();
+								el['floorName'] = self.allData.rooms[floorLvl].rooms[allRooms].name;
 								self.addStep(el, tmp.info.name.get());
 								self.allTickets[self.allData.rooms[floorLvl].floor].push(el);
 								}

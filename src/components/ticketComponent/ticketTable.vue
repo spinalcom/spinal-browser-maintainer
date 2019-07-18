@@ -2,7 +2,7 @@
 <div>
 	<div>
 		<button class="backButton" @click="backToProcess"><v-icon color="white">arrow_back</v-icon></button>
-		<icon id="title">{{title}}</icon>
+		<p id="title">{{title}}</p>
 		<filter-dialog :steps="steps" 
 				   :selectedSteps="selectedSteps" ></filter-dialog>
 		<button id="selectEyeForTickets" @click="exportCsv"><v-icon>get_app</v-icon></button>
@@ -233,6 +233,7 @@ export default {
 }
 #title {
 	margin-left: calc(10vh);
+	display: inline;
 }
 .customColor {
 	color: var(--accent-color);
