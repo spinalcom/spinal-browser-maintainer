@@ -203,6 +203,8 @@ export default {
 							self.allTickets[self.allData.rooms[floorLvl].floor] = [];
 							self.allData.rooms[floorLvl].rooms[allRooms].tickets.forEach(el => {
 								tmp = graph.SpinalGraphService.getRealNode(el.processId.get());
+								console.log(self.allData.rooms[floorLvl].rooms)
+								el['idObject'] = self.allData.rooms[floorLvl].rooms[allRooms].id;
 								el['processName'] = tmp.info.name.get();
 								el['floorName'] = self.allData.rooms[floorLvl].floor;
 								el['roomName'] = self.allData.rooms[floorLvl].rooms[allRooms].name;
@@ -215,6 +217,7 @@ export default {
 								tmp = graph.SpinalGraphService.getRealNode(el.processId.get());
 								if (tmp !== undefined) {
 								el['processName'] = tmp.info.name.get();
+								//el['idObject'] = self.allData.rooms[floorLvl].rooms[allRooms].id;
 								el['floorName'] = self.allData.rooms[floorLvl].floor;
 								el['roomName'] = self.allData.rooms[floorLvl].rooms[allRooms].name;
 								self.addStep(el, tmp.info.name.get());

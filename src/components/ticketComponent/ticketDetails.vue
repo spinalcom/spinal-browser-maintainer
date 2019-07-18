@@ -9,7 +9,7 @@
 		<p>username: {{ ticket.username.get() }}</p>
 		<p>creation date: {{ timeConverter(ticket.creationDate.get()) }}</p> -->
 		<div class="applicationDetailsDisplay">
-			<v-icon class="applicationFloatDisplay">remove_red_eye</v-icon> 
+			<v-icon class="applicationFloatDisplay" @click="onClick">remove_red_eye</v-icon> 
 		</div>
 		<div class="processDisplayColor" :style="{backgroundColor:ticket.color.get()}">
 		</div>
@@ -19,7 +19,7 @@
 			<div class="lineDisplayInfo"> Date : {{ timeConverter(ticket.creationDate.get()) }}</div>
 			<div class="lineDisplayInfo">Auteur : {{ ticket.username.get() }} </div>
 		</div>
-		<v-textarea label="description" id="textDetails"> {{ ticket.note.get() }} </v-textarea>
+		<v-textarea label="note" id="textDetails"> {{ ticket.note.get() }} </v-textarea>
 		<div class="displayLogForTicket" >
 			log
 			<div v-for="x in 1">
@@ -46,6 +46,10 @@ export default {
     	backToProcess() {
     		EventBus.$emit("close-details");
     		console.log("b");
+    	},
+    	onClick() {
+    		//EventBus.$emit("display-colors", [this.ticket] );
+    		EventBus.$emit("click-details", this.ticket.idObject )
     	},
     	timeConverter(UNIX_timestamp){
 			var a = new Date(UNIX_timestamp);
