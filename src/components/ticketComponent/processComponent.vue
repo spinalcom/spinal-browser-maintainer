@@ -56,7 +56,6 @@ export default {
 				//console.log(this.allData.rooms);
 					for (var room in rooms)
 						if (rooms[room].floor === item.name) {
-							console.log("second if");
 							this.BadgeValue = rooms[room].processNumber;
 						}
 			} else {
@@ -65,7 +64,7 @@ export default {
 			}
 		},
 		displayBadge(value) {
-			console.log()
+						console.log("refresh", value, this.BadgeValue)
 			if (this.BadgeValue === undefined) {
 				return ' ';
 			}
@@ -82,23 +81,28 @@ export default {
 	watch: {
 		backFrom() {
 			this.calculateTotal(false, this.backFrom);
+		},
+		BadgeValue() {
+			console.log("UPDATE BADGE VALUE", this.BadgeValue);
 		}
 	},
 	mounted() {
 		let self = this;
 		this.getEvent();
-		this.calculateTotal(false);
+		//this.calculateTotal(false);
 		setTimeout(function(){
-			self.actualizeBadge = false;
-			self.actualizeBadge = true;
+			self.calculateTotal(false);
 		}, 3000)
 	}
 };
 </script>
 <style scoped>
-.displayCountBadge {
+.displayCountBadge { 
 	display: inline-grid;
 	background-color: red;
+	
+  	align-items: center;
+  	justify-content: center;
 	border-radius: 50%;
 	height: 20px;
 	width: 20px;
@@ -106,7 +110,9 @@ export default {
 	padding-top: 2px;
 }
 .displayProcessElementTitle {
-	margin-left: 48%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .overflowDisplayProcess {
 	overflow: auto;
@@ -115,7 +121,9 @@ export default {
 	margin-left: 0px;
 }
 .displayButtonChooseProcess {
-	margin-left: 44%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .buttonProcessDisplay {
 	background-color:grey;

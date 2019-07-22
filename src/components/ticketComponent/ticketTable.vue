@@ -146,7 +146,7 @@ export default {
 		},
 		onClick(item, event) {
 			//if (this.clicked === false) {
-				console.log("lelekekkeke", event, item)
+				//console.log("lelekekkeke", event, item)
 				if (this.clicked === false) {
 					event.target.parentElement.style.backgroundColor = "#2D3D93";
 					event.target.parentElement.style.color = "white";
@@ -173,7 +173,7 @@ export default {
 				// } );
 
 				// EventBus.$emit("test", ticket.id)
-				console.log(item);
+		//		console.log(item);
 				EventBus.$emit("display-colors", [item.item]);
 				//EventBus.$emit("click-ticket-event", item.item.id.get());
 				//this.overTableRow(item);

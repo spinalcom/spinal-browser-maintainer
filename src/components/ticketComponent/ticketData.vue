@@ -68,7 +68,7 @@ export default {
 		self.selectProcess = process;
 		self.triTicket();
      });
-     EventBus.$on("getBackToProcess", (lvl) =>  {
+     EventBus.$on("getBackToProcess", (lvl) => {
 		self.active = "default";
 		if (lvl === true)
 			self.backFrom = self.levelSelected;
@@ -92,11 +92,11 @@ export default {
 	exportCsv() {
 		let result = [];
 		result.push(["floor", "room", "process", "name", "step", "creation date", "author", "note"])
-		console.log( this.selectedTicket, this.levelSelected)
+	//	console.log( this.selectedTicket, this.levelSelected)
 		for (var node in this.selectedTicket) {
-			console.log("-->", this.selectedTicket[node]);
+	//		console.log("-->", this.selectedTicket[node]);
 			result.push([ this.selectedTicket[node].floorName, this.selectedTicket[node].roomName, this.selectedTicket[node].processName, this.selectedTicket[node].name.get(),
-							this.selectedTicket[node].stepName, this.timeConverter(this.selectedTicket[node].creationDate.get()), this.selectedTicket[node].username.get(),	
+							this.selectedTicket[node].stepName, this.timeConverter(this.selectedTicket[node].creationDate.get()), this.selectedTicket[node].username.get(),
 							this.selectedTicket[node].note.get() ]);
 		}
 
@@ -203,8 +203,9 @@ export default {
 							self.allTickets[self.allData.rooms[floorLvl].floor] = [];
 							self.allData.rooms[floorLvl].rooms[allRooms].tickets.forEach(el => {
 								tmp = graph.SpinalGraphService.getRealNode(el.processId.get());
-								console.log(self.allData.rooms[floorLvl].rooms)
+//								console.log("->", el)
 								el['idObject'] = self.allData.rooms[floorLvl].rooms[allRooms].id;
+								//console.log(tmp);
 								el['processName'] = tmp.info.name.get();
 								el['floorName'] = self.allData.rooms[floorLvl].floor;
 								el['roomName'] = self.allData.rooms[floorLvl].rooms[allRooms].name;
@@ -217,7 +218,7 @@ export default {
 								tmp = graph.SpinalGraphService.getRealNode(el.processId.get());
 								if (tmp !== undefined) {
 								el['processName'] = tmp.info.name.get();
-								//el['idObject'] = self.allData.rooms[floorLvl].rooms[allRooms].id;
+								el['idObject'] = self.allData.rooms[floorLvl].rooms[allRooms].id;
 								el['floorName'] = self.allData.rooms[floorLvl].floor;
 								el['roomName'] = self.allData.rooms[floorLvl].rooms[allRooms].name;
 								self.addStep(el, tmp.info.name.get());
@@ -246,12 +247,12 @@ export default {
   },
   watch: {
 	levelSelected() {
-		console.log("levelSelected updated", this.levelSelected);
+	//	console.log("levelSelected updated", this.levelSelected);
 		this.triTicket();
 		this.extractProcess();
 	},
 	allData() {
-		console.log("watch alldata", this.allData);
+	//	console.log("watch alldata", this.allData);
 		this.allTickets = [];
 		this.process = [];
 		this.getAllTickets().then(() => {

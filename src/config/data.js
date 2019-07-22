@@ -96,6 +96,7 @@ let dataService = {
     }
   },
   getTicketsPerRoom(lvl, room_nbr, rooms, processInfo) {
+    console.log("getTicketsPerRoom")
     graph.SpinalGraphService.getChildren(rooms[lvl].rooms[room_nbr].id, SPINAL_TICKET_SERVICE_TARGET_RELATION_NAME)
       .then(children => {
         if (children.length > 0) {
