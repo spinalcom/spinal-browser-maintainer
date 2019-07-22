@@ -17,8 +17,8 @@
         <p class="sitebarElement">
         {{ shortenText(item.name) }}</p>
 
-        <div class="displayBadge" v-if="rooms[index].count!==undefined">
-          <p style="color:white !important">{{ rooms[index].count }}</p>
+        <div class="displayBadge" v-if="counter[index].count!==undefined">
+          <p style="color:white !important">{{ counter[index].count }}</p>
         </div>
 
         </div>
@@ -43,8 +43,7 @@
             <p style="color:white !important">{{ numberForBadge(item.tickets) }}</p>
         </div>
 
-<!--         </v-badge>
- -->        </div>
+     </div>
     </div>
   </div>
 </div>
@@ -65,7 +64,8 @@ export default {
       roomSelected: '',
       oldTarget: {},
       selectedProcess: "",
-      rendering: true
+      rendering: true,
+      counter: {}
     };
   },
   props: ["floors", "rooms", "allData"],
@@ -92,40 +92,81 @@ export default {
       });
     }
 
-    EventBus.$on("select-process", processName => this.selectedProcess = processName);
-    EventBus.$on("getBackToProcess", () => this.selectedProcess = '');
+    EventBus.$on("select-process", processName => {
+     this.selectedProcess = processName
+    // console.log("select process", processName);
+      for (var item in this.floors) {
+        this.calculeTotalTicket(this.floors[item]);
+      }
+      let self = this;
+      setTimeout(function() {
+       self.rendering = false;
+       self.rendering = true;
+    }, 1000)
+   });
+
+    EventBus.$on("getBackToProcess", () => {
+      this.selectedProcess = ''
+      for (var item in this.floors) {
+        this.calculeTotalTicket(this.floors[item]);
+      }
+      let self = this;
+      setTimeout(function() {
+       self.rendering = false;
+       self.rendering = true;
+     //  console.log("-00000000000000000-------------------------------------")
+    }, 1000)
+
+    });
 
     this.menus.push(content);
   },
   created() {
     let self = this;
-    setTimeout(function() {
-      self.rendering = false;
-      self.rendering = true;
-    }, 2000)
     console.log("coucou", this.floors);
     for (var item in this.floors) {
       this.calculeTotalTicket(this.floors[item]);
     }
+
+    setTimeout(function() {
+      for (var item in self.floors) {
+        self.calculeTotalTicket(self.floors[item]);
+      }
+    }, 3000)
+    setTimeout(function() {
+      self.rendering = false;
+      self.rendering = true;
+    }, 3002)
   },
   methods: {
     calculeTotalTicket(item) {
       let self = this;
-
+      console.log('-----------> counter ', this.counter)
+      let iterator;
+   //   console.log("calculatotal ticket", item, this.rooms, this.allData.rooms);
       let count = 0;
       if (item !== undefined) {
       for (var i in self.allData.rooms) {
         if (self.allData.rooms[i].floor === item.name) {
+          iterator = i;
           for (var el in self.allData.rooms[i].processNumber) {
-            count = count + self.allData.rooms[i].processNumber[el];
+         //   console.log(self.allData.rooms[i].processNumber)
+            if (this.selectedProcess !== '') {
+              if (this.selectedProcess === el)
+                count = count + self.allData.rooms[i].processNumber[el];
+            }
+            else
+              count = count + self.allData.rooms[i].processNumber[el];
           }
         }
       }
       if (count == 0) {
-        item['count'] = 0;
+        self.counter[iterator] = {};
+        self.counter[iterator].count = undefined;
         return 0;
       }
-        item['count'] = count;
+        self.counter[iterator] = {};
+        self.counter[iterator].count = count;
         return count;
       }
       return 0;
