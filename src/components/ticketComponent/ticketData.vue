@@ -3,6 +3,7 @@
 		<process-component :processList="allData.process"
 							:allData="allData"
 							:backFrom="backFrom"
+							:load="load"
 							>
 		</process-component>
 	</div>
@@ -43,7 +44,8 @@ export default {
       selectProcess: "",
       eventRoom: false,
       overTickets: [],
-      backFrom: ""
+      backFrom: "",
+      load: false
     };
   },
   components: {
@@ -67,6 +69,7 @@ export default {
 		self.active = "table";
 		self.selectProcess = process;
 		self.triTicket();
+		self.load = true;
      });
      EventBus.$on("getBackToProcess", (lvl) => {
 		self.active = "default";

@@ -27,7 +27,7 @@ export default {
 			actualizeBadge: true
 		}
 	},
-	props: ["processList", "allData", "backFrom"],
+	props: ["processList", "allData", "backFrom", "load"],
 	methods: {
 		selectProcess(target) {
 			if (target.target.className !== "displayCountBadge") {
@@ -79,9 +79,13 @@ export default {
 	mounted() {
 		let self = this;
 		this.getEvent();
-		setTimeout(function(){
-			self.calculateTotal(false);
-		}, 3000)
+		if (this.load) {
+			this.calculateTotal(false);
+		} else {
+			setTimeout(function(){
+				self.calculateTotal(false);
+			}, 3000)
+		}
 	}
 };
 </script>
