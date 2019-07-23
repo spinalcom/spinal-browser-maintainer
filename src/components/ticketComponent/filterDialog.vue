@@ -80,15 +80,6 @@ import { EventBus } from "../../config/event";
     }
     },
     watch: {
-      steps() {
-        console.log("update steps");
-      },
-      selectedSteps() {
-        console.log("update selectedsteps");
-      },
-      allSteps() {
-        console.log("update allsteps");
-      },
       selected() {
         let result = this.arr_diff(this.selected, this.allSteps);
 

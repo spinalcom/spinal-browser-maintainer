@@ -14,18 +14,13 @@
 
 
 <script>
-// const logo = "../../assets/logo_medium.png";
 export default {
   name: "Header"
-  //   data() {
-  //     return { logo: logo };
-  //   }
 };
 </script>
 
 <style scoped>
 .mainNavbar {
-  /* padding: 13px; */
   height: 64px;
   padding: 5px;
   border-bottom: black;

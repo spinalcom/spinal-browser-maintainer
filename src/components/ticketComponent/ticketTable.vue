@@ -6,6 +6,7 @@
 		<filter-dialog :steps="steps" 
 				   :selectedSteps="selectedSteps" ></filter-dialog>
 		<button id="selectEyeForTickets" @click="exportCsv"><v-icon>get_app</v-icon></button>
+		<button id="selectEyeForTickets" @click="analytics"><v-icon></v-icon>assessment</button>
 		<button id="selectEyeForTickets" @click="showTicketsColor"><v-icon>remove_red_eye</v-icon></button>
 
 	</div>
@@ -37,9 +38,9 @@
       </v-tooltip>
     </template>
     <template v-slot:items="props">
-       	<td @mouseover="overTableRow(props)" @mouseleave="mouseLeave()" @click="onClick(props, $event)" :style="isOver(props.item)">{{ props.item.name.get() }}</td>
-      	<td @mouseover="overTableRow(props)" @mouseleave="mouseLeave()" @click="onClick(props, $event)" :style="isOver(props.item)" class="text-xs-right">{{ ticketDate(props.item.creationDate.get()) }}</td>
-      	<td class="text-xs-right" @click="onClick(props, $event)" :style="isOver(props.item)" @mouseover="overTableRow(props)" @mouseleave="mouseLeave()">
+       	<td @mouseover="overTableRow(props)" @mouseleave="mouseLeave()" @click="onClick(props, $event)">{{ props.item.name.get() }}</td>
+      	<td @mouseover="overTableRow(props)" @mouseleave="mouseLeave()" @click="onClick(props, $event)" class="text-xs-right">{{ ticketDate(props.item.creationDate.get()) }}</td>
+      	<td class="text-xs-right" @click="onClick(props, $event)" @mouseover="overTableRow(props)" @mouseleave="mouseLeave()">
       		{{ props.item.stepName }}<p class="colorPatchDisplay displayInline" :style="{backgroundColor: props.item.color.get()}" ></p></td>
        	<td style="float:right; padding-top:10px" ><v-icon @click="selectDetails(props)">not_listed_location</v-icon></td>
     </template>
@@ -84,18 +85,17 @@ export default {
       }
     },
     props: ["allTickets", "steps", "selectedSteps", "title"],
-    mounted() {
-		console.log("table has mounted", this.allTickets ,this.allTickets.forEach(function(el) { console.log(el.name.get())}), this.allTickets);
-    },
+    mounted() { },
     methods: {
-    	onResize() {
-    		//if (window.innerHeight)
-    	},
+    	onResize() {},
 		backToProcess() {
 			EventBus.$emit("getBackToProcess", true)
 		},
 		predicat: function( node ) {
 			return node.info.type.get() === "BIMObject";
+		},
+		analytics() {
+			console.log("analytics");
 		},
 		overTableRow(el) {
 			let self = this;
@@ -109,12 +109,7 @@ export default {
 				EventBus.$emit("select-tickets-room", lst);
 			} );
 		},
-		isOver(item) {
-			// if (item.over === true)
-			// 	return 'background-color:grey';
-		},
 		hexToRgb(hex) {
-		// Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
 		var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
 		hex = hex.replace(shorthandRegex, function(m, r, g, b) {
 			return r + r + g + g + b + b;
@@ -145,8 +140,6 @@ export default {
 			EventBus.$emit("ticket-details", item.item);
 		},
 		onClick(item, event) {
-			//if (this.clicked === false) {
-				//console.log("lelekekkeke", event, item)
 				if (this.clicked === false) {
 					event.target.parentElement.style.backgroundColor = "#2D3D93";
 					event.target.parentElement.style.color = "white";
@@ -158,34 +151,12 @@ export default {
 					this.clicked = false;
 				}
 
-				// let ticket = {}
-				// ticket.id = item.item.bimId.get();
-				// let self = this;
-				// graph.SpinalGraphService.findNodes(item.item.id, [
-				// 	"SpinalSystemServiceTicketHasLocation",
-				// 	"hasBIMObject",
-				// 	'hasReferenceObject'
-				// ],
-				// 	self.predicat
-				// ).then( lst => {
-				// 	console.log("-->", lst)
-				// 	EventBus.$emit("test", lst[0].info.id.get());
-				// } );
-
-				// EventBus.$emit("test", ticket.id)
-		//		console.log(item);
 				EventBus.$emit("display-colors", [item.item]);
-				//EventBus.$emit("click-ticket-event", item.item.id.get());
-				//this.overTableRow(item);
-			//} else
-			//console.log("already")
 		},
 		showTicketsColor() {
-			console.log("display color", this.allTickets);
 			EventBus.$emit("display-colors", this.allTickets);
 		},
 		exportCsv() {
-			//console.log("export");
 			EventBus.$emit("export");
 		},
 		timeConverter(UNIX_timestamp){
@@ -220,15 +191,11 @@ export default {
 .colorPatchDisplay {
 	border-style: none;
 	padding-top: 2px;
-/*	border-color: black;
-	border-style: solid;
-*/}
+}
 
 #selectEyeForTickets {
 	float: right;
 	margin-top: 7px;
-/*	border-radius: 50%;
-	border: solid;*/
 	padding: 3px;
 }
 #title {

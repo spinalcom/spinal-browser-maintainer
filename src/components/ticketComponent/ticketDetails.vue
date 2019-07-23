@@ -2,12 +2,6 @@
 <div>
 	<button class="backButton" @click="backToProcess"><v-icon color="white">arrow_back</v-icon></button>
 	<div id="displayDetails">
-<!-- 		<p>name : {{ ticket.name.get() }}</p>
-		<p>categorie: {{ ticket.categories.get() }}</p>
-		<p>process: {{ ticket.processName }}</p>
-		<p class="displayInline">step: {{ ticket.stepName }}</p><p class="colorPatchDisplay displayInline" :style="{backgroundColor: ticket.color.get()}" ></p>
-		<p>username: {{ ticket.username.get() }}</p>
-		<p>creation date: {{ timeConverter(ticket.creationDate.get()) }}</p> -->
 		<div class="applicationDetailsDisplay">
 			<v-icon class="applicationFloatDisplay" @click="onClick">remove_red_eye</v-icon> 
 		</div>
@@ -39,16 +33,12 @@ export default {
       return { }
     },
     props: ["ticket"],
-    mounted() {
-    	console.log(this.ticket);
-    },
+    mounted() { },
     methods: {
     	backToProcess() {
     		EventBus.$emit("close-details");
-    		console.log("b");
     	},
     	onClick() {
-    		//EventBus.$emit("display-colors", [this.ticket] );
     		EventBus.$emit("click-details", this.ticket.idObject )
     	},
     	timeConverter(UNIX_timestamp){
@@ -71,10 +61,6 @@ export default {
 .displayInline {
 	display: inline-flex;
 }
-/*#displayDetails {
-	text-align: center;
-	margin-top: calc(40%);
-}*/
 #displayDetails {
 	padding-top: 50px;
 }
@@ -128,10 +114,6 @@ export default {
 #textDetails {
 	border: 1px solid;
 	height: 60px;
-}
-
-.displayLogForTicket {
-
 }
 
 .elementToDisplayDetails {

@@ -96,7 +96,6 @@ let dataService = {
     }
   },
   getTicketsPerRoom(lvl, room_nbr, rooms, processInfo) {
-    console.log("getTicketsPerRoom")
     graph.SpinalGraphService.getChildren(rooms[lvl].rooms[room_nbr].id, SPINAL_TICKET_SERVICE_TARGET_RELATION_NAME)
       .then(children => {
         if (children.length > 0) {
@@ -185,7 +184,6 @@ let dataService = {
     this.getEquipments(rooms);
     this.getProcessName(processName);
     
-    //setTimeout(function() { console.log(rooms, "-", floors)}, 2000);
     return {
       floors: floors,
       rooms: rooms,

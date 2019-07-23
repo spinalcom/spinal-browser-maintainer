@@ -2,30 +2,20 @@
   <div class="viewerContainer"
        id="autodesk_forge_viewer">
   </div>
-
-<!--  <spinal-forge-viewer-vue class="viewerContainer"  id="autodesk_forge_viewer"
-  :model-property="{ path: ForgeViewer.options.docid }" 
-  :onInitialize="testFunction">
- </spinal-forge-viewer-vue>
- -->
 </template>
 
 <script>
-// import Vue from "vue";
 import ForgeViewer from "./forgeViewer";
 import { EventBus } from "../../config/event";
 
 import dataService from "../../config/data";
 import { setTimeout } from "timers";
 import graph from "../../config/GraphService"
-/*import {SpinalForgeViewerVue} from "spinal-forge-viewer-vue"
-*/
 
 let forgeViewer = new ForgeViewer();
 
 export default {
   name: "appViewer",
-  // props: ["collapseMenu"],
   data() {
     return {
       viewer: null,
@@ -34,9 +24,7 @@ export default {
       materials: {}
     };
   },
-/*  components: {
-    SpinalForgeViewerVue
-  },*/
+
   async mounted() {
     this.getEvents();
 
@@ -85,9 +73,6 @@ export default {
         this.viewer.fitToView(0); 
       });
     },
-    testFunction(viewer) {
-      console.log(viewer);
-    },
     createSetColor() {
       let _self = this;
       this.viewer.setColorMaterial = function(
@@ -104,8 +89,6 @@ export default {
             _self.viewer.impl.invalidate(false, false, true);
           } else {
             var material = _self.addMaterial(color, dbid);
-            //from dbid to node, to fragid
-
 
             let it = _self.viewer.model.getData().instanceTree;
             it.enumNodeFragments(
@@ -143,7 +126,6 @@ export default {
       this.materials[id] = new THREE.MeshPhongMaterial({
         color: color
       });
-      //viewer.impl.matman().addMaterial(newGuid(), material);
 
       this.viewer.impl.createOverlayScene(
         id,
@@ -160,7 +142,6 @@ export default {
       for (var i = 0; i < objectIds.length; i++) {
         var dbid = objectIds[i];
 
-        //from dbid to node, to fragid
         var it = _self.viewer.model.getData().instanceTree;
 
         if (_self.materials[dbid]) delete _self.materials[dbid];
@@ -174,12 +155,9 @@ export default {
             );
 
             if (renderProxy[dbid]) {
-              //remove all overlays with same name
               _self.viewer.impl.clearOverlay(dbid);
-              //_self.viewer.impl.removeOverlay(id, renderProxy[id]);
               delete renderProxy[dbid];
 
-              //refresh the sence
               _self.viewer.impl.invalidate(true);
             }
           },
@@ -210,7 +188,6 @@ export default {
       this.colors = {}
       let iterator = 0;
             for (var node in items) {
-              //realNode = SpinalGraphService.getRealNode(items[node].info.id.get());
               realNode = graph.SpinalGraphService.getRealNode(items[node].id.get());
               self.colors[iterator] = items[node].color.get();
 
@@ -270,11 +247,6 @@ export default {
           this.viewer.fitToView(res);
           return;
         })
-        // .then(() => {
-        //   setTimeout(() => {
-        //     this.viewer.setViewCube("[front,]");
-        //   }, 1000);
-        // });
     },
 
     setCameraToTopView() {}
@@ -283,19 +255,6 @@ export default {
 </script>
 
 <style scoped>
-/* .mainLayout {
-  width: calc(100% - 50px);
-  position: relative;
-  -webkit-transition-duration: 0.3s;
-
-  margin-left: 50px;
-}
-
-.mainLayout.collapsed {
-  width: calc(100% - 350px);
-  margin-left: 350px;
-}
-*/
 .viewerContainer {
   width: 51%;
   height: calc(93.5%);

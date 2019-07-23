@@ -94,7 +94,6 @@ export default {
 
     EventBus.$on("select-process", processName => {
      this.selectedProcess = processName
-    // console.log("select process", processName);
       for (var item in this.floors) {
         this.calculeTotalTicket(this.floors[item]);
       }
@@ -114,7 +113,6 @@ export default {
       setTimeout(function() {
        self.rendering = false;
        self.rendering = true;
-     //  console.log("-00000000000000000-------------------------------------")
     }, 1000)
 
     });
@@ -123,7 +121,6 @@ export default {
   },
   created() {
     let self = this;
-    console.log("coucou", this.floors);
     for (var item in this.floors) {
       this.calculeTotalTicket(this.floors[item]);
     }
@@ -141,16 +138,13 @@ export default {
   methods: {
     calculeTotalTicket(item) {
       let self = this;
-      console.log('-----------> counter ', this.counter)
       let iterator;
-   //   console.log("calculatotal ticket", item, this.rooms, this.allData.rooms);
       let count = 0;
       if (item !== undefined) {
       for (var i in self.allData.rooms) {
         if (self.allData.rooms[i].floor === item.name) {
           iterator = i;
           for (var el in self.allData.rooms[i].processNumber) {
-         //   console.log(self.allData.rooms[i].processNumber)
             if (this.selectedProcess !== '') {
               if (this.selectedProcess === el)
                 count = count + self.allData.rooms[i].processNumber[el];
@@ -323,52 +317,4 @@ p {
   width: 92%;
 }
 
-.header-sidebar {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  width: 100%;
-
-  h4 {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-
-    > button {
-      margin-left: 10px;
-    }
-  }
-}
-
-.footer-sidebar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-
-  > button {
-    border: 0px solid rgba(0, 0, 0, 0) !important;
-    border-left: 1px solid rgba(0, 0, 0, 0.07) !important;
-    border-radius: 0px !important;
-  }
-}
-
-.vs-sidebar--background {
-  width: 0px !important;
-  height: 0px !important;
-}
-
-.vs-sidebar.vs-sidebar-reduce {
-  background: #272727;
-  height: 49%;
-  color: white;
-}
-
-.vs-sidebar--header {
-  height: 40px;
-  background: white;
-  color: black;
-}
 </style>

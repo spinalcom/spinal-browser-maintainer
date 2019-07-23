@@ -17,10 +17,6 @@ class ForgeViewer {
       useADP: false
     };
     this.docs = [];
-
-    // forgeExtentionManager.addExtention(
-    //   "Autodesk.ADN.Viewing.Extension.Color"
-    // );
   }
 
   start_viewer(dom) {

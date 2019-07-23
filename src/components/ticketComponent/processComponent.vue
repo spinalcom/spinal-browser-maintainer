@@ -10,8 +10,7 @@
       </template> -->
 				{{ element }}
 				<p class="displayCountBadge" v-if="displayBadge(element) !== ' '">{{ displayBadge(element) }}</p>
-<!-- 			</v-badge>
- -->			</button>
+			</button>
 
 		</div>
 	</div>
@@ -38,14 +37,11 @@ export default {
 			}
 		},
 		calculateTotal(bool, item) {
-			//console.log("calcul", this.backFrom, this.allData.rooms);
-			let self = this;
 
 			if (this.backFrom !== '') {
 				let rooms = this.allData.rooms;
 					for (var room in rooms)
 						if (rooms[room].floor === this.backFrom) {
-							console.log("first if");
 							this.BadgeValue = rooms[room].processNumber;
 						}
 						return;
@@ -53,18 +49,15 @@ export default {
 
 			if (bool) {
 				let rooms = this.allData.rooms;
-				//console.log(this.allData.rooms);
 					for (var room in rooms)
 						if (rooms[room].floor === item.name) {
 							this.BadgeValue = rooms[room].processNumber;
 						}
 			} else {
-				//console.log("123454321", this.allData.totalTickets.count);
 				this.BadgeValue = this.allData.totalTickets.count;
 			}
 		},
 		displayBadge(value) {
-						console.log("refresh", value, this.BadgeValue)
 			if (this.BadgeValue === undefined) {
 				return ' ';
 			}
@@ -81,15 +74,11 @@ export default {
 	watch: {
 		backFrom() {
 			this.calculateTotal(false, this.backFrom);
-		},
-		BadgeValue() {
-			console.log("UPDATE BADGE VALUE", this.BadgeValue);
 		}
 	},
 	mounted() {
 		let self = this;
 		this.getEvent();
-		//this.calculateTotal(false);
 		setTimeout(function(){
 			self.calculateTotal(false);
 		}, 3000)

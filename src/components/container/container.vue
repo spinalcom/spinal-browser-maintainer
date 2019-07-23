@@ -6,7 +6,6 @@
                      :rooms="rooms"
                      :equipments="equipments"></contextual-list>
       <app-viewer class="middleBar-dataView-display"></app-viewer>
-      <!--<middle-bar class="middleBar-dataView-display"></middle-bar>= -->
       <data-view :allData="allData">
     </data-view>
     </div>
@@ -42,30 +41,15 @@ export default {
       }
     }
   }
-  // watch : {
-  //   floorSelected : function(newValue,oldValue) {
-
-  //   }
-  // }
 };
 </script>
 
 <style scoped>
 .container {
   position: relative;
-  /*min-height: calc(100%);*/
   float: right;
   width: calc(100% - 200px);
-  /* width: calc(100%); */
-  /*height: calc(100%);*/
 }
-
-/* @media screen and (min-width: 900px) {
-  .mainContainer:not(.collapsed) {
-    width: calc(100% - 350px);
-    height: (100%);
-  }
-} */
 
 .middleBar-dataView-display {
   margin-left: 10px;

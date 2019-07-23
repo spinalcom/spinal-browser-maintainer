@@ -92,9 +92,7 @@ export default {
 	exportCsv() {
 		let result = [];
 		result.push(["floor", "room", "process", "name", "step", "creation date", "author", "note"])
-	//	console.log( this.selectedTicket, this.levelSelected)
 		for (var node in this.selectedTicket) {
-	//		console.log("-->", this.selectedTicket[node]);
 			result.push([ this.selectedTicket[node].floorName, this.selectedTicket[node].roomName, this.selectedTicket[node].processName, this.selectedTicket[node].name.get(),
 							this.selectedTicket[node].stepName, this.timeConverter(this.selectedTicket[node].creationDate.get()), this.selectedTicket[node].username.get(),
 							this.selectedTicket[node].note.get() ]);
@@ -193,8 +191,6 @@ export default {
 		let self = this;
 		let tmp;
 		return new Promise((resolve) => {
-		//self.allTickets = [];
-		//self.process = [];
 
 			for (var floorLvl in self.allData.rooms)
 				for (var allRooms in self.allData.rooms[floorLvl].rooms) {
@@ -203,9 +199,7 @@ export default {
 							self.allTickets[self.allData.rooms[floorLvl].floor] = [];
 							self.allData.rooms[floorLvl].rooms[allRooms].tickets.forEach(el => {
 								tmp = graph.SpinalGraphService.getRealNode(el.processId.get());
-//								console.log("->", el)
 								el['idObject'] = self.allData.rooms[floorLvl].rooms[allRooms].id;
-								//console.log(tmp);
 								el['processName'] = tmp.info.name.get();
 								el['floorName'] = self.allData.rooms[floorLvl].floor;
 								el['roomName'] = self.allData.rooms[floorLvl].rooms[allRooms].name;
@@ -247,21 +241,16 @@ export default {
   },
   watch: {
 	levelSelected() {
-	//	console.log("levelSelected updated", this.levelSelected);
 		this.triTicket();
 		this.extractProcess();
 	},
 	allData() {
-	//	console.log("watch alldata", this.allData);
 		this.allTickets = [];
 		this.process = [];
 		this.getAllTickets().then(() => {
 			this.triTicket();
 			this.extractProcess();
 		});
-	},
-	process() {
-		console.log("update proces", this,process);
 	}
   }
 };
