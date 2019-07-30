@@ -23,6 +23,7 @@
     "app.vue": "^0.1.10",
     "bootstrap": "^4.3.1",
     "bootstrap-vue": "^2.0.0-rc.16",
+    "config": "^3.2.2",
     "jquery": "^3.3.1",
     "lodash.throttle": "4.1.1",
     "parcel-bundler": "^1.12.3",

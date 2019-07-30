@@ -2,6 +2,7 @@
 	<div>
 	<div>
 		<button class="backButton" @click="backToProcess"><v-icon color="white">arrow_back</v-icon></button>
+		<div id="displayMonth"> {{ month}} </div>
 	</div>
 
 	<div class="calendar">
@@ -18,7 +19,7 @@
           color="primary"
         >
         	<template v-slot:day="{present, past, date}">
-        		{{ date }}
+        		<div :data="date" class="calendarElement" v-if="totalTicketPerDay(date) != ''">{{ totalTicketPerDay(date) }} </div>
         	</template>
         </v-calendar>
       </v-sheet>
@@ -29,7 +30,7 @@
       xs12
       class="text-sm-left text-xs-center"
     >
-      <v-btn @click="$refs.calendar.prev()">
+      <v-btn @click="downCalendar">
         <v-icon
           dark
           left
@@ -55,7 +56,7 @@
       xs12
       class="text-sm-right text-xs-center"
     >
-      <v-btn @click="$refs.calendar.next()">
+      <v-btn @click="upCalendar">
         Next
         <v-icon
           right
@@ -76,10 +77,11 @@ import dateService from "../../config/dateService";
 
 export default {
 	name: "ticketCalendar",
-	props: ["selectedTicket"],
+	props: ["selectedTicket", "steps"],
 	data: () => ({
     type: 'month',
     start: '',
+    month: "",
     end: '2019-01-06',
     typeOptions: [
       { text: 'Day', value: 'day' },
@@ -92,19 +94,48 @@ export default {
   }),
 	methods: {
 		backToProcess() {
-			EventBus.$emit("getBackToProcess", true)
+			EventBus.$emit("getBackToTable");
 		},
 		onClick(item) {
-			console.log("onclickw", item)
+			let child = item.target.children[1];
+			let date = item.target.getAttribute("data");
+			if (date !== null)
+				dateService.displayPerDay(date);
+			else if (child !== undefined)
+				if (child.getAttribute("data") !== null)
+					dateService.displayPerDay(child.getAttribute("data"));
 		},
-		initService(date) {
+		totalTicketPerDay(date) {
+			return dateService.count(date);
+		},
+		upCalendar() {
+			let self = this;
+			this.$refs.calendar.next();
+
+
+			setTimeout(function() {
+				let tmp = self.$refs.calendar.value;
+				tmp = new Date(tmp);
+				self.month = dateService.monthDigitToString(tmp.getMonth());
+			}, 100);
+		},
+		downCalendar() {
+			this.$refs.calendar.prev();
+			let self = this;
+
+			setTimeout(function() {
+				let tmp = self.$refs.calendar.value;
+				tmp = new Date(tmp);
+				self.month = dateService.monthDigitToString(tmp.getMonth());
+			}, 100);
 		}
 	},
 	mounted() {
 		var d = new Date();
 		this.start = d.toDateString();
 		dateService.init(this.selectedTicket);
-		console.log("selectedTicket", this.selectedTicket);
+		this.month = dateService.monthDigitToString(d.getMonth());
+		console.log("->>> ", this.$refs.calendar);
 	}
 };
 </script>
@@ -117,7 +148,7 @@ export default {
     padding: 9px;
     margin-top: 5px;
     margin-left: 8px;
-    font-size: 17px;
+    font-size: 17px; 
     font-family: sans-serif;
     padding-top: 4px;
     width: 90px;
@@ -125,5 +156,20 @@ export default {
 }
 .calendar {
 	margin: 15px;
+}
+#displayMonth {
+	display: inline;
+	margin-left: 10%;
+}
+.calendarElement {
+    text-align: center;
+    margin-top: 9px;
+    width: 24px;
+    height: 21px;
+    border-radius: 50%;
+    margin: auto;
+    color: white;
+    background-color: red;
+    padding-top: 2px;
 }
 </style>

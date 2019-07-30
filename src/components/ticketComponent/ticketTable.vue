@@ -6,7 +6,7 @@
 		<filter-dialog :steps="steps" 
 				   :selectedSteps="selectedSteps" ></filter-dialog>
 		<button id="selectEyeForTickets" @click="exportCsv"><v-icon>get_app</v-icon></button>
-		<button id="selectEyeForTickets" @click="analytics"><v-icon></v-icon>assessment</button>
+		<button id="selectEyeForTickets" @click="analytics"><v-icon>assessment</v-icon></button>
 		<button id="selectEyeForTickets" @click="showTicketsColor"><v-icon>remove_red_eye</v-icon></button>
 
 	</div>
@@ -95,7 +95,7 @@ export default {
 			return node.info.type.get() === "BIMObject";
 		},
 		analytics() {
-			console.log("analytics");
+			EventBus.$emit("show-analytics");
 		},
 		overTableRow(el) {
 			let self = this;
@@ -182,6 +182,10 @@ export default {
 .newdisplay {
 	background-color: black;
 	color: white;
+}
+.elevation-1 {
+	margin-left: 10px;
+	margin-right: 10px;
 }
 
 .displayInline {

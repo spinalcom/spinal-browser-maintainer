@@ -19,6 +19,13 @@
 			
 		</ticket-details>
 	</div>
+	<div v-else-if="active == 'calendar'">
+		<ticket-calendar :selectedTicket="selectedTicket"
+					  	:steps="steps"
+		>
+			
+		</ticket-calendar>
+	</div>
 </template>
 
 <script>
@@ -27,6 +34,7 @@ import graph from "../../config/GraphService";
 import processComponent from "./processComponent.vue";
 import ticketTable from "./ticketTable.vue";
 import ticketDetails from "./ticketDetails";
+import ticketCalendar from './ticketCalendar.vue'
 
 export default {
 	name: "ticketData",
@@ -51,7 +59,8 @@ export default {
   components: {
 	processComponent,
 	ticketTable,
-	ticketDetails
+	ticketDetails,
+	ticketCalendar
   },
   props: ["allData"],
   mounted() {
@@ -76,14 +85,23 @@ export default {
 		if (lvl === true)
 			self.backFrom = self.levelSelected;
      });
+     EventBus.$on("getBackToTable", () => {
+		self.active = "table";
+     });
      EventBus.$on("select-steps", selected => {
 		self.selectedSteps = selected;
 		self.init = false;
 		self.triTicket();
      });
+     EventBus.$on("calendar-tickets", arrayOfNode =>  { 
+     	console.log("calendar-tickets", arrayOfNode);
+     	this.selectedTicket = arrayOfNode;
+     	this.active = "table";
+     });
      EventBus.$on("click-room", item => self.addOverOnTableElement(item) );
      EventBus.$on("ticket-details", item => self.showDetails(item));
      EventBus.$on("export", () => self.exportCsv());
+     EventBus.$on("show-analytics", () => self.active = 'calendar');
      EventBus.$on("close-details", () => self.active = "table");
      EventBus.$on("reset-select", () => {
      	self.backFrom = '';

@@ -1,7 +1,10 @@
 <template>
 	<div class="overflowDisplayProcess">
+		<div class="selectEyeForTickets">
+		<button><v-icon>get_app</v-icon></button>
+		<button><v-icon>assessment</v-icon></button>
+		</div>
 		<p class="displayProcessElementTitle">Choose a process</p>
-
 		<div v-for="element in processList" class="displayButtonChooseProcess">
 			<button class="buttonProcessDisplay" @click="selectProcess"> 
 <!-- 				<v-badge right color="red">
@@ -90,6 +93,9 @@ export default {
 };
 </script>
 <style scoped>
+.selectEyeForTickets {
+	float: right;
+}
 .displayCountBadge { 
 	display: inline-grid;
 	background-color: red;
