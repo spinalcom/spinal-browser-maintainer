@@ -5,14 +5,13 @@
 </template>
 
 <script>
-import ForgeViewer from "./forgeViewer";
+import { ForgeViewer } from "spinal-forge-viewer";
 import { EventBus } from "../../config/event";
 
 import dataService from "../../config/data";
 import { setTimeout } from "timers";
-import graph from "../../config/GraphService"
-
-let forgeViewer = new ForgeViewer();
+import GraphService from "../../config/GraphService";
+import 'spinal-env-viewer-plugin-forge';
 
 export default {
   name: "appViewer",
@@ -27,13 +26,24 @@ export default {
 
   async mounted() {
     this.getEvents();
+      const container = document
+        .getElementById( "autodesk_forge_viewer" );
 
-    await forgeViewer.start_viewer(
-      document.getElementById("autodesk_forge_viewer")
-    );
-    this.viewer = forgeViewer.viewer;
+    // await forgeViewer.start_viewer('
+
+    this.forgeViewer = new ForgeViewer( container, false);
+
+   await this.forgeViewer.start( '/models/Resource/3D View/{3D} 341878/{3D}.svf',
+          true );
+    await window.spinal.SpinalForgeViewer.initialize(this.forgeViewer);
+
+    let scenes = await GraphService.getScene();
+
+    await window.spinal.SpinalForgeViewer.loadModelFromNode(scenes[0].info.id.get());
+    this.viewer = this.forgeViewer.viewer;
     this.createSetColor();
     this.createRestoreColor();
+
   },
   methods: {
     getEvents() {

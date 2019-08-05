@@ -26,7 +26,7 @@
 import "babel-polyfill";
 
 import Vue from "vue";
-import VueMaterial from "vue-material";
+/*import VueMaterial from "vue-material";*/
 import Vuetify from 'vuetify';
 import 'vuetify/dist/vuetify.min.css'
 
@@ -48,6 +48,6 @@ import App from "./app.vue";
 
 Vue.use(Vuetify);
 //Vue.use(Vuesax);
-Vue.use(VueMaterial);
+/*Vue.use(VueMaterial);*/
 
 new Vue(App).$mount("#app");

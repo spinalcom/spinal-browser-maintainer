@@ -34,6 +34,7 @@
     "spinal-env-maintainer-btn-joint": "git+https://github.com/spinalcom/spinal-env-maintainer-btn-joint.git",
     "spinal-env-viewer-context-menu-service": "git+https://github.com/spinalcom/spinal-env-viewer-context-menu-service.git",
     "spinal-env-viewer-graph-service": "git+https://github.com/spinalcom/Spinal-Graph-Service.git",
+    "spinal-forge-viewer": "git+https://github.com/spinalcom/spinal-forge-viewer.git",
     "spinal-forge-viewer-vue": "git+https://github.com/spinalcom/spinal-forge-viewer-vue.git",
     "store": "^2.0.12",
     "vue": "^2.6.10",
