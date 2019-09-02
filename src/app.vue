@@ -2,18 +2,22 @@
   <div v-if="data"
        class="container-fluid">
     <app-header></app-header>
+    <div class="main-content" data-app>
+      <div class="sidebarContext-display">
+        <app-sidebar :floors="data.floors"
+                     @selectFloor="selecFloor"
+                     :rooms="data.rooms"
+                     :allData="data"></app-sidebar>
 
-      <app-sidebar 
-                class="sidebarContext-display"
-                :floors="data.floors"
-                @selectFloor="selecFloor"
-                :rooms="data.rooms" 
-                :allData="data" ></app-sidebar>
-      <app-viewer class="app-viewer-display"></app-viewer>
+      </div>
 
-      <ticket-data class="dataViewDisplay"
-                   :allData="data" ></ticket-data>
+      <div class="view-container">
+        <app-viewer class="app-viewer-display"></app-viewer>
 
+        <ticket-data class="dataViewDisplay"
+                     :allData="data"></ticket-data>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -64,7 +68,7 @@ export default Vue.extend({
 
     setTimeout(function() {
       self.bindAllData();
-  }, 3000)
+    }, 3000);
   },
   methods: {
     mounted() {
@@ -72,53 +76,56 @@ export default Vue.extend({
     },
     bindAllData() {
       let self = this;
-     // console.log("binding", dataService.ContextNode, dataService.ProcessNodes, dataService.StepsNodes);
+      // console.log("binding", dataService.ContextNode, dataService.ProcessNodes, dataService.StepsNodes);
 
       this.bindObj.push(dataService.ContextNode);
-      this.bindObj.push(dataService.ContextNode.bind(function() {
-        self.refreshBind();
-        dataService.getAllData().then(allData => {
-          self.updateData(allData);
-          //self.data = allData;
-
-        });
-      }, false));
-
-      for (var ProcessNode in dataService.ProcessNodes) {
-        this.bindObj.push(dataService.ProcessNodes[ProcessNode]);
-        this.bindObj.push(dataService.ProcessNodes[ProcessNode].bind(function() {
+      this.bindObj.push(
+        dataService.ContextNode.bind(function() {
           self.refreshBind();
           dataService.getAllData().then(allData => {
             self.updateData(allData);
             //self.data = allData;
           });
-        }, false));
+        }, false)
+      );
+
+      for (var ProcessNode in dataService.ProcessNodes) {
+        this.bindObj.push(dataService.ProcessNodes[ProcessNode]);
+        this.bindObj.push(
+          dataService.ProcessNodes[ProcessNode].bind(function() {
+            self.refreshBind();
+            dataService.getAllData().then(allData => {
+              self.updateData(allData);
+              //self.data = allData;
+            });
+          }, false)
+        );
       }
 
       for (var Node in dataService.StepsNodes) {
         this.bindObj.push(dataService.StepsNodes[Node]);
-        this.bindObj.push(dataService.StepsNodes[Node].bind(function() {
-          self.refreshBind();
-          dataService.getAllData().then(allData => {
-            self.updateData(allData);
-            //self.data = allData;
-          });
-        }, false));
+        this.bindObj.push(
+          dataService.StepsNodes[Node].bind(function() {
+            self.refreshBind();
+            dataService.getAllData().then(allData => {
+              self.updateData(allData);
+              //self.data = allData;
+            });
+          }, false)
+        );
       }
 
       setTimeout(function() {
-   //     console.log("binobj = ", self.bindObj);
-      }, 2000)
-
+        //     console.log("binobj = ", self.bindObj);
+      }, 2000);
     },
     refreshBind() {
       let iterator = 0;
 
-      while(iterator > this.bindObj.length) {
-        this.bindObj[iterator].unbind(this.bindObj[iterator + 1])
-        iterator=iterator+2;
+      while (iterator > this.bindObj.length) {
+        this.bindObj[iterator].unbind(this.bindObj[iterator + 1]);
+        iterator = iterator + 2;
       }
-
     },
     updateData(data) {
       let self = this;
@@ -134,8 +141,9 @@ export default Vue.extend({
     selecFloor(id) {
       let self = this;
       this.data.floors.forEach(function(el) {
-        if (el.id === id)
+        if (el.id === id) {
           self.floorSelected = el.name;
+        }
       });
       //console.log(id, "== id, data", this.data);
       //this.floorSelected = id;
@@ -152,41 +160,54 @@ export default Vue.extend({
   width: calc(16%);
 }
 .container-fluid {
-  width: calc(100%);
-  height: calc(100%);
+  width: 100vw;
+  height: 100vh;
   font-family: sans-serif;
 }
-@media screen and (max-width: 992px) {
-  .dataViewDisplay {
-    background-color: grey;
-    height: calc(49%) !important;
-    margin-left: calc(189px) !important;
-    margin-top: calc(50%);
-    margin-left: 4%;
-  }
-/*  .app-viewer-display {
-    box-sizing: unset !important;
-  }*/
+
+.main-content {
+  width: 100vw;
+  height: calc(100vh - 64px);
+  overflow: hidden;
+  position: relative;
+  display: flex;
 }
-
-.container-data {
-
-}
-
 
 .sidebarContext-display {
-  position:absolute;
-  display: block;
+  height: 100%;
+  width: 191px;
 }
+.app-viewer-display {
+  height: 100%;
+  width: 50%;
+}
+
 .dataViewDisplay {
-  margin-left: calc(160px + 51.4%);
-  background-color: rgba(1,2,1,0);
-/*  height: 93%;
-  width: 78%;*/
-/*  margin-left: 11%;
-  background-color: rgba(1,2,1,0);
-  display: inline;
-  height: 46%;
-  width: 74%;
-*/}
+  background-color: rgba(1, 2, 1, 0);
+  width: 50%;
+  height: 100%;
+  position: relative;
+}
+@media screen and (max-width: 992px) {
+  .app-viewer-display {
+    height: 50%;
+    width: 100%;
+  }
+
+  .dataViewDisplay {
+    width: 100%;
+    height: 50%;
+  }
+}
+
+.view-container {
+  width: calc(100% - 191px);
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.view-container, .view-container > * {
+  transition: 500ms all cubic-bezier(0.075, 0.82, 0.165, 1);
+}
 </style>
