@@ -286,6 +286,21 @@ p {
   width: 100%;
   overflow: auto;
 }
+.mySidebarx::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+.mySidebarx::-webkit-scrollbar-thumb {
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  background: rgba(169, 169, 169, 0.9);
+}
+.mySidebarx::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.3);
+  box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.3);
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+}
 .badgeElementInSidebar {
   margin-top: 18px;
 
