@@ -80,7 +80,10 @@ export default {
       EventBus.$on("display-colors", items => this.displayTicketsColor(items));
 
       EventBus.$on("reset-select", () => {
-        this.viewer.isolate(0);
+        const aggregateIsolation = this.viewer.getAggregateIsolation();
+        for (const {model} of aggregateIsolation) {
+          this.viewer.isolate(0, model);
+        }
         this.viewer.fitToView(0);
       });
     },
@@ -172,17 +175,20 @@ export default {
       };
     },
     selectObjects(id) {
-      dataService.getBimObjects(id).then(res => {
-        this.viewer.select(res);
+      dataService.getBimObjectByModel(id).then(lstByModel => {
+        this.viewer.clearSelection();
+        for (const { model, selection } of lstByModel) {
+          model.selector.setSelection(selection, model, "selectOnly");
+        }
       });
     },
     zoomObjects(id) {
-      let selection = this.viewer.getSelection();
+      let selection = this.viewer.getAggregateSelection();
 
-      setTimeout(() => {
-        this.viewer.fitToView(selection);
-      }, 1);
-      this.viewer.fitToView([selection]);
+      // setTimeout(() => {
+      // this.viewer.fitToView(selection);
+      // }, 1);
+      this.viewer.fitToView(selection);
     },
     displayTicketsColor(items) {
       let self = this;
@@ -246,11 +252,24 @@ export default {
       }, 10);
     },
     isolateObjects(id) {
-      dataService.getBimObjects(id).then(res => {
-        this.viewer.isolate(res);
-        this.viewer.fitToView(res);
-        return;
+      dataService.getBimObjectByModel(id).then(lstByModel => {
+        for (const { model, selection } of lstByModel) {
+          if (selection.length > 0) {
+            this.viewer.isolate(selection, model);
+          } else {
+            model.getObjectTree(tree => {
+              let dbidRoot = tree.nodeAccess.dbIdToIndex[model.getRootId()];
+              self.viewer.isolate([dbidRoot], model);
+            });
+          }
+        }
+        this.viewer.fitToView(lstByModel);
       });
+      // dataService.getBimObjects(id).then(res => {
+      //   this.viewer.isolate(res);
+      //   this.viewer.fitToView(res);
+      //   return;
+      // });
     },
 
     setCameraToTopView() {}

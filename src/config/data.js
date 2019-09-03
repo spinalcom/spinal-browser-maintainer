@@ -4,6 +4,35 @@ import graph from "./GraphService";
 
 const geographicConstants = geographicService.constants;
 
+function getOrAddModelIfMissing(array, model) {
+  for (const obj of array) {
+    if (obj.model === model) {
+      return obj;
+    }
+  }
+  const obj = {
+    selection: [],
+    model
+  };
+  array.push(obj);
+  return obj;
+}
+
+function sortBIMObjectByModel(arrayOfBIMObject) {
+  let arrayModel = [];
+  for (const nodeBIMObject of arrayOfBIMObject) {
+    const bimFileId = nodeBIMObject.info.bimFileId.get();
+    const dbId = nodeBIMObject.info.dbid.get();
+    const model = spinal.BimObjectService.getModelByBimfile(bimFileId);
+    const obj = getOrAddModelIfMissing(arrayModel, model);
+    obj.selection.push(dbId);
+  }
+  return arrayModel;
+}
+
+
+
+
 let dataService = {
   ContextNode: {},
   ProcessNodes: {},
@@ -74,13 +103,15 @@ let dataService = {
           if (floor[level].rooms[ticket].tickets !== undefined) {
             floor[level]['processNumber'] = {};
             for (var el in floor[level].rooms[ticket].tickets) {
-              if (floor[level].rooms[ticket].tickets[el]['processName'] !== undefined)
-              {if (floor[level]['processNumber'][floor[level].rooms[ticket].tickets[el]['processName']] === undefined)
-              {floor[level]['processNumber'][floor[level].rooms[ticket].tickets[el]['processName']] = 1;}
-              else {
-                floor[level]['processNumber'][floor[level].rooms[ticket].tickets[el]['processName']] =
+              if (floor[level].rooms[ticket].tickets[el]['processName'] !== undefined) {
+                if (floor[level]['processNumber'][floor[level].rooms[ticket].tickets[el]['processName']] === undefined) {
+                  floor[level]['processNumber'][floor[level].rooms[ticket].tickets[el]['processName']] = 1;
+                }
+                else {
+                  floor[level]['processNumber'][floor[level].rooms[ticket].tickets[el]['processName']] =
                     floor[level]['processNumber'][floor[level].rooms[ticket].tickets[el]['processName']] + 1;
-              }}
+                }
+              }
             }
           }
         }
@@ -143,8 +174,7 @@ let dataService = {
     for (var index in floors) {
       for (var floor in floors[index]) {
         for (var room in floors[index][floor]) {
-          if (typeof floors[index][floor][room].id !== "undefined")
-          {this.addEquipmentInRoom(floors[index][floor][room].id, floors, index, floor, room);}
+          if (typeof floors[index][floor][room].id !== "undefined") { this.addEquipmentInRoom(floors[index][floor][room].id, floors, index, floor, room); }
         }
       }
     }
@@ -204,17 +234,29 @@ let dataService = {
     };
   },
   async getBimObjects(id) {
+    console.warn("deprecated don't use 'getBimObjects' use 'getBimObjectByModel'");
     await graph.init();
-
     return graph.SpinalGraphService.findNodes(id, geographicConstants
       .GEOGRAPHIC_RELATIONS, (node) => {
       graph.SpinalGraphService._addNode(node);
       return node.getType().get() === geographicConstants.EQUIPMENT_TYPE;
     }).then(res => {
-
       return res.map(el => {
         return el.info.dbid.get();
       });
+    });
+  },
+
+  async getBimObjectByModel(id) {
+    await graph.init();
+    return graph.SpinalGraphService.findNodes(id, geographicConstants
+      .GEOGRAPHIC_RELATIONS, (node) => {
+      return node.getType().get() === geographicConstants.EQUIPMENT_TYPE;
+    }).then((res) => {
+      for (const bimobjNode of res) {
+        graph.SpinalGraphService._addNode(bimobjNode);
+      }
+      return sortBIMObjectByModel(res);
     });
   }
 
