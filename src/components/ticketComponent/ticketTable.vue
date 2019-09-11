@@ -114,7 +114,7 @@
              :style="{backgroundColor: props.item.info.color.get()}"></p>
         </td>
         <td style="float:right; padding-top:10px">
-          <!-- <v-icon @click="selectDetails(props)">not_listed_location</v-icon> -->
+          <v-icon @click="selectDetails(props)">not_listed_location</v-icon>
         </td>
       </template>
     </v-data-table>
@@ -224,7 +224,9 @@ export default {
       EventBus.$emit("mouse-leave");
     },
     selectDetails(item) {
-      EventBus.$emit("ticket-details", item.item);
+      console.log(item.item);
+
+      EventBus.$emit("ticket-details", spinal.spinalGraphService.getInfo(item.item.info.id.get()));
     },
     onClick(item, event) {
       if (this.clicked === false) {
