@@ -197,13 +197,13 @@ export default {
       this.colors = {};
       let iterator = 0;
       for (var node in items) {
-        realNode = graph.SpinalGraphService.getRealNode(items[node].id.get());
-        self.colors[iterator] = items[node].color.get();
+        realNode = spinal.spinalGraphService.getRealNode(items[node].info.local.get());
+        self.colors[iterator] = items[node].info.color.get();
 
         realNode
           .find(
             [
-              "SpinalSystemServiceTicketHasLocation",
+              "hasBimObject",
               "hasBIMObject",
               "hasReferenceObject"
             ],

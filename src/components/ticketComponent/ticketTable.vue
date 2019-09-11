@@ -114,7 +114,7 @@
              :style="{backgroundColor: props.item.info.color.get()}"></p>
         </td>
         <td style="float:right; padding-top:10px">
-          <v-icon @click="selectDetails(props)">not_listed_location</v-icon>
+          <!-- <v-icon @click="selectDetails(props)">not_listed_location</v-icon> -->
         </td>
       </template>
     </v-data-table>
