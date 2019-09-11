@@ -57,8 +57,8 @@ export default {
       // }
     },
     calculateTotal(bool, item) {
-      console.log("START calculateTotal");
-      console.log("this.allData", this.allData, item);
+      // console.log("START calculateTotal");
+      // console.log("this.allData", this.allData, item);
       if (bool) lastSelected = item;
       // console.log("ITEM", item, this);
       // console.log("this.BadgeValue HELLLO", this.BadgeValue, this.processList);
@@ -75,7 +75,7 @@ export default {
             for (const process of this.proDisplayLst) {
               if (ticket.processName === process.processName) {
                 // if (typeof process.tickets !== 'undefined') process.tickets = [];
-                console.log(ticket);
+                // console.log(ticket);
 
                 if (
                   !lastSelected ||

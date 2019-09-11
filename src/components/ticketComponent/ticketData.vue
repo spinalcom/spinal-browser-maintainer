@@ -56,7 +56,8 @@ export default {
       eventRoom: false,
       overTickets: [],
       backFrom: "",
-      load: false
+      load: false,
+      roomSelected: ""
     };
   },
   components: {
@@ -78,7 +79,7 @@ export default {
       let self = this;
       EventBus.$on("click-event", item => (self.levelSelected = item.name));
       EventBus.$on("select-process", process => {
-        console.log("process" , process);
+        console.log("process", process);
 
         self.active = "table";
         self.selectProcess = process;
@@ -156,70 +157,56 @@ export default {
       }
     },
     addOverOnTableElement(items) {
-      if (items === "reset") {
-        if (this.overTickets.length !== 0) {
-          for (var el in this.overTickets) {
-            this.overTickets[el].over = "false";
-          }
-        }
-        return;
-      }
+      // console.log("addOverOnTableElement", items);
+      this.roomSelected = items;
+      this.triTicket();
+      // if (items === "reset") {
+      //   if (this.overTickets.length !== 0) {
+      //     for (var el in this.overTickets) {
+      //       this.overTickets[el].over = "false";
+      //     }
+      //   }
+      //   return;
+      // }
 
-      if (items.tickets !== undefined) {
-        if (this.selectProcess === "") {
-          this.eventRoom = true;
-        } else {
-          this.overTickets = items.tickets;
-          for (var el in items.tickets) {
-            items.tickets[el].over = true;
-          }
-        }
-      }
+      // if (items.tickets !== undefined) {
+      //   if (this.selectProcess === "") {
+      //     this.eventRoom = true;
+      //   } else {
+      //     this.overTickets = items.tickets;
+      //     for (var el in items.tickets) {
+      //       items.tickets[el].over = true;
+      //     }
+      //   }
+      // }
     },
     resetOverOnTableElement() {
       this.eventRoom = false;
     },
-    triTicket() {
-      this.selectedTicket = [];
-      if (this.levelSelected === "") {
-        for (var ticket in this.allTickets) {
-          for (var el in this.allTickets[ticket]) {
-            if (
-              this.allTickets[ticket][el]["processName"] === this.selectProcess
-            ) {
-              if (
-                this.selectedSteps.indexOf(
-                  this.allTickets[ticket][el]["stepName"]
-                ) !== -1 ||
-                this.init === true
-              ) {
-                this.selectedTicket.push(this.allTickets[ticket][el]);
-              }
-            }
-          }
-        }
-      } else {
-        for (var level in this.allTickets) {
-          if (level === this.levelSelected) {
-            for (var ticket in this.allTickets[level]) {
-              if (
-                this.allTickets[level][ticket]["processName"] ===
-                this.selectProcess
-              ) {
-                if (
-                  this.selectedSteps.indexOf(
-                    this.allTickets[level][ticket]["stepName"]
-                  ) !== -1 ||
-                  this.init === true
-                ) {
-                  this.selectedTicket.push(this.allTickets[level][ticket]);
-                }
-              }
-            }
-          }
+    getProcessByName(processName) {
+      for (var i = 0; i < this.allData.process.length; i++) {
+        if (this.allData.process[i] === processName) {
+          // console.log(this.allData.ticketsByProcess[i]);
+          return this.allData.ticketsByProcess[i];
         }
       }
-      this.extractProcess();
+    },
+    triTicket() {
+      this.selectedTicket = [];
+      if (!this.selectProcess) {
+        return;
+      }
+      const proc = this.getProcessByName(this.selectProcess);
+      this.selectedTicket = proc.flat().reduce((acc, e) => {
+        if (!this.levelSelected) {
+          acc.push(e.ticket);
+        }
+        else if (this.levelSelected === e.floorName) {
+          acc.push(e.ticket);
+        }
+        return acc;
+      }, []);
+      // this.extractProcess();
     },
     addStep(node, processName) {
       let self = this;

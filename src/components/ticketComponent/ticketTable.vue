@@ -97,20 +97,21 @@
         </v-tooltip>
       </template>
       <template v-slot:items="props">
+        <!-- <td>{{test(props)}}</td> -->
         <td @mouseover="overTableRow(props)"
             @mouseleave="mouseLeave()"
-            @click="onClick(props, $event)">{{ props.item.name.get() }}</td>
+            @click="onClick(props, $event)">{{ props.item.info.name.get() }}</td>
         <td @mouseover="overTableRow(props)"
             @mouseleave="mouseLeave()"
             @click="onClick(props, $event)"
             class="text-xs-right">
-          {{ ticketDate(props.item.creationDate.get()) }}</td>
+          {{ ticketDate(props.item.info.creationDate.get()) }}</td>
         <td class="text-xs-right"
             @click="onClick(props, $event)"
             @mouseover="overTableRow(props)"
             @mouseleave="mouseLeave()">
-          {{ props.item.stepName }}<p class="colorPatchDisplay displayInline"
-             :style="{backgroundColor: props.item.color.get()}"></p>
+          {{ props.item.info.stepName }}<p class="colorPatchDisplay displayInline"
+             :style="{backgroundColor: props.item.info.color.get()}"></p>
         </td>
         <td style="float:right; padding-top:10px">
           <v-icon @click="selectDetails(props)">not_listed_location</v-icon>
@@ -157,10 +158,18 @@ export default {
   },
   props: ["allTickets", "steps", "selectedSteps", "title"],
   mounted() {
-    // console.log("MONTED allTickets", this.allTickets);
-
+    console.log(
+      "MONTED allTickets",
+      this.allTickets,
+      this.steps,
+      this.selectedSteps,
+      this.title
+    );
   },
   methods: {
+    test(props) {
+      console.log(props);
+    },
     onResize() {},
     backToProcess() {
       EventBus.$emit("getBackToProcess", true);
@@ -274,7 +283,6 @@ export default {
 .v-table__overflow {
   height: calc(100% - 48px);
 }
-
 </style>
 
 
