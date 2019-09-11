@@ -78,6 +78,8 @@ export default {
       let self = this;
       EventBus.$on("click-event", item => (self.levelSelected = item.name));
       EventBus.$on("select-process", process => {
+        console.log("process" , process);
+
         self.active = "table";
         self.selectProcess = process;
         self.triTicket();
@@ -96,7 +98,6 @@ export default {
         self.triTicket();
       });
       EventBus.$on("calendar-tickets", arrayOfNode => {
-        console.log("calendar-tickets", arrayOfNode);
         this.selectedTicket = arrayOfNode;
         this.active = "table";
       });
@@ -222,7 +223,7 @@ export default {
     },
     addStep(node, processName) {
       let self = this;
-      graph.SpinalGraphService.getChildren(node.processId.get()).then(
+      graph.SpinalGraphService.getChildren(node.process.info.id.get()).then(
         processNode => {
           let array = [];
           for (var i in processNode) {
@@ -240,7 +241,7 @@ export default {
                 array.push(processNode[i].name.get());
                 self.process[processName].push(array);
               }
-              if (node.stepId.get() == processNode[i].id.get()) {
+              if (node.step.info.id.get() == processNode[i].id.get()) {
                 node["stepName"] = processNode[i].name.get();
               }
             }
@@ -290,7 +291,7 @@ export default {
                 self.allData.rooms[floorLvl].rooms[allRooms].tickets.forEach(
                   el => {
                     tmp = graph.SpinalGraphService.getRealNode(
-                      el.processId.get()
+                      el.process.info.id.get()
                     );
                     el["idObject"] =
                       self.allData.rooms[floorLvl].rooms[allRooms].id;
@@ -300,7 +301,7 @@ export default {
                       self.allData.rooms[floorLvl].rooms[allRooms].name;
                     self.addStep(el, tmp.info.name.get());
                     self.allTickets[self.allData.rooms[floorLvl].floor].push(
-                      el
+                      el.ticket
                     );
                   }
                 );
@@ -308,7 +309,7 @@ export default {
                 self.allData.rooms[floorLvl].rooms[allRooms].tickets.forEach(
                   el => {
                     tmp = graph.SpinalGraphService.getRealNode(
-                      el.processId.get()
+                      el.process.info.id.get()
                     );
                     if (tmp !== undefined) {
                       el["processName"] = tmp.info.name.get();
@@ -319,7 +320,7 @@ export default {
                         self.allData.rooms[floorLvl].rooms[allRooms].name;
                       self.addStep(el, tmp.info.name.get());
                       self.allTickets[self.allData.rooms[floorLvl].floor].push(
-                        el
+                        el.ticket
                       );
                     }
                   }

@@ -156,7 +156,10 @@ export default {
     };
   },
   props: ["allTickets", "steps", "selectedSteps", "title"],
-  mounted() {},
+  mounted() {
+    // console.log("MONTED allTickets", this.allTickets);
+
+  },
   methods: {
     onResize() {},
     backToProcess() {

@@ -10,17 +10,17 @@
     </div>
     <p class="displayProcessElementTitle">Choose a process</p>
     <div class="displayProcessElementMainContent">
-      <div v-for="element in processList"
+      <div v-for="element in proDisplayLst"
            class="displayButtonChooseProcess">
         <button class="buttonProcessDisplay"
-                @click="selectProcess">
+                @click="selectProcess(element.processName)">
           <!-- 				<v-badge right color="red">
       <template v-slot:badge>
         <span class="processBadge">6</span>
       </template> -->
-          {{ element }}
+          {{ element.processName }}
           <p class="displayCountBadge"
-             v-if="displayBadge(element) !== ' '">{{ displayBadge(element) }}
+             v-if="element.tickets.length !== 0">{{ element.tickets.length }}
           </p>
         </button>
 
@@ -32,76 +32,134 @@
 
 <script>
 import { EventBus } from "../../config/event";
+let lastSelected = null;
 
 export default {
   name: "processComponent",
   data() {
     return {
       BadgeValue: {},
-      actualizeBadge: true
+      actualizeBadge: true,
+      proDisplayLst: []
     };
   },
   props: ["processList", "allData", "backFrom", "load"],
   methods: {
     selectProcess(target) {
-      if (target.target.className !== "displayCountBadge") {
-        let txt = target.target.innerHTML
-          .split(/</g)[0]
-          .split("\n")
-          .join("");
-        txt = txt.split("\t").join("");
-        EventBus.$emit("select-process", txt);
-      }
+      EventBus.$emit("select-process", target);
+      // if (target.target.className !== "displayCountBadge") {
+      //   let txt = target.target.innerHTML
+      //     .split(/</g)[0]
+      //     .split("\n")
+      //     .join("");
+      //   txt = txt.split("\t").join("");
+      //   EventBus.$emit("select-process", txt);
+      // }
     },
     calculateTotal(bool, item) {
-      if (this.backFrom !== "") {
-        let rooms = this.allData.rooms;
-        for (var room in rooms) {
-          if (rooms[room].floor === this.backFrom) {
-            this.BadgeValue = rooms[room].processNumber;
-          }
-        }
+      console.log("START calculateTotal");
+      console.log("this.allData", this.allData, item);
+      if (bool) lastSelected = item;
+      // console.log("ITEM", item, this);
+      // console.log("this.BadgeValue HELLLO", this.BadgeValue, this.processList);
+      this.proDisplayLst = this.processList.map(e => {
+        return { processName: e, tickets: [] };
+      });
+      if (!this.allData.ticketsByProcess) {
         return;
       }
+      for (var i = 0; i < this.allData.ticketsByProcess.length; i++) {
+        const ticketsInProcess = this.allData.ticketsByProcess[i];
+        for (const ticketInStep of ticketsInProcess) {
+          for (const ticket of ticketInStep) {
+            for (const process of this.proDisplayLst) {
+              if (ticket.processName === process.processName) {
+                // if (typeof process.tickets !== 'undefined') process.tickets = [];
+                console.log(ticket);
 
-      if (bool) {
-        let rooms = this.allData.rooms;
-        for (var mRoom in rooms) {
-          if (rooms[mRoom].floor === item.name) {
-            this.BadgeValue = rooms[mRoom].processNumber;
+                if (
+                  !lastSelected ||
+                  (lastSelected.type === "geographicFloor" &&
+                    ticket.floorName === lastSelected.name) ||
+                  (lastSelected.type === "geographicRoom" &&
+                    ticket.roomName === lastSelected.name)
+                ) {
+                  process.tickets.push(ticket);
+                }
+                break;
+              }
+            }
           }
         }
-      } else {
-        this.BadgeValue = this.allData.totalTickets.count;
       }
+
+      // if (this.backFrom !== "") {
+      //   let rooms = this.allData.rooms;
+      //   for (var room in rooms) {
+      //     if (rooms[room].floor === this.backFrom) {
+      //       this.BadgeValue = rooms[room].processNumber;
+      //     }
+      //   }
+      //   return;
+      // }
+
+      // if (bool) {
+      //   if (typeof item.tickets !== "undefined") {
+      //     for (const ticket of item.tickets) {
+      //       const processName = ticket.processName;
+      //       if (typeof this.BadgeValue[processName] === "undefined") {
+      //         this.BadgeValue[processName] = 1;
+      //       } else {
+      //         this.BadgeValue[processName] += 1;
+      //       }
+      //     }
+
+      //   }
+
+      //   // let rooms = this.allData.rooms;
+      //   // for (var mRoom in rooms) {
+      //   //   if (rooms[mRoom].floor === item.name) {
+      //   //     this.BadgeValue = rooms[mRoom].processNumber;
+      //   //   }
+      //   // }
+      // } else {
+      //   console.log("calculateTotal ", this.allData);
+      //   this.BadgeValue = this.allData.totalTickets.count;
+      // }
     },
     displayBadge(value) {
-      if (this.BadgeValue === undefined) {
-        return " ";
-      }
-      if (this.BadgeValue[value] === undefined) return " ";
-      else return this.BadgeValue[value];
+      //   if (this.BadgeValue === undefined) {
+      //     return " ";
+      //   }
+      //   console.log("this.BadgeValue", this.BadgeValue, value);
+      //   if (this.BadgeValue[value] === undefined) return " ";
+      //   else return this.BadgeValue[value];
     },
     getEvent() {
-      EventBus.$on("reset-select", () => this.calculateTotal(false));
+      EventBus.$on("reset-select", () => this.calculateTotal(true));
       EventBus.$on("click-room", item => this.calculateTotal(true, item));
+      EventBus.$on("data-update", () => this.calculateTotal(false));
     }
   },
   watch: {
     backFrom() {
       this.calculateTotal(false, this.backFrom);
+    },
+    processList() {
+      this.calculateTotal();
     }
   },
   mounted() {
-    let self = this;
+    // let self = this;
     this.getEvent();
-    if (this.load) {
-      this.calculateTotal(false);
-    } else {
-      setTimeout(function() {
-        self.calculateTotal(false);
-      }, 3000);
-    }
+    this.calculateTotal(false);
+    // if (this.load) {
+    // this.calculateTotal(false);
+    // } else {
+    //   setTimeout(function() {
+    //     self.calculateTotal(false);
+    //   }, 3000);
+    // }
   }
 };
 </script>

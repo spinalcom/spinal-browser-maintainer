@@ -2,7 +2,8 @@
   <div v-if="data"
        class="container-fluid">
     <app-header></app-header>
-    <div class="main-content" data-app>
+    <div class="main-content"
+         data-app>
       <div class="sidebarContext-display">
         <app-sidebar :floors="data.floors"
                      @selectFloor="selecFloor"
@@ -84,6 +85,7 @@ export default Vue.extend({
           self.refreshBind();
           dataService.getAllData().then(allData => {
             self.updateData(allData);
+            EventBus.$emit("data-update");
             //self.data = allData;
           });
         }, false)
@@ -96,6 +98,7 @@ export default Vue.extend({
             self.refreshBind();
             dataService.getAllData().then(allData => {
               self.updateData(allData);
+              EventBus.$emit("data-update");
               //self.data = allData;
             });
           }, false)
@@ -109,6 +112,7 @@ export default Vue.extend({
             self.refreshBind();
             dataService.getAllData().then(allData => {
               self.updateData(allData);
+              EventBus.$emit("data-update");
               //self.data = allData;
             });
           }, false)
@@ -207,7 +211,8 @@ export default Vue.extend({
   flex-wrap: wrap;
 }
 
-.view-container, .view-container > * {
+.view-container,
+.view-container > * {
   transition: 500ms all cubic-bezier(0.075, 0.82, 0.165, 1);
 }
 </style>

@@ -1,5 +1,9 @@
 import geographicService from "spinal-env-viewer-context-geographic-service";
-import { SERVICE_NAME, SPINAL_TICKET_SERVICE_TARGET_RELATION_NAME } from "spinal-service-ticket/dist/Constants";
+import {
+  SERVICE_NAME,
+  SPINAL_TICKET_SERVICE_TARGET_RELATION_NAME,
+  SPINAL_TICKET_SERVICE_STEP_RELATION_NAME
+} from "spinal-service-ticket/dist/Constants";
 import graph from "./GraphService";
 
 const geographicConstants = geographicService.constants;
@@ -37,6 +41,7 @@ let dataService = {
   ContextNode: {},
   ProcessNodes: {},
   StepsNodes: {},
+  TicketsNodes: {},
   total: {},
   async getFloor() {
     await graph.init();
@@ -48,8 +53,7 @@ let dataService = {
     if (typeof context === "undefined") { return Promise.resolve([]); }
 
     return graph.SpinalGraphService.getChildren(context.info.id.get(), [
-      geographicConstants
-        .FLOOR_RELATION
+      geographicConstants.FLOOR_RELATION
     ]).then(children => {
 
       return children.map(el => {
@@ -71,75 +75,129 @@ let dataService = {
   //       SERVICE_NAME );
   //   });
   // },
+
+
+  getTicketFromSteps(steps) {
+    const promises = [];
+    for (const { step, process } of steps) {
+      promises.push(graph.SpinalGraphService.getChildren(step.info.id.get())
+        .then((tickets) => {
+          // for (const ticket of tickets) {
+          return tickets.map((nodeId) => {
+            const ticket = graph.SpinalGraphService.getRealNode(nodeId.id.get());
+            this.TicketsNodes[nodeId.id.get()] = ticket;
+            return { ticket, step, process };
+          });
+        }));
+    }
+    return Promise.all(promises);
+  },
+  assignTicketToRoom(ticket, floors) {
+    for (const floor of floors) {
+      for (const room of floor.rooms) {
+        if (room.id === ticket.ticket.info.local.get()) {
+          floor.count += 1;
+          if (typeof room.tickets === 'undefined') room.tickets = [];
+          room.tickets.push(ticket);
+          return;
+        }
+      }
+    }
+
+  },
+  getTicketsPerRoom(tickets, floors) {
+    // return graph.SpinalGraphService
+    //   .getChildren(room.id, SPINAL_TICKET_SERVICE_TARGET_RELATION_NAME)
+    //   .then(children => {
+    //     if (children.length > 0) {
+    //       floor.count += children.length;
+    //       room.tickets = children.slice(0, children.length);
+    //       // this.addInfoToTicket(room.tickets, processInfo);
+    //     }
+    //   });
+    for (const ticketFloor of tickets) {
+      for (const ticketRoom of ticketFloor) {
+        for (const ticket of ticketRoom) {
+          this.assignTicketToRoom(ticket, floors);
+        }
+      }
+    }
+
+  },
   async getTickets(rooms, processInfo) {
     await graph.init();
-
-    let context = await graph.SpinalGraphService.getContext(
-      SERVICE_NAME);
+    let context = await graph.SpinalGraphService.getContext(SERVICE_NAME);
     if (typeof context === "undefined") { return Promise.resolve([]); }
     this.ContextNode = context;
+    const allProcess = await graph.SpinalGraphService.getChildren(context.info.id);
 
-    let self = this;
-    graph.SpinalGraphService.getChildren(context.info.id).then(allProcess => {
-      self.getAllSteps(allProcess);
-      self.ProcessNodes = allProcess;
-    });
-
-    for (var lvl in rooms) {
-      for (var room_nbr in rooms[lvl].rooms) {
-        if (typeof rooms[lvl].rooms[room_nbr].id !== "undefined") { this.getTicketsPerRoom(lvl, room_nbr, rooms, processInfo); }
-      }
+    const steps = await this.getAllSteps(allProcess);
+    this.ProcessNodes = allProcess;
+    const allTickets = await Promise.all(steps.map((e) => {
+      return this.getTicketFromSteps(e);
+    }));
+    for (const floor of rooms) {
+      floor.count = 0;
     }
-
-    this.getProcessByLevel(rooms);
-    return Promise.resolve([]);
-
+    this.getTicketsPerRoom(allTickets, rooms);
+    // this.getProcessByLevel(rooms);
+    // return Promise.resolve([]);
+    return allTickets;
   },
-  getProcessByLevel(floor) {
-    setTimeout(function () {
+  // getProcessByLevel(floor) {
+  //   setTimeout(function () {
 
-      for (var level in floor) {
-        for (var ticket in floor[level].rooms) {
-          if (floor[level].rooms[ticket].tickets !== undefined) {
-            floor[level]['processNumber'] = {};
-            for (var el in floor[level].rooms[ticket].tickets) {
-              if (floor[level].rooms[ticket].tickets[el]['processName'] !== undefined) {
-                if (floor[level]['processNumber'][floor[level].rooms[ticket].tickets[el]['processName']] === undefined) {
-                  floor[level]['processNumber'][floor[level].rooms[ticket].tickets[el]['processName']] = 1;
-                }
-                else {
-                  floor[level]['processNumber'][floor[level].rooms[ticket].tickets[el]['processName']] =
-                    floor[level]['processNumber'][floor[level].rooms[ticket].tickets[el]['processName']] + 1;
-                }
-              }
-            }
-          }
-        }
-      }
+  //     for (var level in floor) {
+  //       for (var ticket in floor[level].rooms) {
+  //         if (floor[level].rooms[ticket].tickets !== undefined) {
+  //           floor[level]['processNumber'] = {};
+  //           for (var el in floor[level].rooms[ticket].tickets) {
+  //             if (floor[level].rooms[ticket].tickets[el]['processName'] !== undefined) {
+  //               if (floor[level]['processNumber'][floor[level].rooms[ticket].tickets[el]['processName']] === undefined) {
+  //                 floor[level]['processNumber'][floor[level].rooms[ticket].tickets[el]['processName']] = 1;
+  //               }
+  //               else {
+  //                 floor[level]['processNumber'][floor[level].rooms[ticket].tickets[el]['processName']] =
+  //                   floor[level]['processNumber'][floor[level].rooms[ticket].tickets[el]['processName']] + 1;
+  //               }
+  //             }
+  //           }
+  //         }
+  //       }
+  //     }
 
-    }, 3000);
-  },
+  //   }, 3000);
+  // },
   getAllSteps(allProcess) {
-    let self = this;
-    for (var process in allProcess) {
-      graph.SpinalGraphService.getChildren(allProcess[process].id.get()).then(child => {
-        for (var nodeId in child) {
-          self.StepsNodes[child[nodeId].id.get()] = graph.SpinalGraphService.getRealNode(child[nodeId].id.get());
-        }
-      });
+    const promises = [];
+    for (var process of allProcess) {
+      const processNode = graph.SpinalGraphService.getRealNode(process.id.get());
+      promises.push(graph.SpinalGraphService.getChildren(process.id.get(),
+        [SPINAL_TICKET_SERVICE_STEP_RELATION_NAME]).then(child => {
+        return child.map((nodeId) => {
+          const node = graph.SpinalGraphService.getRealNode(nodeId.id.get());
+          this.StepsNodes[nodeId.id.get()] = node;
+          return { step: node, process: processNode };
+        });
+      }));
     }
+    return Promise.all(promises);
   },
-  getTicketsPerRoom(lvl, room_nbr, rooms, processInfo) {
-    graph.SpinalGraphService.getChildren(rooms[lvl].rooms[room_nbr].id, SPINAL_TICKET_SERVICE_TARGET_RELATION_NAME)
-      .then(children => {
-        if (children.length > 0) {
-          rooms[lvl]['count'] = children.length;
-          rooms[lvl].rooms[room_nbr]['tickets'] = [];
-          rooms[lvl].rooms[room_nbr]['tickets'] = children.slice(0, children.length);
-          this.addInfoToTicket(children.slice(0, children.length), processInfo);
-        }
-      });
-  },
+  // getTicketsPerRoom(lvl, room_nbr, rooms, processInfo) {
+  //   // console.log('getTicketsPerRoom', lvl, room_nbr, rooms, processInfo,
+  //   //   graph.SpinalGraphService.getRealNode(rooms[lvl].rooms[room_nbr].id), SPINAL_TICKET_SERVICE_TARGET_RELATION_NAME);
+
+  //   return graph.SpinalGraphService
+  //     .getChildren(rooms[lvl].rooms[room_nbr].id, SPINAL_TICKET_SERVICE_TARGET_RELATION_NAME)
+  //     .then(children => {
+  //       if (children.length > 0) {
+  //         rooms[lvl]['count'] = children.length;
+  //         rooms[lvl].rooms[room_nbr]['tickets'] = [];
+  //         rooms[lvl].rooms[room_nbr]['tickets'] = children.slice(0, children.length);
+  //         this.addInfoToTicket(children.slice(0, children.length), processInfo);
+  //       }
+  //     });
+  // },
   addInfoToTicket(tickets, processInfo) {
     let processe;
     this.total['count'] = {};
@@ -220,7 +278,7 @@ let dataService = {
 
     let floors = await this.getFloor();
     let rooms = await this.getRooms(floors);
-    this.getTickets(rooms, processName);
+    let ticketsByProcess = await this.getTickets(rooms, processName);
     this.getEquipments(rooms);
     this.getProcessName(processName);
 
@@ -230,7 +288,8 @@ let dataService = {
       process: processName['process'],
       processIcons: processName['icon'],
       totalTickets: this.total,
-      equipements: ''
+      equipements: '',
+      ticketsByProcess
     };
   },
   async getBimObjects(id) {
