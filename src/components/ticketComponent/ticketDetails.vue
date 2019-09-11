@@ -22,7 +22,8 @@
         <!-- <div class="lineDisplayInfo">Auteur : {{ ticket.username.get() }} </div> -->
       </div>
       <v-textarea label="note"
-                  id="textDetails"> {{ ticket.note.get() }} </v-textarea>
+			:value="ticket.note.get()"
+                  id="textDetails"> </v-textarea>
       <div class="displayLogForTicket">
         log
         <div v-for="x in 1">
