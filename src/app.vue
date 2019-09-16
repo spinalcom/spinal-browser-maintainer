@@ -9,9 +9,7 @@
                      @selectFloor="selecFloor"
                      :rooms="data.rooms"
                      :allData="data"></app-sidebar>
-
       </div>
-
       <div class="view-container">
         <app-viewer class="app-viewer-display"></app-viewer>
 

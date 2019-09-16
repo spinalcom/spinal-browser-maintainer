@@ -1,5 +1,14 @@
 <template>
   <div class="overflowDisplayProcess">
+
+    <v-btn style="position: absolute; left: 8px; top: 8px;"
+           v-bind="{type:'rounded', small: true}"
+           href="https://www.alteva.net/EMIssiON?base=semlrdl"
+           target="_blank">
+      <v-icon>open_in_new</v-icon>
+      Ouvir eMission
+    </v-btn>
+
     <div class="selectEyeForTickets">
       <button>
         <v-icon>get_app</v-icon>
@@ -7,8 +16,10 @@
       <button>
         <v-icon>assessment</v-icon>
       </button>
+
     </div>
-    <p class="displayProcessElementTitle">Choose a process</p>
+    <h3 class="displayProcessElementTitle">{{translate('Choose a process')}}
+    </h3>
     <div class="displayProcessElementMainContent">
       <div v-for="element in proDisplayLst"
            class="displayButtonChooseProcess">
@@ -33,6 +44,7 @@
 <script>
 import { EventBus } from "../../config/event";
 let lastSelected = null;
+import { tl } from "../../config/i18n";
 
 export default {
   name: "processComponent",
@@ -45,6 +57,7 @@ export default {
   },
   props: ["processList", "allData", "backFrom", "load"],
   methods: {
+    translate: tl,
     selectProcess(target) {
       EventBus.$emit("select-process", target);
       // if (target.target.className !== "displayCountBadge") {
@@ -165,7 +178,9 @@ export default {
 </script>
 <style scoped>
 .selectEyeForTickets {
-  float: right;
+  position: absolute;
+  right: 10px;
+  top: 10px;
 }
 .displayCountBadge {
   display: inline-grid;
@@ -180,6 +195,8 @@ export default {
   padding-top: 2px;
 }
 .displayProcessElementTitle {
+  margin-top: 15px;
+  margin-bottom: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -193,7 +210,7 @@ export default {
 }
 .displayProcessElementMainContent {
   width: 100%;
-  height: calc(100% - 32px);
+  height: calc(100% - 54px);
   overflow: auto;
   padding-bottom: 16px;
 }

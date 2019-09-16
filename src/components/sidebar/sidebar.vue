@@ -4,7 +4,7 @@
        v-if="rendering">
     <div class="mySidebarx"
          v-if="selectedLevel">
-      <p id="HeaderTitle">Building</p>
+      <p id="HeaderTitle">{{translate('Building')}}</p>
 
       <div v-for="(item, index) in floors"
            :key="item.name"
@@ -58,6 +58,7 @@
 
 <script>
 import { EventBus } from "../../config/event";
+import { tl } from "../../config/i18n";
 
 export default {
   data() {
@@ -136,6 +137,7 @@ export default {
     // }, 3002);
   },
   methods: {
+    translate: tl,
     getTiketsNumber(ticket) {
       console.log("getTiketsNumber", ticket, this.allData);
       for (const floor of this.allData.rooms) {

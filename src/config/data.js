@@ -34,6 +34,18 @@ function sortBIMObjectByModel(arrayOfBIMObject) {
   return arrayModel;
 }
 
+function loadModel(ptr) {
+  if (typeof ptr.data.model !== 'undefined') return Promise.resolve(ptr.data.model);
+  const id = ptr.data.value;
+  if (id && typeof FileSystem._objects[id] !== 'undefined') {
+    return Promise.resolve(FileSystem._objects[id]);
+  }
+  return new Promise((resolve) => {
+    return ptr.load((model) => {
+      resolve(model);
+    });
+  });
+}
 
 
 
@@ -122,8 +134,31 @@ let dataService = {
         }
       }
     }
+  },
+
+  getTicketStep(ticketNode) {
+    console.log(ticketNode);
+
+    return loadModel(ticketNode.parents.SpinalSystemServiceTicketHasTicket[0].ptr).then((relation)=> {
+      // return relation.parent
+      return loadModel(relation.parent.ptr);
+    });
+    // return new Promise((resolve) => {
+
+
+
+
+
+
+    //   return ticketNode.parents.SpinalSystemServiceTicketHasTicket["0"].ptr.load((model) => {
+    //     parent.ptr
+    //     resolve(model);
+    //   });
+    // });
+
 
   },
+
   async getTickets(rooms, processInfo) {
     await graph.init();
     let context = await graph.SpinalGraphService.getContext(SERVICE_NAME);

@@ -12,6 +12,7 @@ import dataService from "../../config/data";
 import { setTimeout } from "timers";
 import GraphService from "../../config/GraphService";
 import "spinal-env-viewer-plugin-forge";
+import { Promise } from "q";
 
 export default {
   name: "appViewer",
@@ -81,7 +82,7 @@ export default {
 
       EventBus.$on("reset-select", () => {
         const aggregateIsolation = this.viewer.getAggregateIsolation();
-        for (const {model} of aggregateIsolation) {
+        for (const { model } of aggregateIsolation) {
           this.viewer.isolate(0, model);
         }
         this.viewer.fitToView(0);
@@ -191,38 +192,89 @@ export default {
       this.viewer.fitToView(selection);
     },
     displayTicketsColor(items) {
-      let self = this;
       let realNode;
       this.ticketToZoom = [];
       this.colors = {};
       let iterator = 0;
+      const prom = [];
       for (var node in items) {
-        realNode = spinal.spinalGraphService.getRealNode(items[node].info.local.get());
-        self.colors[iterator] = items[node].info.color.get();
-
-        realNode
-          .find(
-            [
-              "hasBimObject",
-              "hasBIMObject",
-              "hasReferenceObject"
-            ],
-            self.predicat
-          )
-          .then(lst => {
-            let result = lst.map(function(x) {
-              return x.info.dbid.get();
-            });
-            self.ticketToZoom.push(result);
-          });
+        realNode = spinal.spinalGraphService.getRealNode(
+          items[node].info.local.get()
+        );
+        this.colors[iterator] = items[node].info.color.get();
         iterator++;
+        prom.push(
+          realNode
+            .find(
+              ["hasBimObject", "hasBIMObject", "hasReferenceObject"],
+              this.predicat
+            )
+            .then(lst => {
+              let result = lst.map(function(x) {
+                return x.info.dbid.get();
+              });
+
+              this.ticketToZoom.push(result);
+
+              return lst;
+            })
+        );
+        // dataService.getBimObjectByModel(items[node].info.id.get())
+        //   .then(lstByModel => {
+        //     for (const { model, selection } of lstByModel) {
+        //       // if (selection.length > 0) {
+        //       //   this.viewer.isolate(selection, model);
+        //       // } else {
+        //       //   model.getObjectTree(tree => {
+        //       //     let dbidRoot = tree.nodeAccess.dbIdToIndex[model.getRootId()];
+        //       //     self.viewer.isolate([dbidRoot], model);
+        //       //   });
+        //       // }
+        //     let result = lstByModel.map(function(x) {
+        //         console.log('1', x);
+        //         const model = spinal.BimObjectService.getModelByBimfile(x.info.bimFileId.get());
+        //         return x;
+        //       });
+        //       this.ticketToZoom.push(result);
+
+        //     }});
+        // this.viewer.fitToView(lstByModel);
       }
 
-      setTimeout(function() {
-        self.setColorMaterial();
-      }, 1);
 
-      window.addEventListener("click", this.eventForColor, true);
+      Promise.all(prom)
+      // .then(lst => {
+      //   // console.log("displayTicketsColor", this.ticketToZoom, lst);
+      //   // let result = lst.map(function(x) {
+      //   //   return x.info.dbid.get();
+      //   // });
+      //   // this.ticketToZoom.push(result);
+      //   // console.log(lst);
+
+        //   // for (const spinalNode of lst) {
+        //   //   console.log("model", model, spinalNode);
+        //   // }
+        // })
+        .then(arrLst => {
+          console.log("TEST ???");
+
+          if (arrLst.length > 0 && arrLst[0].length > 0) {
+            const id = arrLst[0][0].info.bimFileId.get();
+            console.log('1', id);
+
+            const model = spinal.BimObjectService.getModelByBimfile(id);
+            console.log('2', model, this.forgeViewer);
+            return spinal.SpinalForgeViewer.viewerManager.setCurrentModel(model);
+            console.log('3');
+          }
+        })
+        .then(()=> {
+          console.log("STARTTT ???");
+          console.log("this.ticketToZoom", this.ticketToZoom);
+
+          window.addEventListener("click", this.eventForColor, true);
+          this.setColorMaterial();
+        }).catch(console.error);
     },
     predicat: function(node) {
       return node.info.type.get() === "BIMObject";

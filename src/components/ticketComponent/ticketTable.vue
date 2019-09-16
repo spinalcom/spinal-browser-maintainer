@@ -12,8 +12,8 @@
       </v-btn>
       <v-tooltip bottom>
         <template v-slot:activator="{ on }">
-          <p v-on="on"
-             id="title">{{title}}</p>
+          <h3 v-on="on"
+              id="title">{{title}}</p>
         </template>
         <span>{{title}}</span>
       </v-tooltip>
@@ -39,7 +39,7 @@
               <v-icon>get_app</v-icon>
             </v-btn>
           </template>
-          <span>Export to CSV.</span>
+          <span>{{translate('Export to CSV.')}}</span>
         </v-tooltip>
         <v-tooltip bottom>
           <template v-slot:activator="{ on }">
@@ -50,7 +50,7 @@
               <v-icon>assessment</v-icon>
             </v-btn>
           </template>
-          <span>Calendar</span>
+          <span>Calendrier</span>
         </v-tooltip>
 
         <v-tooltip bottom>
@@ -62,7 +62,7 @@
               <v-icon>remove_red_eye</v-icon>
             </v-btn>
           </template>
-          <span>Show Tickets Color</span>
+          <span>{{translate('Show Tickets Color')}}</span>
         </v-tooltip>
         <filter-dialog :steps="steps"
                        :selectedSteps="selectedSteps"></filter-dialog>
@@ -79,7 +79,7 @@
         <v-alert :value="true"
                  color="error"
                  icon="warning">
-          Sorry, nothing to display
+          {{translate('Sorry, nothing to display')}}
         </v-alert>
       </template>
 
@@ -88,11 +88,11 @@
         <v-tooltip bottom>
           <template v-slot:activator="{ on }">
             <span v-on="on">
-              {{ props.header.text }}
+              {{ translate(props.header.text) }}
             </span>
           </template>
           <span>
-            {{ props.header.text }}
+            {{ translate(props.header.text) }}
           </span>
         </v-tooltip>
       </template>
@@ -100,7 +100,8 @@
         <!-- <td>{{test(props)}}</td> -->
         <td @mouseover="overTableRow(props)"
             @mouseleave="mouseLeave()"
-            @click="onClick(props, $event)">{{ props.item.info.name.get() }}</td>
+            @click="onClick(props, $event)">{{ props.item.info.name.get() }}
+        </td>
         <td @mouseover="overTableRow(props)"
             @mouseleave="mouseLeave()"
             @click="onClick(props, $event)"
@@ -110,7 +111,9 @@
             @click="onClick(props, $event)"
             @mouseover="overTableRow(props)"
             @mouseleave="mouseLeave()">
-          {{ props.item.info.stepName }}<p class="colorPatchDisplay displayInline"
+          <stepName :ticketId="props.item.info.id.get()"></stepName>
+          <!-- {{ getStepName(props.item) }} -->
+          <p class="colorPatchDisplay displayInline"
              :style="{backgroundColor: props.item.info.color.get()}"></p>
         </td>
         <td style="float:right; padding-top:10px">
@@ -125,11 +128,13 @@
 import { EventBus } from "../../config/event";
 import filterDialog from "./filterDialog.vue";
 import graph from "../../config/GraphService";
-
+import { tl } from "../../config/i18n";
+import stepName from "./stepName.vue";
 export default {
   name: "ticketTable",
   components: {
-    filterDialog
+    filterDialog,
+    stepName
   },
   data() {
     return {
@@ -157,18 +162,18 @@ export default {
     };
   },
   props: ["allTickets", "steps", "selectedSteps", "title"],
-  mounted() {
-    console.log(
-      "MONTED allTickets",
-      this.allTickets,
-      this.steps,
-      this.selectedSteps,
-      this.title
-    );
-  },
+  mounted() {},
   methods: {
-    test(props) {
-      console.log(props);
+    async getStepName(ticket) {
+      // const step = await dataService.getTicketStep(ticket);
+      const ptr = await dataService.getTicketStep(ticket);
+      return ptr.info.name.get();
+
+      // console.log("steps", this.selectedSteps);
+    },
+    translate(str) {
+      console.log("translate", str);
+      return tl(str);
     },
     onResize() {},
     backToProcess() {
@@ -226,7 +231,10 @@ export default {
     selectDetails(item) {
       console.log(item.item);
 
-      EventBus.$emit("ticket-details", spinal.spinalGraphService.getInfo(item.item.info.id.get()));
+      EventBus.$emit(
+        "ticket-details",
+        spinal.spinalGraphService.getInfo(item.item.info.id.get())
+      );
     },
     onClick(item, event) {
       if (this.clicked === false) {
@@ -340,11 +348,11 @@ export default {
 }
 #title {
   margin-left: calc(10vh);
-  display: inline;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   margin: 0;
+  margin-top: 12px;
 }
 .customColor {
   color: var(--accent-color);

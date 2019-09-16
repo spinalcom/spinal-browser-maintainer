@@ -13,19 +13,19 @@
            :style="{backgroundColor:ticket.color.get()}">
       </div>
       <div class="informationTicketDisplay">
-        <div class="lineDisplayInfo"> id: {{ ticket.GMAOTicketId.get() }}</div>
-        <div class="lineDisplayInfo"> name: {{ ticket.name.get() }}</div>
+        <div class="lineDisplayInfo"> {{translate('id')}}: {{ ticket.GMAOTicketId.get() }}</div>
+        <div class="lineDisplayInfo"> {{translate('name')}}: {{ ticket.name.get() }}</div>
         <!-- <div class="lineDisplayInfo"> Etat: {{ ticket.stepName }}</div> -->
 
-        <div class="lineDisplayInfo"> Date :
+        <div class="lineDisplayInfo"> {{translate('Date')}} :
           {{ timeConverter(ticket.creationDate.get()) }}</div>
         <!-- <div class="lineDisplayInfo">Auteur : {{ ticket.username.get() }} </div> -->
       </div>
-      <v-textarea label="note"
+      <v-textarea label="notes"
 			:value="ticket.note.get()"
                   id="textDetails"> </v-textarea>
       <div class="displayLogForTicket">
-        log
+        logs
         <div v-for="x in 1">
           <div class="elementToDisplayDetails"> creation :
             {{ timeConverter(ticket.creationDate.get()) }} </div>
@@ -37,6 +37,7 @@
 
 <script>
 import { EventBus } from "../../config/event";
+import { tl } from "../../config/i18n";
 
 export default {
   name: "ticketDetails",
@@ -48,6 +49,7 @@ export default {
     console.log(this.ticket);
   },
   methods: {
+    translate: tl,
     backToProcess() {
       EventBus.$emit("close-details");
     },
