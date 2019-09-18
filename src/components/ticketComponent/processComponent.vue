@@ -3,10 +3,11 @@
 
     <v-btn style="position: absolute; left: 8px; top: 8px;"
            v-bind="{type:'rounded', small: true}"
+           class="media-v-btn--icon"
            href="https://www.alteva.net/EMIssiON?base=semlrdl"
            target="_blank">
       <v-icon>open_in_new</v-icon>
-      Ouvir eMission
+      <span class="btn-open-emission-text">Ouvrir eMission</span>
     </v-btn>
 
     <div class="selectEyeForTickets">
@@ -231,6 +232,24 @@ export default {
 @media screen and (max-width: 983px) {
   .overflowDisplayProcess {
     overflow: initial !important;
+  }
+
+  .media-v-btn--icon.v-btn--small {
+    width: 28px;
+  }
+  .media-v-btn--icon {
+    padding: 0;
+  }
+  .media-v-btn--icon {
+    background: transparent;
+    box-shadow: none !important;
+    border-radius: 50%;
+    justify-content: center;
+    min-width: 0;
+    width: 36px;
+  }
+  .media-v-btn--icon .btn-open-emission-text {
+    display: none;
   }
 }
 </style>
