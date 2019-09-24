@@ -1,6 +1,7 @@
 class ForgeExtentionManager {
   constructor() {
     this.extentions = [];
+    this.viewer = null;
   }
 
   getExtentions() {
@@ -8,8 +9,9 @@ class ForgeExtentionManager {
   }
 
   addExtention(name) {
+    if (this.viewer !== null) { this.viewer.loadExtension(name, {}); }
+
     this.extentions.push(name);
   }
 }
-
 export default ForgeExtentionManager;

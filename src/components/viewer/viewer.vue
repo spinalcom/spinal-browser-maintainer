@@ -12,7 +12,14 @@ import dataService from "../../config/data";
 import { setTimeout } from "timers";
 import GraphService from "../../config/GraphService";
 import "spinal-env-viewer-plugin-forge";
+import ForgeExtentionManager from "./ForgeExtentionManager";
+let forgeExtentionManager = new ForgeExtentionManager();
 import { Promise } from "q";
+if (typeof window.spinal === "undefined") window.spinal = {};
+if (typeof window.spinal.ForgeExtentionManager === "undefined") {
+  window.spinal.ForgeExtentionManager = forgeExtentionManager;
+}
+console.log("ForgeViewer", ForgeViewer);
 
 export default {
   name: "appViewer",
@@ -31,7 +38,7 @@ export default {
     // await forgeViewer.start_viewer('
 
     this.forgeViewer = new ForgeViewer(container, false);
-
+    forgeExtentionManager.viewer = this.forgeViewer.viewer;
     await this.forgeViewer.start(
       "/models/Resource/3D View/{3D} 341878/{3D}.svf",
       true
@@ -47,6 +54,11 @@ export default {
     this.createSetColor();
     this.createRestoreColor();
     this.getEvents();
+    const exten = forgeExtentionManager.getExtentions();
+
+    exten.forEach(ext => {
+      this.forgeViewer.loadExtension(ext);
+    });
   },
   methods: {
     getEvents() {
@@ -241,7 +253,6 @@ export default {
         // this.viewer.fitToView(lstByModel);
       }
 
-
       Promise.all(prom)
       // .then(lst => {
       //   // console.log("displayTicketsColor", this.ticketToZoom, lst);
@@ -260,21 +271,24 @@ export default {
 
           if (arrLst.length > 0 && arrLst[0].length > 0) {
             const id = arrLst[0][0].info.bimFileId.get();
-            console.log('1', id);
+            console.log("1", id);
 
             const model = spinal.BimObjectService.getModelByBimfile(id);
-            console.log('2', model, this.forgeViewer);
-            return spinal.SpinalForgeViewer.viewerManager.setCurrentModel(model);
-            console.log('3');
+            console.log("2", model, this.forgeViewer);
+            return spinal.SpinalForgeViewer.viewerManager.setCurrentModel(
+              model
+            );
+            console.log("3");
           }
         })
-        .then(()=> {
+        .then(() => {
           console.log("STARTTT ???");
           console.log("this.ticketToZoom", this.ticketToZoom);
 
           window.addEventListener("click", this.eventForColor, true);
           this.setColorMaterial();
-        }).catch(console.error);
+        })
+        .catch(console.error);
     },
     predicat: function(node) {
       return node.info.type.get() === "BIMObject";

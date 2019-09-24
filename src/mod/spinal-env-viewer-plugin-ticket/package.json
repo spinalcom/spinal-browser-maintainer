@@ -1,0 +1,35 @@
+{
+  "name": "spinal-env-viewer-plugin-ticket",
+  "version": "0.5.0",
+  "description": "ticket handler plugin",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "SpinalCom",
+  "dependencies": {
+    "qrcode-generator": "^1.4.1",
+    "spinal-env-viewer-context-geographic-service": "git+https://github.com/spinalcom/spinal-env-viewer-context-geographic-service.git",
+    "spinal-env-viewer-context-menu-service": "git+https://github.com/spinalcom/spinal-env-viewer-context-menu-service.git",
+    "spinal-env-viewer-graph-service": "git+https://github.com/spinalcom/Spinal-Graph-Service.git",
+    "spinal-env-viewer-panel-manager-service": "git+https://github.com/spinalcom/spinal-env-viewer-panel-manager-service.git",
+    "spinal-env-viewer-panel-manager-service_spinalforgeextention": "https://github.com/spinalcom/spinal-env-viewer-panel-manager-service_spinalforgeextention.git",
+    "spinal-env-viewer-plugin-documentation-service": "git+https://github.com/spinalcom/spinal-env-viewer-plugin-documentation-service.git",
+    "spinal-env-viewer-vue-components-lib": "git+https://github.com/spinalcom/spinal-env-viewer-vue-components-lib.git",
+    "spinal-service-ticket": "https://github.com/spinalcom/spinal-service-ticket.git",
+    "vue": "^2.5.21",
+    "vue-color": "^2.7.0",
+    "vuex": "^3.0.1"
+  },
+  "browserify": {
+    "transform": [
+      "vueify",
+      "babelify"
+    ]
+  },
+  "devDependencies": {
+    "@babel/core": "^7.6.0"
+  }
+}

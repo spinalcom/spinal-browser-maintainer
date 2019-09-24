@@ -211,10 +211,29 @@ export default {
 }
 .displayProcessElementMainContent {
   width: 100%;
-  height: calc(100% - 54px);
+  height: calc(100% - 55px);
   overflow: auto;
   padding-bottom: 16px;
 }
+
+
+.displayProcessElementMainContent::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+.displayProcessElementMainContent::-webkit-scrollbar-thumb {
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  background: rgba(169, 169, 169, 0.9);
+}
+.displayProcessElementMainContent::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.3);
+  box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.3);
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+}
+
+
 .displayButtonChooseProcess {
   display: flex;
   align-items: center;
