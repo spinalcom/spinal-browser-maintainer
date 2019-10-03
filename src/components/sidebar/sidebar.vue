@@ -315,12 +315,17 @@ p {
   display: inline-flex;
   height: 20px;
   width: 20px;
-  padding-top: 3px;
-  padding-left: 5px;
+  /* padding-top: 3px;
+  padding-left: 5px; */
+  text-align: center;
+
   border-radius: 50%;
   background-color: red;
   float: right;
   margin-top: 8px;
+}
+.displayBadge > p {
+  width: inherit;
 }
 
 .sitebarElement {
