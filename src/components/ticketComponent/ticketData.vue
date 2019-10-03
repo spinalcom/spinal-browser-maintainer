@@ -191,17 +191,28 @@ export default {
         }
       }
     },
+    flatten(array) {
+      var flattend = [];
+      (function flat(array) {
+        array.forEach(function(el) {
+          if (Array.isArray(el)) flat(el);
+          else flattend.push(el);
+        });
+      })(array);
+      return flattend;
+    },
+
     triTicket() {
       this.selectedTicket = [];
       if (!this.selectProcess) {
         return;
       }
       const proc = this.getProcessByName(this.selectProcess);
-      this.selectedTicket = proc.flat().reduce((acc, e) => {
+      if (!proc) return alert("process undefined");
+      this.selectedTicket = this.flatten(proc).reduce((acc, e) => {
         if (!this.levelSelected) {
           acc.push(e.ticket);
-        }
-        else if (this.levelSelected === e.floorName) {
+        } else if (this.levelSelected === e.floorName) {
           acc.push(e.ticket);
         }
         return acc;

@@ -130,6 +130,7 @@ import filterDialog from "./filterDialog.vue";
 import graph from "../../config/GraphService";
 import { tl } from "../../config/i18n";
 import stepName from "./stepName.vue";
+import dataService from "../../config/data";
 export default {
   name: "ticketTable",
   components: {
@@ -172,7 +173,6 @@ export default {
       // console.log("steps", this.selectedSteps);
     },
     translate(str) {
-      console.log("translate", str);
       return tl(str);
     },
     onResize() {},
