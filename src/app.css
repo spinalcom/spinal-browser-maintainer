@@ -105,3 +105,9 @@ html{
 .md-scrollbar::-webkit-scrollbar-thum {
   color: brown;
 }
+
+group.expanded.category > leaf.expanded.property > lmvheader > div {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
