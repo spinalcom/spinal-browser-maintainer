@@ -1,6 +1,6 @@
 
 <template>
-  <div class="mySidebarx"
+  <div class="mySidebar-container"
        v-if="rendering">
     <div class="mySidebarx"
          v-if="selectedLevel">
@@ -52,6 +52,13 @@
 
         </div>
       </div>
+    </div>
+    <div class="mySidebarx-logo-container">
+      <img src="./SEML LOGO.jpg"
+           alt="SEML LOGO">
+      <hr />
+      <img src="./Eiffage Logo.jpg"
+           alt="Eiffage Logo">
     </div>
   </div>
 </template>
@@ -261,13 +268,29 @@ p {
   padding-top: 2px;
   margin-bottom: 0px !important;
 }
-.mySidebarx {
-  z-index: 100;
+.mySidebar-container {
   background-color: #272727;
   height: 100%;
   width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.mySidebarx {
+  flex-grow: 1;
+  width: 100%;
   overflow: auto;
 }
+
+.mySidebarx-logo-container {
+  background-color: white;
+  width: 100%;
+}
+
+.mySidebarx-logo-container > hr {
+  margin: 0 5px 5px;
+}
+
 .mySidebarx::-webkit-scrollbar {
   width: 5px;
   height: 5px;
