@@ -1,14 +1,30 @@
 <template>
   <nav class="navbar navbar-light bg-light mainNavbar">
-    <a class="navbar-brand"
-       href="#">
-      <img src="../../assets/logo_medium.png"
-           width="180"
-           height="50"
+    <!-- <a class="navbar-brand" -->
+       <!-- href="#"> -->
+      <img src="../../assets/Eiffage Logo.jpg"
            id="spinalcomLogo"
            class="d-inline-block align-top"
            alt="spinalcom">
-    </a>
+           <img src="../../assets/SEML LOGO split.jpg"
+           id="spinalcomLogo"
+           class="d-inline-block align-top"
+           alt="spinalcom">
+      <!-- <img src="./SEML LOGO.jpg"
+           alt="SEML LOGO">
+      <hr />
+      <img src="./Eiffage Logo.jpg"
+           alt="Eiffage Logo">
+    </div> -->
+
+      <!-- <img src="./SEML LOGO.jpg"
+           alt="SEML LOGO">
+      <hr />
+      <img src="./Eiffage Logo.jpg"
+           alt="Eiffage Logo">
+    </div> -->
+
+    <!-- </a> -->
   </nav>
 </template>
 
@@ -26,10 +42,18 @@ export default {
   border-bottom: black;
   border-style: solid;
   border-width: 0px 0px 1px 0px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 #spinalcomLogo {
-  padding:4px;
-  margin:4px 7px;
+  padding: 4px;
+  margin: 4px 7px;
 }
+
+.mainNavbar > img {
+  height: 50px;
+}
+
 </style>
 

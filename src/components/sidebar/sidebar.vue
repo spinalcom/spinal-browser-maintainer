@@ -53,13 +53,11 @@
         </div>
       </div>
     </div>
+      <hr/>
     <div class="mySidebarx-logo-container">
-      <img src="./SEML LOGO.jpg"
-           alt="SEML LOGO">
-      <hr />
-      <img src="./Eiffage Logo.jpg"
-           alt="Eiffage Logo">
-    </div>
+      <img src="../../assets/spinalcomv2-power by.png"
+           id="spinalcomLogo"
+           alt="spinalcom">
   </div>
 </template>
 
@@ -283,12 +281,14 @@ p {
 }
 
 .mySidebarx-logo-container {
-  background-color: white;
-  width: 100%;
+  /* background-color: rgb(237, 237, 237);; */
+  border-right: #222 solid;
+  margin: 5px 0px;
+  /* width: 100%; */
 }
 
-.mySidebarx-logo-container > hr {
-  margin: 0 5px 5px;
+.mySidebarx-logo-container > img {
+  padding: 8px;
 }
 
 .mySidebarx::-webkit-scrollbar {
