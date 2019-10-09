@@ -110,11 +110,13 @@ export const GetSpatialContext = {
     );
   },
 
-  async hasAttributes(node, attrToCheck) {
+  async hasAttributes(node, attrsToCheck) {
     const attrs = await serviceDocumentation.getAllAttributes(node);
     for (const attr of attrs) {
-      if (attr.label.get() === attrToCheck && attr.value.get() !== '') {
-        return { res: true, node };
+      for (const attrToCheck of attrsToCheck) {
+        if (attr.label.get() === attrToCheck && attr.value.get() !== '') {
+          return { res: true, node };
+        }
       }
     }
     return { res: false, node };
@@ -130,7 +132,7 @@ export const GetSpatialContext = {
     });
     const data = await Promise.all(resFind.map((obj) => {
       SpinalGraphService._addNode(obj);
-      return this.hasAttributes(obj, 'ID MATERIEL');
+      return this.hasAttributes(obj, ["ID_Materiel", 'ID MATERIEL']);
     }));
     return data.reduce((acc, e) => {
       if (e.res) {
