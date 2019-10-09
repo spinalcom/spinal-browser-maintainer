@@ -2,11 +2,11 @@
   <nav class="navbar navbar-light bg-light mainNavbar">
     <!-- <a class="navbar-brand" -->
        <!-- href="#"> -->
-      <img src="../../assets/Eiffage Logo.jpg"
+      <img src="../../assets/SEML LOGO split.jpg"
            id="spinalcomLogo"
            class="d-inline-block align-top"
            alt="spinalcom">
-           <img src="../../assets/SEML LOGO split.jpg"
+      <img src="../../assets/Eiffage Logo.jpg"
            id="spinalcomLogo"
            class="d-inline-block align-top"
            alt="spinalcom">
