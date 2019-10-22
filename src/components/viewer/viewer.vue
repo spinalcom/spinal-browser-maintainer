@@ -19,8 +19,6 @@ if (typeof window.spinal === "undefined") window.spinal = {};
 if (typeof window.spinal.ForgeExtentionManager === "undefined") {
   window.spinal.ForgeExtentionManager = forgeExtentionManager;
 }
-console.log("ForgeViewer", ForgeViewer);
-
 export default {
   name: "appViewer",
   data() {
@@ -59,14 +57,28 @@ export default {
     exten.forEach(ext => {
       this.forgeViewer.loadExtension(ext);
     });
-
-    const fitModel = ()=> {
+    // used by
+    const onToolbarCreated = e => {
+      const settingsTools = this.viewer.toolbar.getControl("settingsTools");
+      console.log("TEST ?????");
+      
+      settingsTools.removeControl("toolbar-propertiesTool");
+      this.viewer.removeEventListener(
+        Autodesk.Viewing.TOOLBAR_CREATED_EVENT,
+        onToolbarCreated
+      );
+    };
+    this.viewer.addEventListener(
+      Autodesk.Viewing.TOOLBAR_CREATED_EVENT,
+      onToolbarCreated
+    );
+    const fitModel = () => {
       this.viewer.removeEventListener(
         window.Autodesk.Viewing.GEOMETRY_LOADED_EVENT,
         fitModel
       );
       this.viewer.fitToView();
-    }
+    };
     this.viewer.addEventListener(
       window.Autodesk.Viewing.GEOMETRY_LOADED_EVENT,
       fitModel

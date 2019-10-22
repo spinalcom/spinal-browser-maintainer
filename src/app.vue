@@ -63,11 +63,8 @@ export default Vue.extend({
     let self = this;
     dataService.getAllData().then(allData => {
       self.data = allData;
-    });
-
-    setTimeout(function() {
       self.bindAllData();
-    }, 3000);
+    });
   },
   methods: {
     mounted() {
