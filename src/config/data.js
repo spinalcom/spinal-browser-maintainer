@@ -7,6 +7,18 @@ import {
 import graph from "./GraphService";
 
 const geographicConstants = geographicService.constants;
+const SELECTrelationList = [
+  geographicConstants.SITE_RELATION,
+  geographicConstants.BUILDING_RELATION,
+  geographicConstants.FLOOR_RELATION,
+  geographicConstants.ZONE_RELATION,
+  geographicConstants.ROOM_RELATION,
+  geographicConstants.EQUIPMENT_RELATION,
+  geographicConstants.REFERENCE_RELATION,
+  // for old system
+  'hasReferenceObject',
+  "hasBIMObject"
+];
 
 function getOrAddModelIfMissing(array, model) {
   for (const obj of array) {
@@ -263,7 +275,7 @@ let dataService = {
       };
     }));
   },
-  async getEquipments(floors) {
+  getEquipments(floors) {
     for (var index in floors) {
       for (var floor in floors[index]) {
         for (var room in floors[index][floor]) {
@@ -330,8 +342,7 @@ let dataService = {
   async getBimObjects(id) {
     console.warn("deprecated don't use 'getBimObjects' use 'getBimObjectByModel'");
     await graph.init();
-    return graph.SpinalGraphService.findNodes(id, geographicConstants
-      .GEOGRAPHIC_RELATIONS, (node) => {
+    return graph.SpinalGraphService.findNodes(id, SELECTrelationList, (node) => {
       graph.SpinalGraphService._addNode(node);
       return node.getType().get() === geographicConstants.EQUIPMENT_TYPE;
     }).then(res => {
@@ -343,13 +354,14 @@ let dataService = {
 
   async getBimObjectByModel(id) {
     await graph.init();
-    return graph.SpinalGraphService.findNodes(id, geographicConstants
-      .GEOGRAPHIC_RELATIONS, (node) => {
+    return graph.SpinalGraphService.findNodes(id, SELECTrelationList, (node) => {
       return node.getType().get() === geographicConstants.EQUIPMENT_TYPE;
     }).then((res) => {
       for (const bimobjNode of res) {
         graph.SpinalGraphService._addNode(bimobjNode);
       }
+      console.log("getBimObjectByModel",SELECTrelationList,res );
+
       return sortBIMObjectByModel(res);
     });
   }
