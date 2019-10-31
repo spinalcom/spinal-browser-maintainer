@@ -152,8 +152,12 @@ class SpinalIO {
   }
 
   getPathModel() {
-    const path = this.getModelPath();
-    return this.load(path);
+    try {
+      const path = this.getModelPath();
+      return this.load(path);
+    } catch (e) {
+      return this.load('/__users__/public/digital_twin/default');
+    }
   }
 
   load(path) {
