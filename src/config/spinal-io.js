@@ -54,7 +54,7 @@ class SpinalIO {
     this.user = null;
     this.conn = null;
     this.serverHost = null;
-    this.getServerConfigProm = null;
+    // this.getServerConfigProm = null;
   }
 
   decriJson(encryptedHex) {
@@ -75,18 +75,19 @@ class SpinalIO {
   }
 
   getServerConfig() {
-    if (this.getServerConfigProm !== null) return this.getServerConfigProm;
-    let url = "/config.json";
-    this.getServerConfigProm = axios
-      .get(url)
-      .then(res => {
-        this.serverHost = res.data.host;
-        return this.serverHost;
-      })
-      .catch(() => {
-        return window.location.origin;
-      });
-    return this.getServerConfigProm;
+    // if (this.getServerConfigProm !== null) return this.getServerConfigProm;
+    return Promise.resolve(window.location.origin);
+    // let url = "/config.json";
+    // this.getServerConfigProm = axios
+    //   .get(url)
+    //   .then(res => {
+    //     this.serverHost = res.data.host;
+    //     return this.serverHost;
+    //   })
+    //   .catch(() => {
+    //     return window.location.origin;
+    //   });
+    // return this.getServerConfigProm;
   }
 
   getauth() {
@@ -116,7 +117,7 @@ class SpinalIO {
               }
             }).then(response => {
               let id = parseInt(response.data);
-              const host = serverHost.replace(/(http:\/\/|https:\/\/)/, "");
+              const host = serverHost.replace(/https?:\/\//, "");
               this.conn = window.spinalCore.connect(
                 `http://${id}:${user.password}@${host}/`
               );

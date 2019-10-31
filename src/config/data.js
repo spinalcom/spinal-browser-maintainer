@@ -139,7 +139,7 @@ let dataService = {
   getTicketStep(ticketNode) {
     console.log(ticketNode);
 
-    return loadModel(ticketNode.parents.SpinalSystemServiceTicketHasTicket[0].ptr).then((relation)=> {
+    return loadModel(ticketNode.parents.SpinalSystemServiceTicketHasTicket[0].ptr).then((relation) => {
       // return relation.parent
       return loadModel(relation.parent.ptr);
     });
@@ -263,16 +263,19 @@ let dataService = {
       };
     }));
   },
-  async getEquipments(floors) {
+  getEquipments(floors) {
+    const res = [];
     for (var index in floors) {
       for (var floor in floors[index]) {
         for (var room in floors[index][floor]) {
-          if (typeof floors[index][floor][room].id !== "undefined") { this.addEquipmentInRoom(floors[index][floor][room].id, floors, index, floor, room); }
+          if (typeof floors[index][floor][room].id !== "undefined") {
+            res.push(this.addEquipmentInRoom(floors[index][floor][room].id, floors, index, floor, room));
+          }
         }
       }
     }
 
-    return Promise.resolve([]);
+    return Promise.all(res);
   },
   addEquipmentInRoom(id, floor, index, floor_lvl, room) {
     graph.SpinalGraphService.getChildren(id, 'hasBIMObject').then(equipmments => {
@@ -314,7 +317,7 @@ let dataService = {
     let floors = await this.getFloor();
     let rooms = await this.getRooms(floors);
     let ticketsByProcess = await this.getTickets(rooms, processName);
-    this.getEquipments(rooms);
+    await this.getEquipments(rooms);
     this.getProcessName(processName);
 
     return {
