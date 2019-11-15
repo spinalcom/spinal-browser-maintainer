@@ -5,8 +5,14 @@ import {
   SPINAL_TICKET_SERVICE_STEP_RELATION_NAME
 } from "spinal-service-ticket/dist/Constants";
 import graph from "./GraphService";
+import { findOneParent } from './findParent';
 
 const geographicConstants = geographicService.constants;
+const geoRelationFind = [
+  ...geographicConstants.GEOGRAPHIC_RELATIONS,
+  geographicConstants.REFERENCE_RELATION,
+  'hasReferenceObject'
+];
 
 function getOrAddModelIfMissing(array, model) {
   for (const obj of array) {
@@ -141,7 +147,7 @@ let dataService = {
 
     return loadModel(ticketNode.parents.SpinalSystemServiceTicketHasTicket[0].ptr).then((relation) => {
       // return relation.parent
-      return loadModel(relation.parent.ptr);
+      return relation.parent.load();
     });
     // return new Promise((resolve) => {
 
@@ -203,6 +209,55 @@ let dataService = {
 
   //   }, 3000);
   // },
+
+
+  async ticketGetLocal(ticketNode) {
+    try {
+      const {
+        FLOOR_TYPE,
+        ROOM_TYPE,
+        FLOOR_RELATION,
+        ZONE_RELATION,
+        ROOM_RELATION
+      } = geographicConstants;
+      const localId = ticketNode.info.local.get();
+      const localNode = graph.SpinalGraphService.getRealNode(localId);
+      const floor = { id: '', name: '' };
+      const local = { id: '', name: '' };
+      const buildingNode = await findOneParent(localNode, [
+        FLOOR_RELATION, ZONE_RELATION, ROOM_RELATION
+      ], (node) => {
+        return node.info.type.get() === FLOOR_TYPE;
+      });
+      if (buildingNode) {
+        floor.id = buildingNode.info.id.get();
+        floor.name = buildingNode.info.name.get();
+      }
+      if (localNode.info.type.get() === ROOM_TYPE) {
+        local.id = localNode.info.id.get();
+        local.name = localNode.info.name.get();
+
+      }
+      return {
+        floor,
+        local
+      };
+
+    } catch (e) {
+      return {
+        floor: { id: '', name: '' },
+        local: { id: '', name: '' }
+      };
+    }
+    // SITE_TYPE
+    // BUILDING_TYPE
+    // FLOOR_TYPE
+    // ZONE_TYPE
+    // ROOM_TYPE
+
+  },
+
+
   getAllSteps(allProcess) {
     const promises = [];
     for (var process of allProcess) {
@@ -346,8 +401,7 @@ let dataService = {
 
   async getBimObjectByModel(id) {
     await graph.init();
-    return graph.SpinalGraphService.findNodes(id, geographicConstants
-      .GEOGRAPHIC_RELATIONS, (node) => {
+    return graph.SpinalGraphService.findNodes(id, geoRelationFind, (node) => {
       return node.getType().get() === geographicConstants.EQUIPMENT_TYPE;
     }).then((res) => {
       for (const bimobjNode of res) {

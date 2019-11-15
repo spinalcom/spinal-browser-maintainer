@@ -23,3 +23,7 @@ add('Choose a process', 'Choisissez un process');
 add('id', 'Identifiant Mission');
 add('name', 'Objet');
 add('Date', 'Date');
+
+add('Room', 'Local');
+add('Floor', 'Etage');
+add('Caller', 'Appelant');

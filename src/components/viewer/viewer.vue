@@ -24,7 +24,7 @@ export default {
   data() {
     return {
       viewer: null,
-      ticketToZoom: {},
+      ticketToZoom: [],
       colors: {},
       materials: {}
     };
@@ -60,18 +60,22 @@ export default {
     // used by
     const onToolbarCreated = e => {
       const settingsTools = this.viewer.toolbar.getControl("settingsTools");
-      console.log("TEST ?????");
-      
+      console.log("settingsTools", settingsTools);
+
       settingsTools.removeControl("toolbar-propertiesTool");
       this.viewer.removeEventListener(
         Autodesk.Viewing.TOOLBAR_CREATED_EVENT,
         onToolbarCreated
       );
     };
-    this.viewer.addEventListener(
-      Autodesk.Viewing.TOOLBAR_CREATED_EVENT,
-      onToolbarCreated
-    );
+    if (!this.viewer.toolbar.isVisible()) {
+      this.viewer.addEventListener(
+        Autodesk.Viewing.TOOLBAR_CREATED_EVENT,
+        onToolbarCreated
+      );
+    } else {
+      onToolbarCreated();
+    }
     const fitModel = () => {
       this.viewer.removeEventListener(
         window.Autodesk.Viewing.GEOMETRY_LOADED_EVENT,
@@ -83,12 +87,26 @@ export default {
       window.Autodesk.Viewing.GEOMETRY_LOADED_EVENT,
       fitModel
     );
+    fitModel();
   },
   methods: {
     getEvents() {
       EventBus.$on("click-event", item => this.isolateObjects(item.id));
 
       EventBus.$on("click-ticket-event", item => this.zoomObjects(item.id));
+      EventBus.$on("display-ticket", item => {
+        // {floorId
+        // localId
+        // color
+        // materialId}
+        console.log("display-ticket", item);
+        const knownNodes = GraphService.SpinalGraphService.getNodes();
+        if (knownNodes[item.floorId]) this.isolateObjects(item.floorId);
+        if (knownNodes[item.localId]) this.selectObjects(item.localId);
+        if (knownNodes[item.materialId]) {
+          this.displayTicketsColor([knownNodes[item.materialId]]);
+        }
+      });
 
       EventBus.$on("mouse-over", item => this.selectObjects(item.id));
 
@@ -234,6 +252,11 @@ export default {
       let iterator = 0;
       const prom = [];
       for (var node in items) {
+        if (!items[node].info.local.get()) {
+          // << GROS SCOTCH
+          console.log("unknow location ticket ", items[node]); // << GROS SCOTCH
+          continue; // << GROS SCOTCH
+        } // << GROS SCOTCH
         realNode = spinal.spinalGraphService.getRealNode(
           items[node].info.local.get()
         );
@@ -291,24 +314,15 @@ export default {
         //   // }
         // })
         .then(arrLst => {
-          console.log("TEST ???");
-
           if (arrLst.length > 0 && arrLst[0].length > 0) {
             const id = arrLst[0][0].info.bimFileId.get();
-            console.log("1", id);
-
             const model = spinal.BimObjectService.getModelByBimfile(id);
-            console.log("2", model, this.forgeViewer);
             return spinal.SpinalForgeViewer.viewerManager.setCurrentModel(
               model
             );
-            console.log("3");
           }
         })
         .then(() => {
-          console.log("STARTTT ???");
-          console.log("this.ticketToZoom", this.ticketToZoom);
-
           window.addEventListener("click", this.eventForColor, true);
           this.setColorMaterial();
         })
@@ -330,18 +344,26 @@ export default {
       let color;
       let loop = 0;
       var x = setInterval(function() {
-        color = self.colors[iterator].replace(/#/g, "0x");
-        self.viewer.setColorMaterial(self.ticketToZoom[iterator], color);
-        iterator++;
-        if (self.ticketToZoom[iterator] === undefined && loop === 0) {
-          iterator = 0;
-          loop = 1;
-        } else if (self.ticketToZoom[iterator] === undefined && loop === 1) {
-          clearInterval(x);
-        }
+        if (self.colors[iterator]) {
+          // << GROS SCOTCH
+          color = self.colors[iterator].replace(/#/g, "0x");
+          self.viewer.setColorMaterial(self.ticketToZoom[iterator], color);
+          iterator++;
+          if (self.ticketToZoom[iterator] === undefined && loop === 0) {
+            iterator = 0;
+            loop = 1;
+          } else if (self.ticketToZoom[iterator] === undefined && loop === 1) {
+            clearInterval(x);
+          }
+        } else {
+          // << GROS SCOTCH
+          clearInterval(x); // << GROS SCOTCH
+        } // << GROS SCOTCH
       }, 10);
     },
     isolateObjects(id) {
+      console.log("isolateObjects", id);
+
       dataService.getBimObjectByModel(id).then(lstByModel => {
         for (const { model, selection } of lstByModel) {
           if (selection.length > 0) {

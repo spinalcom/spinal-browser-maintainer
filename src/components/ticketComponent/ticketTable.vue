@@ -97,8 +97,13 @@
         </v-tooltip>
       </template>
       <template v-slot:items="props">
+        <tableRowSpinal @onSelect="onClick"
+                        @onSelectDetails="selectDetails(props)"
+                        :ticketId="props.item.info.id.get()"></tableRowSpinal>
+        <!-- <tr> -->
+
         <!-- <td>{{test(props)}}</td> -->
-        <td @mouseover="overTableRow(props)"
+        <!-- <td @mouseover="overTableRow(props)"
             @mouseleave="mouseLeave()"
             @click="onClick(props, $event)">{{ props.item.info.name.get() }}
         </td>
@@ -112,13 +117,13 @@
             @mouseover="overTableRow(props)"
             @mouseleave="mouseLeave()">
           <stepName :ticketId="props.item.info.id.get()"></stepName>
-          <!-- {{ getStepName(props.item) }} -->
           <p class="colorPatchDisplay displayInline"
              :style="{backgroundColor: props.item.info.color.get()}"></p>
         </td>
         <td style="float:right; padding-top:10px">
           <v-icon @click="selectDetails(props)">not_listed_location</v-icon>
         </td>
+        </tr> -->
       </template>
     </v-data-table>
   </div>
@@ -131,11 +136,13 @@ import graph from "../../config/GraphService";
 import { tl } from "../../config/i18n";
 import stepName from "./stepName.vue";
 import dataService from "../../config/data";
+import tableRowSpinal from "./tableRowSpinal";
 export default {
   name: "ticketTable",
   components: {
     filterDialog,
-    stepName
+    stepName,
+    tableRowSpinal
   },
   data() {
     return {
@@ -146,7 +153,10 @@ export default {
           sortable: false,
           value: "name"
         },
+        { text: "Floor", value: "Floor", align: "center" },
+        { text: "Room", value: "Room", align: "center" },
         { text: "Creation Date", value: "creation date", align: "center" },
+        { text: "Caller", value: "Caller", align: "center" },
         { text: "Step", value: "step", align: "center" },
         { text: "Details", align: "right" }
       ],
@@ -236,19 +246,21 @@ export default {
         spinal.spinalGraphService.getInfo(item.item.info.id.get())
       );
     },
-    onClick(item, event) {
-      if (this.clicked === false) {
-        event.target.parentElement.style.backgroundColor = "#2D3D93";
-        event.target.parentElement.style.color = "white";
-        this.oldTarget = event.target;
-        this.clicked = true;
-      } else {
-        this.oldTarget.parentElement.style.color = "black";
-        this.oldTarget.parentElement.style.backgroundColor = "white";
-        this.clicked = false;
-      }
+    onClick(item) {
+      console.log("onclick", item);
 
-      EventBus.$emit("display-colors", [item.item]);
+      // if (this.clicked === false) {
+      //   event.target.parentElement.style.backgroundColor = "#2D3D93";
+      //   event.target.parentElement.style.color = "white";
+      //   this.oldTarget = event.target;
+      //   this.clicked = true;
+      // } else {
+      //   this.oldTarget.parentElement.style.color = "black";
+      //   this.oldTarget.parentElement.style.backgroundColor = "white";
+      //   this.clicked = false;
+      // }
+
+      EventBus.$emit("display-ticket", item);
     },
     showTicketsColor() {
       EventBus.$emit("display-colors", this.allTickets);
@@ -328,14 +340,6 @@ export default {
   margin-right: 10px;
 }
 
-.displayInline {
-  display: inline;
-  padding-left: 20px;
-}
-.colorPatchDisplay {
-  border-style: none;
-  padding-top: 2px;
-}
 .ticketTableDisplay {
   height: calc(100% - 55px);
   position: relative;
