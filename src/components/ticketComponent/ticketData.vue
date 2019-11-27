@@ -68,13 +68,20 @@ export default {
   },
   props: ["allData"],
   mounted() {
-    let self = this;
     this.getEvents();
-    setTimeout(function() {
-      self.getAllTickets().then(self.extractProcess());
-    }, 1000);
+    this.getTicket();
   },
   methods: {
+    getTicket() {
+      return graph.SpinalGraphService.waitForInitialization()
+        .then(() => {
+          return this.getAllTickets();
+        })
+        .then(() => {
+          return this.extractProcess();
+        });
+    },
+
     getEvents() {
       let self = this;
       EventBus.$on("click-event", item => (self.levelSelected = item.name));

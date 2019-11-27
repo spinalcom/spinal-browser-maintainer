@@ -153,7 +153,6 @@ export default {
           sortable: false,
           value: "name"
         },
-        { text: "Floor", value: "Floor", align: "center" },
         { text: "Room", value: "Room", align: "center" },
         { text: "Creation Date", value: "creation date", align: "center" },
         { text: "Caller", value: "Caller", align: "center" },
@@ -218,10 +217,10 @@ export default {
       var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
       return result
         ? {
-          r: parseInt(result[1], 16),
-          g: parseInt(result[2], 16),
-          b: parseInt(result[3], 16)
-        }
+            r: parseInt(result[1], 16),
+            g: parseInt(result[2], 16),
+            b: parseInt(result[3], 16)
+          }
         : null;
     },
     getContrastYIQ(hexcolor) {
@@ -301,9 +300,24 @@ export default {
 };
 </script>
 <style>
-.ticketTableDisplay,
-.v-table__overflow {
+.ticketTableDisplay > .v-table__overflow {
   height: calc(100% - 48px);
+  overflow-y: auto;
+}
+.ticketTableDisplay > .v-table__overflow::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.ticketTableDisplay > .v-table__overflow::-webkit-scrollbar-thumb {
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  background: rgba(169, 169, 169, 0.9);
+}
+.ticketTableDisplay > .v-table__overflow::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.3);
+  box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.3);
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
 }
 </style>
 
@@ -342,6 +356,7 @@ export default {
 
 .ticketTableDisplay {
   height: calc(100% - 55px);
+  overflow-y: hidden;
   position: relative;
 }
 

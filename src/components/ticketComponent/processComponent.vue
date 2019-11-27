@@ -150,8 +150,10 @@ export default {
       //   else return this.BadgeValue[value];
     },
     getEvent() {
-      EventBus.$on("reset-select", () => this.calculateTotal(true));
-      EventBus.$on("click-room", item => this.calculateTotal(true, item));
+      EventBus.$on("show-bat", () => this.calculateTotal(true));
+      EventBus.$on("click-room", item =>
+        this.calculateTotal(true, item.select)
+      );
       EventBus.$on("data-update", () => this.calculateTotal(false));
     }
   },
@@ -216,10 +218,9 @@ export default {
   padding-bottom: 16px;
 }
 
-
 .displayProcessElementMainContent::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
+  width: 8px;
+  height: 8px;
 }
 .displayProcessElementMainContent::-webkit-scrollbar-thumb {
   -webkit-border-radius: 5px;
@@ -232,7 +233,6 @@ export default {
   -webkit-border-radius: 5px;
   border-radius: 5px;
 }
-
 
 .displayButtonChooseProcess {
   display: flex;

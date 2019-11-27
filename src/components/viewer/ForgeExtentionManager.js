@@ -14,4 +14,12 @@ class ForgeExtentionManager {
     this.extentions.push(name);
   }
 }
-export default ForgeExtentionManager;
+
+let forgeExtentionManager = new ForgeExtentionManager();
+export { ForgeExtentionManager };
+export { forgeExtentionManager };
+export default forgeExtentionManager;
+if (typeof window.spinal === "undefined") window.spinal = {};
+if (typeof window.spinal.ForgeExtentionManager === "undefined") {
+  window.spinal.ForgeExtentionManager = forgeExtentionManager;
+}

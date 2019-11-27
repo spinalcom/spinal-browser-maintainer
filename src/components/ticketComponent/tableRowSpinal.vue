@@ -4,11 +4,11 @@
     <td class="text-xs-right"
         @click="onSelect">{{ticketName}}
     </td>
+    <!-- <td class="text-xs-right"
+        @click="onSelect">
+    </td> -->
     <td class="text-xs-right"
-        @click="onSelect">{{floor}}
-    </td>
-    <td class="text-xs-right"
-        @click="onSelect">{{local}}
+        @click="onSelect">{{floor}} / {{local}}
     </td>
     <td class="text-xs-right"
         @click="onSelect">{{creationDate}}

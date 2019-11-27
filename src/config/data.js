@@ -110,11 +110,11 @@ let dataService = {
     }
     return Promise.all(promises);
   },
-  assignTicketToRoom(ticket, floors) {
+  assignTicketToRoom(ticket, floors, statusEnd) {
     for (const floor of floors) {
       for (const room of floor.rooms) {
         if (room.id === ticket.ticket.info.local.get()) {
-          floor.count += 1;
+          if (statusEnd.indexOf(ticket.step.info.name.get()) !== -1) { floor.count += 1; }
           if (typeof room.tickets === 'undefined') room.tickets = [];
           room.tickets.push(ticket);
           return;
@@ -123,7 +123,7 @@ let dataService = {
     }
 
   },
-  getTicketsPerRoom(tickets, floors) {
+  getTicketsPerRoom(tickets, floors, statusEnd) {
     // return graph.SpinalGraphService
     //   .getChildren(room.id, SPINAL_TICKET_SERVICE_TARGET_RELATION_NAME)
     //   .then(children => {
@@ -136,7 +136,7 @@ let dataService = {
     for (const ticketFloor of tickets) {
       for (const ticketRoom of ticketFloor) {
         for (const ticket of ticketRoom) {
-          this.assignTicketToRoom(ticket, floors);
+          this.assignTicketToRoom(ticket, floors, statusEnd);
         }
       }
     }
@@ -149,20 +149,15 @@ let dataService = {
       // return relation.parent
       return relation.parent.load();
     });
-    // return new Promise((resolve) => {
+  },
 
-
-
-
-
-
-    //   return ticketNode.parents.SpinalSystemServiceTicketHasTicket["0"].ptr.load((model) => {
-    //     parent.ptr
-    //     resolve(model);
-    //   });
-    // });
-
-
+  async getStatusEnd(context) {
+    try {
+      let organCfgModel = await context.getElement();
+      return organCfgModel.statusEnd.get();
+    } catch (e) {
+      return [];
+    }
   },
 
   async getTickets(rooms, processInfo) {
@@ -170,6 +165,7 @@ let dataService = {
     let context = await graph.SpinalGraphService.getContext(SERVICE_NAME);
     if (typeof context === "undefined") { return Promise.resolve([]); }
     this.ContextNode = context;
+    const statusEnd = await this.getStatusEnd(context);
     const allProcess = await graph.SpinalGraphService.getChildren(context.info.id);
 
     const steps = await this.getAllSteps(allProcess);
@@ -180,9 +176,11 @@ let dataService = {
     for (const floor of rooms) {
       floor.count = 0;
     }
-    this.getTicketsPerRoom(allTickets, rooms);
+    this.getTicketsPerRoom(allTickets, rooms, statusEnd);
     // this.getProcessByLevel(rooms);
     // return Promise.resolve([]);
+    console.log("getTickets =>", allTickets);
+
     return allTickets;
   },
   // getProcessByLevel(floor) {
@@ -374,6 +372,8 @@ let dataService = {
     let ticketsByProcess = await this.getTickets(rooms, processName);
     await this.getEquipments(rooms);
     this.getProcessName(processName);
+    let context = await graph.SpinalGraphService.getContext(SERVICE_NAME);
+    const statusEnd = await this.getStatusEnd(context);
 
     return {
       floors: floors,
@@ -382,7 +382,8 @@ let dataService = {
       processIcons: processName['icon'],
       totalTickets: this.total,
       equipements: '',
-      ticketsByProcess
+      ticketsByProcess,
+      statusEnd
     };
   },
   async getBimObjects(id) {

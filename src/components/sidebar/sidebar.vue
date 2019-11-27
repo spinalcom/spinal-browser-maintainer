@@ -4,42 +4,52 @@
        v-if="rendering">
     <div class="mySidebarx"
          v-if="selectedLevel">
-      <p id="HeaderTitle">{{translate('Building')}}</p>
-
-      <div v-for="(item, index) in floors"
+      <div class="sidebar-goto-floor-btn-container">
+        <p id="floorSelectedTitleId">{{translate('Building')}}</p>
+        <v-icon dark
+                @click="showBat"
+                class="icon-show-floor">remove_red_eye</v-icon>
+      </div>
+      <!-- <p id="HeaderTitle">{{translate('Building')}}</p> -->
+      <div v-for="(item) in floors"
            :key="item.name"
-           @click="onItemClick(item)"
-           @mouseover="mouseOver(item)"
-           @mouseleave="mouseLeave()"
            :title="item.name">
         <v-divider style="width: 190px"
                    color="white"></v-divider>
-
-        <p class="sitebarElement">
-          {{ shortenText(item.name) }}</p>
-
-        <div class="displayBadge"
-             v-if="getTiketsNumber(item)!==0">
-          <p style="color:white !important">{{ getTiketsNumber(item) }}</p>
+        <div class="sitebarElementItem"
+             @click="onItemClick(item)"
+             @mouseover="mouseOver(item)"
+             @mouseleave="mouseLeave()">
+          <p class="sitebarElement">
+            {{ shortenText(item.name) }}</p>
+          <div class="displayBadge"
+               v-if="getTiketsNumber(item)!==0">
+            <p style="color:white !important">{{ getTiketsNumber(item) }}</p>
+          </div>
         </div>
-
       </div>
     </div>
     <div v-else
          class="mySidebarx">
-      <p id="floorSelectedTitleId"
-         @click="backToFloor">← {{ floor }}</p>
+      <div class="sidebar-goto-floor-btn-container">
+        <p id="floorSelectedTitleId"
+           @click="backToFloor">← {{ floor }}</p>
+        <v-icon dark
+                @click="showFloor"
+                class="icon-show-floor">remove_red_eye</v-icon>
+      </div>
       <div v-for="item in roomsDisplayed"
            :key="item.name">
         <v-divider style="width: 190px"
                    color="white"></v-divider>
-        <div class="test">
+        <div class="sitebarElementItem"
+             :class="{'selected-item': item.id === itemSelectedId}"
+             @click="onItemClick(item)"
+             @mouseover="mouseOver(item)"
+             @mouseleave="mouseLeave()">
           <p class="sitebarElement"
              :value="item"
-             :title="item.name"
-             @mouseover="mouseOver(item)"
-             @mouseleave="mouseLeave"
-             @click="onItemClick(item, $event)">{{ shortenText(item.name) }}
+             :title="item.name">{{ shortenText(item.name) }}
           </p>
 
           <div class="displayBadge"
@@ -53,12 +63,12 @@
         </div>
       </div>
     </div>
-      <hr/>
+    <hr />
     <div class="mySidebarx-logo-container">
       <img src="../../assets/spinalcomv2-power by.png"
            id="spinalcomLogo"
            alt="spinalcom">
-  </div>
+    </div>
 </template>
 
 <script>
@@ -73,6 +83,8 @@ export default {
       reduce: true,
       menus: [],
       selectedLevel: true,
+      itemSelectedId: "",
+      selectedLevelId: "",
       roomsDisplayed: [],
       roomSelected: "",
       oldTarget: {},
@@ -144,7 +156,6 @@ export default {
   methods: {
     translate: tl,
     getTiketsNumber(ticket) {
-      console.log("getTiketsNumber", ticket, this.allData);
       for (const floor of this.allData.rooms) {
         if (floor.floor === ticket.name) {
           return floor.count;
@@ -157,35 +168,47 @@ export default {
         this.counter[i] = this.rooms[i].count;
       }
     },
-    onItemClick(item, target) {
-      if (target !== undefined) {
-        if (this.roomSelected !== item.id) {
-          if (this.oldTarget.target !== undefined) {
-            this.oldTarget.target.parentElement.style.backgroundColor =
-              "#272727";
-          }
-          this.roomSelected = item.id;
-          target.target.parentElement.style.backgroundColor = "#2D3D93";
-          this.oldTarget = target;
-        } else {
-          this.roomSelected = "";
-          target.target.parentElement.style.backgroundColor = "#272727";
-          this.oldTarget = {};
-          EventBus.$emit("click-room", "reset");
-          return;
-        }
-      }
-      switch (item.type) {
-        case "geographicFloor":
-          EventBus.$emit("click-event", item);
-          this.openFloor(item.name);
-          break;
+    onItemClick(item) {
+      // if (target !== undefined) {
+      //   if (this.roomSelected !== item.id) {
+      //     if (this.oldTarget.target !== undefined) {
+      //       this.oldTarget.target.parentElement.style.backgroundColor =
+      //         "#272727";
+      //     }
+      //     this.roomSelected = item.id;
+      //     target.target.parentElement.style.backgroundColor = "#2D3D93";
+      //     this.oldTarget = target;
+      //   } else {
+      //     this.roomSelected = "";
+      //     target.target.parentElement.style.backgroundColor = "#272727";
+      //     this.oldTarget = {};
+      //     EventBus.$emit("click-room", "reset");
+      //     return;
+      //   }
+      // }
+      // switch (item.type) {
+      //   case "geographicFloor":
+      //     // EventBus.$emit("click-event", item);
+      //     // EventBus.$emit("click-room", item, this.selectedLevelId);
+      //     this.openFloor(item.name);
+      //     break;
 
-        default:
-          break;
+      //   default:
+      //     break;
+      // }
+      if (item.type === "geographicFloor") {
+        this.selectedLevelId = item.id;
+        this.itemSelectedId = "";
+        this.openFloor(item.name);
+      } else {
+        this.itemSelectedId = item.id;
       }
       this.roomsSelected = item.id;
-      EventBus.$emit("click-room", item);
+      // EventBus.$emit("click-room", item);
+      EventBus.$emit("click-room", {
+        select: item,
+        floor: this.selectedLevelId
+      });
       return;
     },
     shortenText(text) {
@@ -208,18 +231,17 @@ export default {
     },
     backToFloor() {
       this.selectedLevel = true;
-      EventBus.$emit("reset-select");
+      this.itemSelectedId = "";
+      EventBus.$emit("show-bat");
     },
     openFloor(floorSelected) {
       if (this.selectedLevel) this.selectedLevel = false;
       else this.selectedLevel = true;
-
       for (var i in this.rooms) {
         if (this.rooms[i].floor == floorSelected) {
           this.roomsDisplayed = this.rooms[i].rooms;
         }
       }
-
       this.floor = floorSelected;
     },
     mouseOver(item) {
@@ -227,10 +249,17 @@ export default {
     },
     isolate(item) {
       this.roomsSelected = item.id;
-      EventBus.$emit("click-room", item);
+      EventBus.$emit("click-room", item, this.selectedLevelId);
     },
     mouseLeave() {
       EventBus.$emit("mouse-leave");
+    },
+    showFloor() {
+      this.itemSelectedId = "";
+      EventBus.$emit("show-floor", this.selectedLevelId);
+    },
+    showBat() {
+      EventBus.$emit("show-bat");
     }
   }
 };
@@ -323,6 +352,7 @@ p {
   background-color: red;
   float: right;
   margin-top: 8px;
+  pointer-events: none;
 }
 .displayBadge > p {
   width: inherit;
@@ -335,12 +365,25 @@ p {
   margin-bottom: 10px;
   margin-top: 10px;
   padding-left: 8px;
-  cursor: pointer;
+  pointer-events: none;
 }
-.sitebarElement:hover {
+.sitebarElementItem:hover > .sitebarElement {
   color: #356bab;
 }
-
+.sitebarElementItem {
+  cursor: pointer;
+}
+.icon-show-floor {
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+.sidebar-goto-floor-btn-container {
+  position: relative;
+}
+.selected-item {
+  background-color: #2d3d93;
+}
 .sidebarDivider {
   width: 92%;
 }

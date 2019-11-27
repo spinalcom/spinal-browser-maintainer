@@ -23,7 +23,6 @@
  */
 import { SpinalGraphService } from 'spinal-env-viewer-graph-service';
 import { spinalIO } from './spinal-io';
-var throttle = require('lodash.throttle');
 import {
   SCENE_RELATION_NAME, PART_RELATION_NAME, SCENE_RELATION_TYPE
 } from "spinal-env-viewer-plugin-scene/src/constants";
