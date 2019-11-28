@@ -17,8 +17,11 @@
                            v-else-if="step === 2"
                            :selectedDomaine="selectedDomaine"
                            :selectedObject="selectedObject"
+                           :localId="localId"
+                           :bimObjId="bimObjId"
                            @onBackClick="onClickBack"
-                           @onSelect="$emit('onSelectMenu')"></ticket-declare-view>
+                           @onSelect="$emit('onSelectMenu')">
+      </ticket-declare-view>
     </transition>
   </div>
 </template>
@@ -36,6 +39,7 @@ export default {
     "object-view": objectView,
     "ticket-declare-view": ticketDeclareView
   },
+  props: ["localId", "bimObjId"],
   data() {
     return {
       step: 0,

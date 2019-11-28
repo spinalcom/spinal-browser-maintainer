@@ -1,28 +1,47 @@
 import { SpinalGraphService } from 'spinal-env-viewer-graph-service';
-// import {constants} from 'spinal-env-viewer-context-geographic-service'
+import {
+  CONTEXT_TYPE,
+  SITE_TYPE,
+  BUILDING_TYPE,
+  FLOOR_TYPE,
+  ZONE_TYPE,
+  ROOM_TYPE,
+  EQUIPMENT_RELATION,
+  SITE_RELATION,
+  BUILDING_RELATION,
+  FLOOR_RELATION,
+  ZONE_RELATION,
+  ROOM_RELATION,
+  EQUIPMENT_TYPE,
+  REFERENCE_RELATION,
+  REFERENCE_TYPE
+} from 'spinal-env-viewer-context-geographic-service/build/constants';
 
 import { serviceDocumentation } from 'spinal-env-viewer-plugin-documentation-service/index';
-const CONTEXT_TYPE = "geographicContext";
-const SITE_TYPE = "geographicSite";
-const BUILDING_TYPE = "geographicBuilding";
-export const FLOOR_TYPE = "geographicFloor";
-const ZONE_TYPE = "geographicZone";
-export const ROOM_TYPE = "geographicRoom";
-export const EQUIPMENT_RELATION = "hasBimObject";
-
-const SITE_RELATION = "hasGeographicSite";
-const BUILDING_RELATION = "hasGeographicBuilding";
-const FLOOR_RELATION = "hasGeographicFloor";
-const ZONE_RELATION = "hasGeographicZone";
-const ROOM_RELATION = "hasGeographicRoom";
-const EQUIPMENT_TYPE = "BIMObject";
-
+export {
+  CONTEXT_TYPE,
+  SITE_TYPE,
+  BUILDING_TYPE,
+  FLOOR_TYPE,
+  ZONE_TYPE,
+  ROOM_TYPE,
+  EQUIPMENT_RELATION,
+  SITE_RELATION,
+  BUILDING_RELATION,
+  FLOOR_RELATION,
+  ZONE_RELATION,
+  ROOM_RELATION,
+  EQUIPMENT_TYPE,
+  REFERENCE_RELATION,
+  REFERENCE_TYPE
+};
 export const GEO_RELATIONS_NAMES = [
   SITE_RELATION,
   BUILDING_RELATION,
   FLOOR_RELATION,
   ZONE_RELATION,
-  ROOM_RELATION
+  ROOM_RELATION,
+  REFERENCE_RELATION
 ];
 export const GEO_NODE_TYPE = [
   CONTEXT_TYPE,
@@ -30,13 +49,23 @@ export const GEO_NODE_TYPE = [
   BUILDING_TYPE,
   FLOOR_TYPE,
   ZONE_TYPE,
-  ROOM_TYPE
+  ROOM_TYPE,
+  REFERENCE_TYPE
 ];
 const GEO_FIND_BIMOBJ_RELATION = [
   FLOOR_RELATION,
   ZONE_RELATION,
   ROOM_RELATION,
-  EQUIPMENT_RELATION
+  EQUIPMENT_RELATION,
+  REFERENCE_RELATION
+];
+const PURE_GEO_RELATIONS = [SITE_RELATION, BUILDING_RELATION, FLOOR_RELATION, ZONE_RELATION, ROOM_RELATION];
+const PURE_GEO_TYPES = [CONTEXT_TYPE,
+  SITE_TYPE,
+  BUILDING_TYPE,
+  FLOOR_TYPE,
+  ZONE_TYPE,
+  ROOM_TYPE
 ];
 
 function modelToObjet(child) {
@@ -56,6 +85,8 @@ function modelToObjet(child) {
 
 function spinalNodeGetParentRelation(node, relationNames) {
   const res = [];
+  console.log('spinalNodeGetParentRelation', relationNames);
+
   for (const relTargetName of relationNames) {
     if (node.parents.hasOwnProperty(relTargetName)) {
       const relLst = node.parents[relTargetName];
@@ -81,7 +112,7 @@ export const GetSpatialContext = {
   getStart() {
     return new Promise((resolve) => {
       const context = SpinalGraphService.getContextWithType(CONTEXT_TYPE)[0];
-      return SpinalGraphService.getChildren(context.getId(), GEO_RELATIONS_NAMES).then(
+      return SpinalGraphService.getChildren(context.getId(), PURE_GEO_RELATIONS).then(
         (contextChildren) => {
           contextChildren = contextChildren.map(modelToObjet);
           resolve(contextChildren);
@@ -91,19 +122,19 @@ export const GetSpatialContext = {
   },
   async getPrev(nodeId) {
     const node = SpinalGraphService.getRealNode(nodeId);
-    let parents = await spinalNodeGetParent(node, GEO_RELATIONS_NAMES);
+    let parents = await spinalNodeGetParent(node, PURE_GEO_RELATIONS);
     parents = parents.filter((elm) => {
       return GEO_NODE_TYPE.includes(elm.info.type.get());
     }).map(modelToObjet);
     if (parents.length === 1) {
       let parent = parents[0];
-      const contextChildren = await SpinalGraphService.getChildren(parent.id, GEO_RELATIONS_NAMES);
+      const contextChildren = await SpinalGraphService.getChildren(parent.id, PURE_GEO_RELATIONS);
       return contextChildren.map(modelToObjet);
     }
   },
 
   getNext(nodeId) {
-    return SpinalGraphService.getChildren(nodeId, GEO_RELATIONS_NAMES).then(
+    return SpinalGraphService.getChildren(nodeId, PURE_GEO_RELATIONS).then(
       (contextChildren) => {
         return contextChildren.map(modelToObjet);
       }
@@ -144,5 +175,22 @@ export const GetSpatialContext = {
       }
       return acc;
     }, []);
+  },
+
+
+  async getPath(startId, res = []) {
+    const node = spinal.spinalGraphService.nodes[startId];
+    if (node.info.type.get() === CONTEXT_TYPE) {
+      return res.reverse().map((n) => modelToObjet(n));
+    }
+    res.push(node);
+    const nextNodes = await spinalNodeGetParent(node, PURE_GEO_RELATIONS);
+    for (const nextNode of nextNodes) {
+      if (PURE_GEO_TYPES.includes(nextNode.info.type.get())) {
+        return GetSpatialContext.getPath(nextNode.info.id.get(), res);
+      }
+    }
+    return res;
   }
+
 };

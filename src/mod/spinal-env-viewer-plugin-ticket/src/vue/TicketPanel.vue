@@ -12,6 +12,8 @@
                       v-if="page === 1"></consult-ticket>
       <declare-ticket :key=2
                       @onSelectMenu="onSelectMenu"
+                      :localId="cfgLocal"
+                      :bimObjId="cfgBimObj"
                       v-if="page === 2"></declare-ticket>
     </transition>
   </div>
@@ -21,7 +23,7 @@
 import consultTicket from "./Consult.vue";
 import declareTicket from "./Declare.vue";
 import menuSelect from "./MenuSelect/MenuSelect.vue";
-import {TICKET_PANEL_NAME, TICKET_PANEL_TITLE} from '../config';
+import { TICKET_PANEL_NAME, TICKET_PANEL_TITLE } from "../config";
 export default {
   name: "TicketPanel",
   components: {
@@ -31,13 +33,23 @@ export default {
   },
   data() {
     return {
-      page: 0
+      page: 0,
+      cfgLocal: "",
+      cfgBimObj: ""
     };
   },
   methods: {
     opened(obj) {
-      console.log("opened", obj);
-      this.step = 0;
+      if (obj.bimObj || obj.local) {
+        this.step = 2;
+        this.cfgBimObj = obj.bimObj ? obj.bimObj : "";
+        this.cfgLocal = obj.local ? obj.local : "";
+        this.onSelectDeclare();
+      } else {
+        this.cfgLocal = "";
+        this.cfgBimObj = "";
+        this.step = 0;
+      }
     },
     closed(obj) {
       console.log("closed", obj);
@@ -46,20 +58,21 @@ export default {
       console.log("removed", obj);
     },
     renameTitlePanel(str) {
-      window.spinal.spinalPanelManagerService.panels[TICKET_PANEL_NAME].panel.setTitle(str);
+      window.spinal.spinalPanelManagerService.panels[
+        TICKET_PANEL_NAME
+      ].panel.setTitle(str);
     },
     onSelectMenu() {
-      console.log("onSelectMenu");
       this.page = 0;
+      this.cfgLocal = "";
+      this.cfgBimObj = "";
       this.renameTitlePanel(TICKET_PANEL_TITLE);
     },
     onSelectConsult() {
-      console.log("onSelectConsult");
       this.page = 1;
       this.renameTitlePanel(TICKET_PANEL_TITLE + " : Consulter les demandes");
     },
     onSelectDeclare() {
-      console.log("onSelectDeclare");
       this.page = 2;
       this.renameTitlePanel(TICKET_PANEL_TITLE + " : Créer une demande");
     }
@@ -69,7 +82,6 @@ export default {
 </script>
 
 <style>
-
 .ticket-panel-main-container * {
   box-sizing: border-box;
   overflow: hidden;

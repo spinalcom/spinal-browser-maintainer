@@ -1,10 +1,10 @@
 {
   "name": "spinal-browser-maintainer",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "rm -rf wwww && NODE_ENV=production node bin/parcel.config.js",
+    "build": "NODE_ENV=production node bin/parcel.config.js",
     "dev": "NODE_ENV=development node bin/parcel.config.js",
     "reset": "rm -fr www",
     "postinstall": "npm run spinal-register && npm run build",

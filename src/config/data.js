@@ -114,7 +114,8 @@ let dataService = {
     for (const floor of floors) {
       for (const room of floor.rooms) {
         if (room.id === ticket.ticket.info.local.get()) {
-          if (statusEnd.indexOf(ticket.step.info.name.get()) !== -1) { floor.count += 1; }
+          floor.count += 1;
+          // if (!statusEnd.includes(ticket.step.info.name.get())) {  }
           if (typeof room.tickets === 'undefined') room.tickets = [];
           room.tickets.push(ticket);
           return;
@@ -374,8 +375,7 @@ let dataService = {
     this.getProcessName(processName);
     let context = await graph.SpinalGraphService.getContext(SERVICE_NAME);
     const statusEnd = await this.getStatusEnd(context);
-
-    return {
+    const res = {
       floors: floors,
       rooms: rooms,
       process: processName['process'],
@@ -385,6 +385,7 @@ let dataService = {
       ticketsByProcess,
       statusEnd
     };
+    return res;
   },
   async getBimObjects(id) {
     console.warn("deprecated don't use 'getBimObjects' use 'getBimObjectByModel'");

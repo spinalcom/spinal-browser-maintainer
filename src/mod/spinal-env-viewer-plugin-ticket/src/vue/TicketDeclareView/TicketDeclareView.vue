@@ -11,24 +11,38 @@
       </div>
     </div>
     <md-content class="ticket-panel-container-content md-scrollbar">
-
       <div class="hr-sect">
         <md-icon>location_on</md-icon>Localisation
       </div>
-      <v-btn class="md-raised"
-             @click="openModalLocal = true"
-             style="width:100%; margin: 8px 0;">
-        <span v-if="local === ''">Selectionnez un Local</span>
-        <span v-else>{{local}}</span>
-      </v-btn>
-      <v-btn v-if="local !== ''"
-             class="md-raised"
-             @click="openModalMaterial = true"
-             style="width:100%; margin: 8px 0;">
-        <span v-if="materiel.name === ''">Selectionnez un
-          Matériel - <i>optionnel</i></span>
-        <span v-else>{{materiel.name}}</span>
-      </v-btn>
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on }">
+          <v-btn class="md-raised"
+                 v-on="on"
+                 @click="openModalLocal = true"
+                 style="width:100%; margin: 8px 0;">
+            <span v-if="local === ''">Selectionnez un Local</span>
+            <span class="text-ellipsis"
+                  v-else>{{local}}</span>
+          </v-btn>
+        </template>
+        <span>{{local|| 'Selectionnez un Local'}}</span>
+      </v-tooltip>
+      <v-tooltip v-if="local !== ''"
+                 bottom>
+        <template v-slot:activator="{ on }">
+          <v-btn class="md-raised"
+                 v-on="on"
+                 @click="openModalMaterial = true"
+                 style="width:100%; margin: 8px 0;">
+            <span v-if="materiel.name === ''">Selectionnez un
+              Matériel - <i>optionnel</i></span>
+            <span class="text-ellipsis"
+                  v-else>{{materiel.name}}</span>
+          </v-btn>
+        </template>
+        <span>{{materiel.name || 'Selectionnez un Matériel'}}</span>
+      </v-tooltip>
+
       <!-- <md-field>
         <label for="local">Local</label>
         <md-input name="local"
@@ -118,9 +132,11 @@
 import { createRequest, requestCode } from "../../services/serviceTicket";
 import modalGetLocal from "./modalGetLocal.vue";
 import modalGetMaterial from "./modalGetMaterial.vue";
+import { GetSpatialContext } from "./GetSpatialContext";
+import throttle from "lodash.throttle";
 export default {
   name: "ticket-declare-view",
-  props: ["selectedDomaine", "selectedObject"],
+  props: ["localId", "bimObjId", "selectedDomaine", "selectedObject"],
   data() {
     return {
       comment: "",
@@ -142,7 +158,38 @@ export default {
       return this.isSending === true || this.local.length === 0;
     }
   },
+  mounted() {
+    this.updateLocationAndMatBinded = throttle(
+      this.updateLocationAndMat.bind(this),
+      100
+    );
+    this.updateLocationAndMatBinded();
+  },
+  watch: {
+    localId() {
+      return this.updateLocationAndMatBinded();
+    },
+    bimObjId() {
+      return this.updateLocationAndMatBinded();
+    }
+  },
   methods: {
+    async updateLocationAndMat() {
+      if (this.localId) {
+        const plocal = await GetSpatialContext.getPath(this.localId);
+        this.local = plocal.map(el => el.name).join("/");
+        this.localNode = plocal[plocal.length - 1];
+      }
+      if (spinal.spinalGraphService.getRealNode(this.localId)) {
+        const mats = await GetSpatialContext.getMaterial({ id: this.localId });
+        for (const m of mats) {
+          if (m.id === this.bimObjId) {
+            return (this.materiel = m);
+          }
+        }
+      }
+      this.materiel = { name: "" };
+    },
     searchLocal() {
       console.log("searchLocal");
     },
@@ -276,6 +323,11 @@ export default {
 }
 .btn-send-di:disabled {
   /* background-color: white !important; */
+}
+.text-ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 </style>
 
