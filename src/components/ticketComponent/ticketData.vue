@@ -38,6 +38,7 @@ import processComponent from "./processComponent.vue";
 import ticketTable from "./ticketTable.vue";
 import ticketDetails from "./ticketDetails";
 import ticketCalendar from "./ticketCalendar.vue";
+import getTicket from "./getTicketInfo";
 
 export default {
   name: "ticketData",
@@ -134,20 +135,44 @@ export default {
         "author",
         "note"
       ]);
-      for (var node in this.selectedTicket) {
-        result.push([
-          this.selectedTicket[node].floorName,
-          this.selectedTicket[node].roomName,
-          this.selectedTicket[node].processName,
-          this.selectedTicket[node].name.get(),
-          this.selectedTicket[node].stepName,
-          this.timeConverter(this.selectedTicket[node].creationDate.get()),
-          this.selectedTicket[node].username.get(),
-          this.selectedTicket[node].note.get()
-        ]);
+      const prom = [];
+      for (var node of this.selectedTicket) {
+        prom.push(getTicket(node.info.id.get()));
       }
+      Promise.all(prom).then(res => {
+        res.forEach(ticket => {
+          result.push([
+            ticket.floor,
+            ticket.local,
+            ticket.processName,
+            ticket.ticketName,
+            ticket.stepName,
+            ticket.creationDate,
+            ticket.appelant,
+            encodeURI(
+              spinal.spinalGraphService
+                .getRealNode(ticket.ticketId)
+                .info.note.get()
+            )
+          ]);
+        });
+        this.download("ticket_export.csv", result);
+      });
 
-      this.download("ticket_export.csv", result);
+      // for (var node in this.selectedTicket) {
+      //   result.push([
+      //     this.selectedTicket[node].floorName,
+      //     this.selectedTicket[node].roomName,
+      //     this.selectedTicket[node].processName,
+      //     this.selectedTicket[node].name.get(),
+      //     this.selectedTicket[node].stepName,
+      //     this.timeConverter(this.selectedTicket[node].creationDate.get()),
+      //     this.selectedTicket[node].username.get(),
+      //     this.selectedTicket[node].note.get()
+      //   ]);
+      // }
+
+      // this.download("ticket_export.csv", result);
     },
     showDetails(item) {
       this.ticketDetails = item;

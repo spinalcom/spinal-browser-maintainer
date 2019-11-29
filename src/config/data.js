@@ -149,6 +149,14 @@ let dataService = {
       return relation.parent.load();
     });
   },
+  getStepProcess(stepNode) {
+    return loadModel(stepNode.parents.SpinalSystemServiceTicketHasStep[0].ptr).then((relation) => {
+      // return relation.parent
+      return relation.parent.load();
+    });
+  },
+
+
 
   async getStatusEnd(context) {
     try {
@@ -259,12 +267,12 @@ let dataService = {
       const processNode = graph.SpinalGraphService.getRealNode(process.id.get());
       promises.push(graph.SpinalGraphService.getChildren(process.id.get(),
         [SPINAL_TICKET_SERVICE_STEP_RELATION_NAME]).then(child => {
-          return child.map((nodeId) => {
-            const node = graph.SpinalGraphService.getRealNode(nodeId.id.get());
-            this.StepsNodes[nodeId.id.get()] = node;
-            return { step: node, process: processNode };
-          });
-        }));
+        return child.map((nodeId) => {
+          const node = graph.SpinalGraphService.getRealNode(nodeId.id.get());
+          this.StepsNodes[nodeId.id.get()] = node;
+          return { step: node, process: processNode };
+        });
+      }));
     }
     return Promise.all(promises);
   },
@@ -336,13 +344,13 @@ let dataService = {
   getFloorRooms(floorId) {
     return graph.SpinalGraphService.findNodes(floorId, geographicConstants
       .GEOGRAPHIC_RELATIONS, (node) => {
-        graph.SpinalGraphService._addNode(node);
-        return node.getType().get() === geographicConstants.ROOM_TYPE;
-      }).then(res => {
-        return res.map(el => {
-          return el.info.get();
-        });
+      graph.SpinalGraphService._addNode(node);
+      return node.getType().get() === geographicConstants.ROOM_TYPE;
+    }).then(res => {
+      return res.map(el => {
+        return el.info.get();
       });
+    });
   },
   getProcessName(obj) {
     let allProcess = [];
@@ -388,13 +396,13 @@ let dataService = {
     await graph.init();
     return graph.SpinalGraphService.findNodes(id, geographicConstants
       .GEOGRAPHIC_RELATIONS, (node) => {
-        graph.SpinalGraphService._addNode(node);
-        return node.getType().get() === geographicConstants.EQUIPMENT_TYPE;
-      }).then(res => {
-        return res.map(el => {
-          return el.info.dbid.get();
-        });
+      graph.SpinalGraphService._addNode(node);
+      return node.getType().get() === geographicConstants.EQUIPMENT_TYPE;
+    }).then(res => {
+      return res.map(el => {
+        return el.info.dbid.get();
       });
+    });
   },
 
   async getBimObjectByModel(id) {

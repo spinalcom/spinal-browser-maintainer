@@ -10,7 +10,7 @@
       <span class="btn-open-emission-text">Ouvrir eMission</span>
     </v-btn>
 
-    <div class="selectEyeForTickets">
+    <!-- <div class="selectEyeForTickets">
       <button>
         <v-icon>get_app</v-icon>
       </button>
@@ -18,7 +18,7 @@
         <v-icon>assessment</v-icon>
       </button>
 
-    </div>
+    </div> -->
     <h3 class="displayProcessElementTitle">{{translate('Choose a process')}}
     </h3>
     <div class="displayProcessElementMainContent">

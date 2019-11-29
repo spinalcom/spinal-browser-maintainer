@@ -43,6 +43,8 @@ export class EventViewerManager {
     EventBus.$on("mouse-leave", () => this.viewer.select());
     EventBus.$on("show-floor", throttle(this.showFloor.bind(this), 1000));
     EventBus.$on("show-bat", throttle(this.showBuildind.bind(this), 1000));
+    EventBus.$on("display-colors", items => viewerUtils.displayTicketsColor(items));
+
     // show-floor
     // show-bat
     //   EventBus.$on("select-equipment", itemId => this.selectObjects(itemId));
@@ -66,7 +68,6 @@ export class EventViewerManager {
     //   });
 
 
-    //   EventBus.$on("display-colors", items => this.displayTicketsColor(items));
 
     //   EventBus.$on("reset-select", () => {
     //     const aggregateIsolation = this.viewer.getAggregateIsolation();

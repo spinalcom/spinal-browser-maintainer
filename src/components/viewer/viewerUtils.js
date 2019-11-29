@@ -35,7 +35,9 @@ const validNames = [
 
 export class ViewerUtils {
   constructor() {
-    this.eventForColorBinded = this.eventForColor.bind(this);
+    this.restoreColorMaterialBinded = this.restoreColorMaterial.bind(this);
+    this.materials = {};
+    this.modelMap = new Map(); // Map<Model, Map<colorString, Set<dbIdString > > >
   }
   initViewer(viewer) {
     this.viewer = viewer;
@@ -120,52 +122,51 @@ export class ViewerUtils {
   showAll() {
     this.viewer.showAll();
   }
-  restoreColorMaterial(objectIds) {
-    for (var i = 0; i < objectIds.length; i++) {
-      var dbid = objectIds[i];
+  // restoreColorMaterial(objectIds) {
+  //   for (var i = 0; i < objectIds.length; i++) {
+  //     var dbid = objectIds[i];
+  //     var it = this.viewer.model.getData().instanceTree;
+  //     if (this.materials[dbid]) delete this.materials[dbid];
+  //     it.enumNodeFragments(dbid, (fragId) => {
+  //       var renderProxy = this.viewer.impl.getRenderProxy(
+  //         this.viewer.model,
+  //         fragId
+  //       );
+  //       if (renderProxy[dbid]) {
+  //         this.viewer.impl.clearOverlay(dbid);
+  //         delete renderProxy[dbid];
+  //         this.viewer.impl.invalidate(true);
+  //       }
+  //     }, true);
+  //   }
+  // }
+  // setColorMaterial(objectIds, color) {
+  //   // console.log("setColorMaterial", objectIds, color);
 
-      var it = this.viewer.model.getData().instanceTree;
+  //   for (var i = 0; i < objectIds.length; i++) {
+  //     var dbid = objectIds[i];
+  //     if (this.materials[dbid]) {
+  //       this.materials[dbid].color.setHex(
+  //         parseInt(this.cutHex(color), 16)
+  //       );
+  //       this.viewer.impl.invalidate(false, false, true);
+  //     } else {
+  //       var material = this.addMaterial(color, dbid);
 
-      if (this.materials[dbid]) delete this.materials[dbid];
-
-      it.enumNodeFragments(dbid, (fragId) => {
-        var renderProxy = this.viewer.impl.getRenderProxy(
-          this.viewer.model,
-          fragId
-        );
-        if (renderProxy[dbid]) {
-          this.viewer.impl.clearOverlay(dbid);
-          delete renderProxy[dbid];
-          this.viewer.impl.invalidate(true);
-        }
-      }, true);
-    }
-  }
-  setColorMaterial(objectIds, color) {
-    for (var i = 0; i < objectIds.length; i++) {
-      var dbid = objectIds[i];
-      if (this.materials[dbid]) {
-        this.materials[dbid].color.setHex(
-          parseInt(this.cutHex(color), 16)
-        );
-        this.viewer.impl.invalidate(false, false, true);
-      } else {
-        var material = this.addMaterial(color, dbid);
-
-        let it = this.viewer.model.getData().instanceTree;
-        it.enumNodeFragments(dbid, (fragId) => {
-          var renderProxy = this.viewer.impl.getRenderProxy(this.viewer.model, fragId);
-          renderProxy[dbid] = new THREE.Mesh(renderProxy.geometry, material);
-          renderProxy[dbid].matrix.copy(renderProxy.matrixWorld);
-          renderProxy[dbid].matrixWorldNeedsUpdate = true;
-          renderProxy[dbid].matrixAutoUpdate = false;
-          renderProxy[dbid].frustumCulled = false;
-          this.viewer.impl.addOverlay(dbid, renderProxy[dbid]);
-          this.viewer.impl.invalidate(true);
-        }, false);
-      }
-    }
-  }
+  //       let it = this.viewer.model.getData().instanceTree;
+  //       it.enumNodeFragments(dbid, (fragId) => {
+  //         var renderProxy = this.viewer.impl.getRenderProxy(this.viewer.model, fragId);
+  //         renderProxy[dbid] = new THREE.Mesh(renderProxy.geometry, material);
+  //         renderProxy[dbid].matrix.copy(renderProxy.matrixWorld);
+  //         renderProxy[dbid].matrixWorldNeedsUpdate = true;
+  //         renderProxy[dbid].matrixAutoUpdate = false;
+  //         renderProxy[dbid].frustumCulled = false;
+  //         this.viewer.impl.addOverlay(dbid, renderProxy[dbid]);
+  //         this.viewer.impl.invalidate(true);
+  //       }, false);
+  //     }
+  //   }
+  // }
   cutHex(h) {
     return h.charAt(0) == "#" ? h.substring(1, 7) : h;
   }
@@ -177,80 +178,184 @@ export class ViewerUtils {
     this.viewer.impl.createOverlayScene(id, this.materials[id], this.materials[id]);
     return this.materials[id];
   }
-  displayTicketsColor(items) {
-    let realNode;
-    this.ticketToZoom = [];
-    this.colors = {};
-    let iterator = 0;
-    const prom = [];
-    for (var node in items) {
-      if (!items[node].info.local.get()) {
-        // << GROS SCOTCH
-        console.log("unknow location ticket ", items[node]); // << GROS SCOTCH
+
+  restoreColorMaterial() {
+    window.removeEventListener("click", this.restoreColorMaterialBinded, true);
+    for (const [model, colorSet] of this.modelMap) {
+      for (const [, setDbId] of colorSet) {
+        for (const dbId of setDbId) {
+          const id = `${model.id}-${dbId}`;
+          var it = model.getData().instanceTree;
+          if (this.materials[id]) delete this.materials[id];
+          it.enumNodeFragments(dbId, (fragId) => {
+            var renderProxy = this.viewer.impl.getRenderProxy(model, fragId);
+            if (renderProxy[id]) {
+              this.viewer.impl.clearOverlay(id);
+              delete renderProxy[id];
+              this.viewer.impl.invalidate(true);
+            }
+          }, true);
+        }
+      }
+    }
+  }
+  setColorMaterial() {
+    for (const [model, colorSet] of this.modelMap) {
+      for (const [color, setDbId] of colorSet) {
+        for (const dbId of setDbId) {
+          const id = `${model.id}-${dbId}`;
+          if (this.materials[id]) {
+            this.materials[id].color.setHex(parseInt(this.cutHex(color), 16));
+            this.viewer.impl.invalidate(false, false, true);
+          } else {
+            var material = this.addMaterial(color, id);
+            let it = model.getData().instanceTree;
+            it.enumNodeFragments(dbId, (fragId) => {
+              var renderProxy = this.viewer.impl.getRenderProxy(model, fragId);
+              renderProxy[id] = new THREE.Mesh(renderProxy.geometry, material);
+              renderProxy[id].matrix.copy(renderProxy.matrixWorld);
+              renderProxy[id].matrixWorldNeedsUpdate = true;
+              renderProxy[id].matrixAutoUpdate = false;
+              renderProxy[id].frustumCulled = false;
+              this.viewer.impl.addOverlay(id, renderProxy[id]);
+              this.viewer.impl.invalidate(true);
+            }, false);
+          }
+        }
+      }
+    }
+  }
+
+  addTobDIdColor(model, dbId, color) {
+    let mapColor, setDbId;
+    if (!this.modelMap.has(model)) {
+      mapColor = new Map();
+      this.modelMap.set(model, mapColor);
+    } else {
+      mapColor = this.modelMap.get(model);
+    }
+    if (!mapColor.has(color)) {
+      setDbId = new Set();
+      mapColor.set(color, setDbId);
+    } else {
+      setDbId = mapColor.get(color);
+    }
+    setDbId.add(dbId);
+  }
+
+  async displayTicketsColor(ticketNodes) {
+    const promises = [];
+    for (const ticketNode of ticketNodes) {
+      if (!ticketNode.info.local.get()) {
+        console.log("unknow location ticket ", ticketNode); // << GROS SCOTCH
         continue; // << GROS SCOTCH
       } // << GROS SCOTCH
-      realNode = spinal.spinalGraphService.getRealNode(
-        items[node].info.local.get()
+      const localNode = spinal.spinalGraphService.getRealNode(ticketNode.info.local.get());
+      promises.push(
+        localNode.find(["hasBimObject", "hasBIMObject", "hasReferenceObject"], (e) => e.info.type.get() === 'BIMObject')
+          .then((bimObjects) => {
+            return bimObjects.map(bimObject => {
+              const bimfileId = bimObject.info.bimFileId.get();
+              const dbId = bimObject.info.dbid.get();
+              const model = spinal.BimObjectService.getModelByBimfile(bimfileId);
+              const color = ticketNode.info.color.get();
+              this.addTobDIdColor(model, dbId, color);
+            });
+          })
       );
-      this.colors[iterator] = items[node].info.color.get();
-      iterator++;
-      prom.push(realNode.find(["hasBimObject", "hasBIMObject", "hasReferenceObject"],
-        this.predicat
-      ).then(lst => {
-        let result = lst.map((x) => {
-          return x.info.dbid.get();
-        });
-        this.ticketToZoom.push(result);
-        return lst;
-      }));
     }
-    Promise.all(prom)
-      .then(arrLst => {
-        if (arrLst.length > 0 && arrLst[0].length > 0) {
-          const id = arrLst[0][0].info.bimFileId.get();
-          const model = spinal.BimObjectService.getModelByBimfile(id);
-          return spinal.SpinalForgeViewer.viewerManager.setCurrentModel(model);
-        }
-      })
-      .then(() => {
-        window.addEventListener("click", this.eventForColorBinded, true);
-        this.setColorMaterialS();
-      })
-      .catch(console.error);
+    await Promise.all(promises);
+    this.setColorMaterial();
+    window.addEventListener("click", this.restoreColorMaterialBinded, true);
   }
-  predicat(node) {
-    return node.info.type.get() === "BIMObject";
-  }
-  eventForColor(event) {
-    for (var i in this.ticketToZoom) {
-      this.restoreColorMaterial(this.ticketToZoom[i]);
-    }
-    window.removeEventListener("click", this.eventForColorBinded, true);
-    event.preventDefault();
-  }
-  setColorMaterialS() {
-    let self = this;
-    var iterator = 0;
-    let color;
-    let loop = 0;
-    var x = setInterval(() => {
-      if (self.colors[iterator]) {
-        // << GROS SCOTCH
-        color = self.colors[iterator].replace(/#/g, "0x");
-        this.setColorMaterial(self.ticketToZoom[iterator], color);
-        iterator++;
-        if (self.ticketToZoom[iterator] === undefined && loop === 0) {
-          iterator = 0;
-          loop = 1;
-        } else if (self.ticketToZoom[iterator] === undefined && loop === 1) {
-          clearInterval(x);
-        }
-      } else {
-        // << GROS SCOTCH
-        clearInterval(x); // << GROS SCOTCH
-      } // << GROS SCOTCH
-    }, 10);
-  }
+
+
+
+
+
+
+
+
+
+
+
+  // displayTicketsColor(items) {
+  //   console.log("displayTicketsColor items", items);
+
+  //   let realNode;
+  //   this.ticketToZoom = [];
+  //   this.colors = {};
+  //   let iterator = 0;
+  //   const prom = [];
+  //   for (var node in items) {
+  //     if (!items[node].info.local.get()) {
+  //       // << GROS SCOTCH
+  //       console.log("unknow location ticket ", items[node]); // << GROS SCOTCH
+  //       continue; // << GROS SCOTCH
+  //     } // << GROS SCOTCH
+  //     realNode = spinal.spinalGraphService.getRealNode(
+  //       items[node].info.local.get()
+  //     );
+  //     this.colors[iterator] = items[node].info.color.get();
+  //     iterator++;
+  //     prom.push(realNode.find(["hasBimObject", "hasBIMObject", "hasReferenceObject"],
+  //       this.predicat
+  //     ).then(lst => {
+  //       let result = lst.map((x) => {
+  //         return x.info.dbid.get();
+  //       });
+  //       this.ticketToZoom.push(result);
+  //       return lst;
+  //     }));
+  //   }
+  //   Promise.all(prom)
+  //     .then(arrLst => {
+  //       if (arrLst.length > 0 && arrLst[0].length > 0) {
+  //         const id = arrLst[0][0].info.bimFileId.get();
+  //         const model = spinal.BimObjectService.getModelByBimfile(id);
+  //         return spinal.SpinalForgeViewer.viewerManager.setCurrentModel(model);
+  //       }
+  //     })
+  //     .then(() => {
+  //       window.addEventListener("click", this.eventForColorBinded, true);
+  //       this.setColorMaterialS();
+  //     })
+  //     .catch(console.error);
+  // }
+  // predicat(node) {
+  //   return node.info.type.get() === "BIMObject";
+  // }
+  // eventForColor(event) {
+  //   for (var i in this.ticketToZoom) {
+  //     this.restoreColorMaterial(this.ticketToZoom[i]);
+  //   }
+  //   window.removeEventListener("click", this.eventForColorBinded, true);
+  //   event.preventDefault();
+  // }
+  // setColorMaterialS() {
+  //   let self = this;
+  //   var iterator = 0;
+  //   let color;
+  //   let loop = 0;
+
+  //   var x = setInterval(() => {
+  //     if (self.colors[iterator]) {
+  //       // << GROS SCOTCH
+  //       color = self.colors[iterator].replace(/#/g, "0x");
+  //       this.setColorMaterial(self.ticketToZoom[iterator], color);
+  //       iterator++;
+  //       if (self.ticketToZoom[iterator] === undefined && loop === 0) {
+  //         iterator = 0;
+  //         loop = 1;
+  //       } else if (self.ticketToZoom[iterator] === undefined && loop === 1) {
+  //         clearInterval(x);
+  //       }
+  //     } else {
+  //       // << GROS SCOTCH
+  //       clearInterval(x); // << GROS SCOTCH
+  //     } // << GROS SCOTCH
+  //   }, 10);
+  // }
 
 }
 

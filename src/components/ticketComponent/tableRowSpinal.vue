@@ -51,6 +51,7 @@
 
 <script>
 import dataService from "../../config/data";
+import getTicket from "./getTicketInfo";
 
 export default {
   name: "tableRowSpinal",
@@ -91,60 +92,72 @@ export default {
         materialId: this.material
       });
     },
-    getTicket() {
-      const ticket = spinal.spinalGraphService.getRealNode(this.ticketId);
-      this.ticketName = ticket.info.name.get();
-      this.creationDate = this.timeConverter(ticket.info.creationDate.get());
-      try {
-        this.appelant = ticket.info.appelant.get();
-      } catch (e) {
-        this.appelant = "-";
-      }
-      try {
-        this.material = ticket.info.equipement.get();
-      } catch (e) {
-        this.material = "-";
-      }
-      return Promise.all([this.getLocal(ticket), this.getStep(ticket)]);
-    },
-    async getLocal(ticket) {
-      this.localModel = await dataService.ticketGetLocal(ticket);
-      this.local = this.localModel.local.name;
-      this.floor = this.localModel.floor.name;
-    },
-
-    async getStep(ticket) {
-      const ptr = await dataService.getTicketStep(ticket);
-      this.stepName = ptr.info.name.get();
-      this.stepColor = ptr.info.color.get();
-    },
-
-    timeConverter(UNIX_timestamp) {
-      var a = new Date(UNIX_timestamp);
-      var months = [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dec"
-      ];
-      var year = a.getFullYear();
-      var month = months[a.getMonth()];
-      var date = a.getDate();
-      var hour = a.getHours();
-      var min = a.getMinutes();
-      var sec = a.getSeconds();
-      var time =
-        date + " " + month + " " + year + " " + hour + ":" + min + ":" + sec;
-      return time;
+    async getTicket() {
+      const ticket = await getTicket(this.ticketId);
+      this.localModel = ticket.localModel;
+      this.local = ticket.local;
+      this.floor = ticket.floor;
+      this.stepName = ticket.stepName;
+      this.stepColor = ticket.stepColor;
+      this.ticketName = ticket.ticketName;
+      this.creationDate = ticket.creationDate;
+      this.appelant = ticket.appelant;
+      this.material = ticket.material;
     }
+    //   getTicket() {
+    //     const ticket = spinal.spinalGraphService.getRealNode(this.ticketId);
+    //     this.ticketName = ticket.info.name.get();
+    //     this.creationDate = this.timeConverter(ticket.info.creationDate.get());
+    //     try {
+    //       this.appelant = ticket.info.appelant.get();
+    //     } catch (e) {
+    //       this.appelant = "-";
+    //     }
+    //     try {
+    //       this.material = ticket.info.equipement.get();
+    //     } catch (e) {
+    //       this.material = "-";
+    //     }
+    //     return Promise.all([this.getLocal(ticket), this.getStep(ticket)]);
+    //   },
+    //   async getLocal(ticket) {
+    //     this.localModel = await dataService.ticketGetLocal(ticket);
+    //     this.local = this.localModel.local.name;
+    //     this.floor = this.localModel.floor.name;
+    //   },
+
+    //   async getStep(ticket) {
+    //     const ptr = await dataService.getTicketStep(ticket);
+    //     this.stepName = ptr.info.name.get();
+    //     this.stepColor = ptr.info.color.get();
+    //   },
+
+    //   timeConverter(UNIX_timestamp) {
+    //     var a = new Date(UNIX_timestamp);
+    //     var months = [
+    //       "Jan",
+    //       "Feb",
+    //       "Mar",
+    //       "Apr",
+    //       "May",
+    //       "Jun",
+    //       "Jul",
+    //       "Aug",
+    //       "Sep",
+    //       "Oct",
+    //       "Nov",
+    //       "Dec"
+    //     ];
+    //     var year = a.getFullYear();
+    //     var month = months[a.getMonth()];
+    //     var date = a.getDate();
+    //     var hour = a.getHours();
+    //     var min = a.getMinutes();
+    //     var sec = a.getSeconds();
+    //     var time =
+    //       date + " " + month + " " + year + " " + hour + ":" + min + ":" + sec;
+    //     return time;
+    //   }
   },
   mounted() {
     return this.getTicket();
