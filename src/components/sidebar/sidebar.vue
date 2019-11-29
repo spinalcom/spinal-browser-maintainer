@@ -198,17 +198,30 @@ export default {
       // }
       if (item.type === "geographicFloor") {
         this.selectedLevelId = item.id;
+        this.selectedLevelItem = item;
         this.itemSelectedId = "";
         this.openFloor(item.name);
-      } else {
-        this.itemSelectedId = item.id;
+        EventBus.$emit("click-room", {
+          select: item,
+          floor: this.selectedLevelId
+        });
+      } else if (item.type === "geographicRoom") {
+        if (this.itemSelectedId === item.id) {
+          this.itemSelectedId = "";
+          EventBus.$emit("click-room", {
+            select: this.selectedLevelItem,
+            floor: this.selectedLevelId,
+            noSelect: true
+          });
+        } else {
+          this.itemSelectedId = item.id;
+          EventBus.$emit("click-room", {
+            select: item,
+            floor: this.selectedLevelId
+          });
+        }
       }
-      this.roomsSelected = item.id;
-      // EventBus.$emit("click-room", item);
-      EventBus.$emit("click-room", {
-        select: item,
-        floor: this.selectedLevelId
-      });
+      // EventBus.$emit("click-event", item);
       return;
     },
     shortenText(text) {
@@ -245,20 +258,25 @@ export default {
       this.floor = floorSelected;
     },
     mouseOver(item) {
-      EventBus.$emit("mouse-over", item);
+      if (!this.itemSelectedId) {
+        EventBus.$emit("mouse-over", item);
+      }
     },
-    isolate(item) {
-      this.roomsSelected = item.id;
-      EventBus.$emit("click-room", item, this.selectedLevelId);
-    },
+    // isolate(item) {
+    //   this.roomsSelected = item.id;
+    //   EventBus.$emit("click-room", item, this.selectedLevelId);
+    // },
     mouseLeave() {
-      EventBus.$emit("mouse-leave");
+      if (!this.itemSelectedId) {
+        EventBus.$emit("mouse-leave");
+      }
     },
     showFloor() {
       this.itemSelectedId = "";
       EventBus.$emit("show-floor", this.selectedLevelId);
     },
     showBat() {
+      this.itemSelectedId = "";
       EventBus.$emit("show-bat");
     }
   }

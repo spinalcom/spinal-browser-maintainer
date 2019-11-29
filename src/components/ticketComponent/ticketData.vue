@@ -84,7 +84,7 @@ export default {
 
     getEvents() {
       let self = this;
-      EventBus.$on("click-event", item => (self.levelSelected = item.name));
+      // EventBus.$on("click-event", item => (self.levelSelected = item.name));
       EventBus.$on("select-process", process => {
         console.log("process", process);
 
@@ -110,6 +110,7 @@ export default {
         this.active = "table";
       });
       EventBus.$on("click-room", item => self.addOverOnTableElement(item));
+      EventBus.$on("show-bat", () => self.addOverOnTableElement());
       EventBus.$on("ticket-details", item => self.showDetails(item));
       EventBus.$on("export", () => self.exportCsv());
       EventBus.$on("show-analytics", () => (self.active = "calendar"));
@@ -164,8 +165,12 @@ export default {
       }
     },
     addOverOnTableElement(items) {
-      // console.log("addOverOnTableElement", items);
-      this.roomSelected = items;
+      if (!items) {
+        this.levelSelected = "";
+      } else if (items.select.type === "geographicFloor") {
+        this.levelSelected = items.select.name;
+      }
+      // this.roomSelected = items.select;
       this.triTicket();
       // if (items === "reset") {
       //   if (this.overTickets.length !== 0) {
@@ -175,7 +180,6 @@ export default {
       //   }
       //   return;
       // }
-
       // if (items.tickets !== undefined) {
       //   if (this.selectProcess === "") {
       //     this.eventRoom = true;
@@ -215,7 +219,7 @@ export default {
         return;
       }
       const proc = this.getProcessByName(this.selectProcess);
-      if (!proc) return alert("process undefined");
+      if (!proc) return console.log("triTicket process undefined");
       this.selectedTicket = this.flatten(proc).reduce((acc, e) => {
         if (!this.levelSelected) {
           acc.push(e.ticket);

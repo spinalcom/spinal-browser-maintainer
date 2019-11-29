@@ -80,7 +80,7 @@ export class EventViewerManager {
   onMouseOverSideBar(item) {
     viewerUtils.selectObjectsByNodeId(item.id);
   }
-  async onClickRoom({ select, floor }) {
+  async onClickRoom({ select, floor, noSelect }) {
     let selection, floorSelected;
     if (select.id === floor) {
       selection = floorSelected = await viewerUtils.getBimObjectByModel(floor);
@@ -93,6 +93,7 @@ export class EventViewerManager {
     }
     viewerUtils.isolateObjects(floorSelected);
     await viewerUtils.rotateTo('top');
+    if (!noSelect) viewerUtils.selectObjects(selection);
     viewerUtils.fitObjects(selection);
   }
   async showBuildind() {
@@ -115,7 +116,6 @@ export class EventViewerManager {
     const knownNodes = GraphService.SpinalGraphService.getNodes();
     if (knownNodes[item.floorId]) {
       await Promise.all([
-
         viewerUtils.isolateObjectsByNodeId(item.floorId),
         viewerUtils.rotateTo('top')]);
     }
@@ -126,7 +126,13 @@ export class EventViewerManager {
     // }
     if (knownNodes[item.localId]) {
       const local = await viewerUtils.getBimObjectByModel(item.localId);
-      viewerUtils.fitObjects(local);
+      if (item.fit) {
+        viewerUtils.fitObjects(local);
+      } else {
+        viewerUtils.fitObjectsByNodeId(item.floorId);
+      }
+
+
       viewerUtils.selectObjects(local);
 
 

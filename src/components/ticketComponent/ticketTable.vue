@@ -13,7 +13,7 @@
       <v-tooltip bottom>
         <template v-slot:activator="{ on }">
           <h3 v-on="on"
-              id="title">{{title}}</p>
+              id="title">{{title}}</h3>
         </template>
         <span>{{title}}</span>
       </v-tooltip>
@@ -98,7 +98,9 @@
       </template>
       <template v-slot:items="props">
         <tableRowSpinal @onSelect="onClick"
+                        @onMouseEnter="onMouseEnter"
                         @onSelectDetails="selectDetails(props)"
+                        :isSelected="selectedItemId === props.item.info.id.get()"
                         :ticketId="props.item.info.id.get()"></tableRowSpinal>
         <!-- <tr> -->
 
@@ -168,75 +170,75 @@ export default {
         rowsPerPageItems: [17]
       },
       clicked: false,
+      selectedItemId: "",
       oldTarget: {}
     };
   },
   props: ["allTickets", "steps", "selectedSteps", "title"],
   mounted() {},
   methods: {
-    async getStepName(ticket) {
-      // const step = await dataService.getTicketStep(ticket);
-      const ptr = await dataService.getTicketStep(ticket);
-      return ptr.info.name.get();
+    // async getStepName(ticket) {
+    //   // const step = await dataService.getTicketStep(ticket);
+    //   const ptr = await dataService.getTicketStep(ticket);
+    //   return ptr.info.name.get();
 
-      // console.log("steps", this.selectedSteps);
-    },
+    //   // console.log("steps", this.selectedSteps);
+    // },
     translate(str) {
       return tl(str);
     },
-    onResize() {},
     backToProcess() {
       EventBus.$emit("getBackToProcess", true);
     },
-    predicat: function(node) {
-      return node.info.type.get() === "BIMObject";
-    },
+    // predicat: function(node) {
+    //   return node.info.type.get() === "BIMObject";
+    // },
     analytics() {
       EventBus.$emit("show-analytics");
     },
-    overTableRow(el) {
-      let self = this;
-      graph.SpinalGraphService.findNodes(
-        el.item.id,
-        [
-          "SpinalSystemServiceTicketHasLocation",
-          "hasBIMObject",
-          "hasReferenceObject"
-        ],
-        self.predicat
-      ).then(lst => {
-        EventBus.$emit("select-tickets-room", lst);
-      });
-    },
-    hexToRgb(hex) {
-      var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
-      hex = hex.replace(shorthandRegex, function(m, r, g, b) {
-        return r + r + g + g + b + b;
-      });
+    // overTableRow(el) {
+    //   let self = this;
+    //   graph.SpinalGraphService.findNodes(
+    //     el.item.id,
+    //     [
+    //       "SpinalSystemServiceTicketHasLocation",
+    //       "hasBIMObject",
+    //       "hasReferenceObject"
+    //     ],
+    //     self.predicat
+    //   ).then(lst => {
+    //     EventBus.$emit("select-tickets-room", lst);
+    //   });
+    // },
+    // hexToRgb(hex) {
+    //   var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+    //   hex = hex.replace(shorthandRegex, function(m, r, g, b) {
+    //     return r + r + g + g + b + b;
+    //   });
 
-      var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-      return result
-        ? {
-            r: parseInt(result[1], 16),
-            g: parseInt(result[2], 16),
-            b: parseInt(result[3], 16)
-          }
-        : null;
-    },
-    getContrastYIQ(hexcolor) {
-      const rgb = this.hexToRgb(hexcolor);
-      var yiq = (rgb.r * 299 + rgb.g * 587 + rgb.b * 114) / 1000;
-      return yiq >= 128 ? "black" : "white";
-    },
-    getstyle(step) {
-      return {
-        "background-color": step.color.get(),
-        color: this.getContrastYIQ(step.color.get())
-      };
-    },
-    mouseLeave() {
-      EventBus.$emit("mouse-leave");
-    },
+    //   var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    //   return result
+    //     ? {
+    //         r: parseInt(result[1], 16),
+    //         g: parseInt(result[2], 16),
+    //         b: parseInt(result[3], 16)
+    //       }
+    //     : null;
+    // },
+    // getContrastYIQ(hexcolor) {
+    //   const rgb = this.hexToRgb(hexcolor);
+    //   var yiq = (rgb.r * 299 + rgb.g * 587 + rgb.b * 114) / 1000;
+    //   return yiq >= 128 ? "black" : "white";
+    // },
+    // getstyle(step) {
+    //   return {
+    //     "background-color": step.color.get(),
+    //     color: this.getContrastYIQ(step.color.get())
+    //   };
+    // },
+    // mouseLeave() {
+    //   EventBus.$emit("mouse-leave");
+    // },
     selectDetails(item) {
       console.log(item.item);
 
@@ -245,8 +247,22 @@ export default {
         spinal.spinalGraphService.getInfo(item.item.info.id.get())
       );
     },
+    onMouseEnter(item) {
+      if (!this.selectedItemId) {
+        item.fit = false;
+        EventBus.$emit("display-ticket", item);
+      }
+    },
     onClick(item) {
-      console.log("onclick", item);
+      if (this.selectedItemId != item.ticketId) {
+        this.selectedItemId = item.ticketId;
+        item.fit = true;
+        EventBus.$emit("display-ticket", item);
+      } else {
+        this.selectedItemId = "";
+        item.fit = false;
+        EventBus.$emit("display-ticket", item);
+      }
 
       // if (this.clicked === false) {
       //   event.target.parentElement.style.backgroundColor = "#2D3D93";
@@ -258,44 +274,42 @@ export default {
       //   this.oldTarget.parentElement.style.backgroundColor = "white";
       //   this.clicked = false;
       // }
-
-      EventBus.$emit("display-ticket", item);
     },
     showTicketsColor() {
       EventBus.$emit("display-colors", this.allTickets);
     },
     exportCsv() {
       EventBus.$emit("export");
-    },
-    timeConverter(UNIX_timestamp) {
-      var a = new Date(UNIX_timestamp);
-      var months = [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dec"
-      ];
-      var year = a.getFullYear();
-      var month = months[a.getMonth()];
-      var date = a.getDate();
-      var hour = a.getHours();
-      var min = a.getMinutes();
-      var sec = a.getSeconds();
-      var time =
-        date + " " + month + " " + year + " " + hour + ":" + min + ":" + sec;
-      return time;
-    },
-    ticketDate(value) {
-      return this.timeConverter(value);
     }
+    // timeConverter(UNIX_timestamp) {
+    //   var a = new Date(UNIX_timestamp);
+    //   var months = [
+    //     "Jan",
+    //     "Feb",
+    //     "Mar",
+    //     "Apr",
+    //     "May",
+    //     "Jun",
+    //     "Jul",
+    //     "Aug",
+    //     "Sep",
+    //     "Oct",
+    //     "Nov",
+    //     "Dec"
+    //   ];
+    //   var year = a.getFullYear();
+    //   var month = months[a.getMonth()];
+    //   var date = a.getDate();
+    //   var hour = a.getHours();
+    //   var min = a.getMinutes();
+    //   var sec = a.getSeconds();
+    //   var time =
+    //     date + " " + month + " " + year + " " + hour + ":" + min + ":" + sec;
+    //   return time;
+    // },
+    // ticketDate(value) {
+    //   return this.timeConverter(value);
+    // }
   }
 };
 </script>

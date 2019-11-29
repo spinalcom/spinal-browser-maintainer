@@ -1,12 +1,8 @@
 <template>
-  <tr>
-
+  <!-- <tr>
     <td class="text-xs-right"
         @click="onSelect">{{ticketName}}
     </td>
-    <!-- <td class="text-xs-right"
-        @click="onSelect">
-    </td> -->
     <td class="text-xs-right"
         @click="onSelect">{{floor}} / {{local}}
     </td>
@@ -22,20 +18,34 @@
          class="colorPatchDisplay displayInline"
          :style="{backgroundColor: stepColor}"></p>
     </td>
-    <!-- <td class="text-xs-right"
-        @click="$emit('onSelectDetails')">
-      <v-icon>not_listed_location</v-icon>
-    </td> -->
     <td class="justify-end layout">
       <v-icon class="mr-2"
               @click="$emit('onSelectDetails')">
         not_listed_location
       </v-icon>
-      <!-- <v-icon small
-              @click="$emit('onSelectDetails')">
-        remove_red_eye
-      </v-icon> -->
+  </tr> -->
+  <tr @click="onSelect"
+      @mouseenter="onMouseEnter"
+      :class="{'row-selected' : isSelected}">
+    <td class="text-xs-right">{{ticketName}}
+    </td>
+    <td class="text-xs-right">{{floor}} / {{local}}
+    </td>
+    <td class="text-xs-right">{{creationDate}}
+    </td>
+    <td class="text-xs-right">{{appelant}}
+    </td>
 
+    <td class="text-xs-right state-col">{{stepName}} <p
+         class="colorPatchDisplay displayInline"
+         :style="{backgroundColor: stepColor}"></p>
+    </td>
+    <td class="justify-end layout">
+      <v-icon class="mr-2"
+              :dark="isSelected"
+              @click="$emit('onSelectDetails')">
+        not_listed_location
+      </v-icon>
   </tr>
 </template>
 
@@ -56,7 +66,7 @@ export default {
       material: ""
     };
   },
-  props: ["ticketId"],
+  props: ["ticketId", "isSelected"],
   watch: {
     ticketId() {
       return this.getTicket();
@@ -65,6 +75,16 @@ export default {
   methods: {
     onSelect() {
       this.$emit("onSelect", {
+        ticketId: this.ticketId,
+        floorId: this.localModel.floor.id,
+        localId: this.localModel.local.id,
+        color: this.stepColor,
+        materialId: this.material
+      });
+    },
+    onMouseEnter() {
+      this.$emit("onMouseEnter", {
+        ticketId: this.ticketId,
         floorId: this.localModel.floor.id,
         localId: this.localModel.local.id,
         color: this.stepColor,
@@ -143,5 +163,13 @@ export default {
   height: 100%;
   top: 0;
   width: 10px;
+}
+.row-selected {
+  background-color: #2d3d93;
+  color: white;
+}
+.row-selected:hover {
+  background-color: #6375d8 !important;
+  color: white !important;
 }
 </style>
