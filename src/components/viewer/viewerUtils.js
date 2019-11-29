@@ -198,6 +198,7 @@ export class ViewerUtils {
         }
       }
     }
+    this.modelMap.clear();
   }
   setColorMaterial() {
     for (const [model, colorSet] of this.modelMap) {
