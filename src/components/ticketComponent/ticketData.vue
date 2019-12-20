@@ -11,7 +11,7 @@
     </div>
     <div v-else-if="active == 'table'">
       <ticket-table :allTickets="selectedTicket"
-                    :steps="steps"
+                    :steps="allData.allStatusNames"
                     :selectedSteps="selectedSteps"
                     :title="selectProcess">
       </ticket-table>
@@ -39,6 +39,9 @@ import ticketTable from "./ticketTable.vue";
 import ticketDetails from "./ticketDetails";
 import ticketCalendar from "./ticketCalendar.vue";
 import getTicket from "./getTicketInfo";
+// import dataService from "../../config/data";
+
+// const getTicketStep = dataService.getTicketStep;
 
 export default {
   name: "ticketData",
@@ -113,7 +116,7 @@ export default {
       EventBus.$on("click-room", item => self.addOverOnTableElement(item));
       EventBus.$on("show-bat", () => self.addOverOnTableElement());
       EventBus.$on("ticket-details", item => self.showDetails(item));
-      EventBus.$on("export", () => self.exportCsv());
+      EventBus.$on("export", self.exportCsv.bind(this));
       EventBus.$on("show-analytics", () => (self.active = "calendar"));
       EventBus.$on("close-details", () => (self.active = "table"));
       EventBus.$on("reset-select", () => {
@@ -123,7 +126,7 @@ export default {
         self.triTicket();
       });
     },
-    exportCsv() {
+    exportCsv(data) {
       let result = [];
       result.push([
         "floor",
@@ -178,16 +181,69 @@ export default {
       this.ticketDetails = item;
       this.active = "detail";
     },
+    // async getTicketStep(selectedTicket) {
+    //   const prom = [];
+    //   for (var ticket of this.selectedTicket) {
+    //     prom.push(
+    //       getTicketStep(ticket).then(step => {
+    //         return { step, ticket };
+    //       })
+    //     );
+    //   }
+    //   return Promise.all(prom);
+    // },
     extractProcess() {
-      this.steps = [];
-      for (var ticket in this.selectedTicket) {
-        if (
-          this.steps.indexOf(this.selectedTicket[ticket]["stepName"]) == -1 &&
-          this.selectedTicket[ticket]["stepName"] !== undefined
-        ) {
-          this.steps.push(this.selectedTicket[ticket]["stepName"]);
-        }
+      this.selectedSteps = [];
+
+      for (const stepObj of this.allData.allStatusNames) {
+        if (!this.allData.statusEnd.some(e => e === stepObj.name))
+          this.selectedSteps.push(stepObj);
       }
+
+      // const ticketSteps = await this.getTicketStep(this.selectedTicket);
+      // for (const { step, ticket } of ticketSteps) {
+      //   if (!step) continue;
+      //   if (!this.steps.some(e => e.name === step.info.name.get())) {
+      //     this.steps.push({
+      //       name: step.info.name.get(),
+      //       id: step.info.id.get(),
+      //       color: step.info.color.get()
+      //     });
+      //     if (
+      //       this.init === true &&
+      //       !this.allData.statusEnd.some(e => e === step.info.name.get())
+      //     ) {
+      //       this.selectedSteps.push({
+      //         name: step.info.name.get(),
+      //         id: step.info.id.get(),
+      //         color: step.info.color.get()
+      //       });
+      //     }
+      //   }
+      // }
+      // this.steps = [];
+      // for (var ticket of this.selectedTicket) {
+      //   // const step = graph.SpinalGraphService.getInfo(ticket.info.stepId.get());
+      //   const step = graph.SpinalGraphService.getInfo(ticket.info.stepId.get());
+      //   if (!step) continue;
+      //   if (!this.steps.some(e => e.name === step.info.name.get())) {
+      //     this.steps.push({
+      //       name: step.info.name.get(),
+      //       id: step.info.id.get(),
+      //       color: step.info.color.get()
+      //     });
+      //     if (
+      //       this.init === true &&
+      //       !this.allData.statusEnd.some(e => e === step.info.name.get())
+      //     ) {
+      //       this.selectedSteps.push({
+      //         name: step.info.name.get(),
+      //         id: step.info.id.get(),
+      //         color: step.info.color.get()
+      //       });
+      //     }
+      //   }
+      // }
     },
     addOverOnTableElement(items) {
       if (!items) {
@@ -275,9 +331,9 @@ export default {
                 array.push(processNode[i].name.get());
                 self.process[processName].push(array);
               }
-              if (node.step.info.id.get() == processNode[i].id.get()) {
-                node["stepName"] = processNode[i].name.get();
-              }
+              // if (node.step.info.id.get() == processNode[i].id.get()) {
+              //   node["stepName"] = processNode[i].name.get();
+              // }
             }
           }
         }
@@ -391,14 +447,14 @@ export default {
   watch: {
     levelSelected() {
       this.triTicket();
-      this.extractProcess();
+      // this.extractProcess();
     },
     allData() {
       this.allTickets = [];
       this.process = [];
       this.getAllTickets().then(() => {
-        this.triTicket();
-        this.extractProcess();
+        return this.triTicket();
+        // return Promise.all([this.extractProcess()]);
       });
     }
   }

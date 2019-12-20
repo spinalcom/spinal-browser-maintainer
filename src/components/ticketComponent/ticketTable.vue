@@ -64,22 +64,36 @@
           </template>
           <span>{{translate('Show Tickets Color')}}</span>
         </v-tooltip>
-        <filter-dialog :steps="steps"
+        <filter-dialog ref="filterDialog"
+                       :steps="steps"
                        :selectedSteps="selectedSteps"></filter-dialog>
       </div>
 
     </div>
+
     <v-data-table :headers="headers"
-                  :items="allTickets"
+                  :items="ticketComputed"
                   :pagination.sync="pagination"
                   :rows-per-page-items="pagination.rowsPerPageItems"
                   :total-items="pagination.totalItems"
                   class="elevation-1 ticketTableDisplay">
       <template v-slot:no-data>
         <v-alert :value="true"
+                 icon="warning"
                  color="error"
-                 icon="warning">
-          {{translate('Sorry, nothing to display')}}
+                 style="width:100%;text-align: center;display:block;">
+          <h2>
+            {{translate('Sorry, nothing to display')}}
+          </h2>
+          <p>
+            {{translate('Try to modify option\'s filter')}}
+          </p>
+          <v-btn primary
+                 text
+                 @click="openFilterDialog">
+            <v-icon>filter_list</v-icon>{{translate('Filter Option')}}
+          </v-btn>
+
         </v-alert>
       </template>
 
@@ -139,6 +153,9 @@ import { tl } from "../../config/i18n";
 import stepName from "./stepName.vue";
 import dataService from "../../config/data";
 import tableRowSpinal from "./tableRowSpinal";
+
+const getTicketStep = dataService.getTicketStep;
+
 export default {
   name: "ticketTable",
   components: {
@@ -171,12 +188,53 @@ export default {
       },
       clicked: false,
       selectedItemId: "",
-      oldTarget: {}
+      ticketComputed: []
     };
   },
   props: ["allTickets", "steps", "selectedSteps", "title"],
-  mounted() {},
+  mounted() {
+    return this.updateAllTickets();
+  },
+  computed: {
+    // ticketComputed() {
+    //   const ticketComputed = [];
+    //   for (const ticket of this.allTickets) {
+    //     const step = graph.SpinalGraphService.getInfo(ticket.info.stepId.get());
+    //     if (!step) continue;
+    //     console.log("selectedSteps", step.name.get(), ticket, step);
+    //     if (this.selectedSteps.some(e => e.name === step.name.get()))
+    //       ticketComputed.push(ticket);
+    //   }
+    //   return ticketComputed;
+    // }
+  },
+  watch: {
+    allTickets() {
+      return this.updateAllTickets();
+    }
+  },
   methods: {
+    getTicketStep(tickets) {
+      const prom = [];
+      for (const ticket of tickets) {
+        prom.push(
+          getTicketStep(ticket).then(step => {
+            return { step, ticket };
+          })
+        );
+      }
+      return Promise.all(prom);
+    },
+    async updateAllTickets() {
+      this.ticketComputed = [];
+      const ticketSteps = await this.getTicketStep(this.allTickets);
+      for (const { step, ticket } of ticketSteps) {
+        if (this.selectedSteps.some(e => e.name === step.info.name.get()))
+          this.ticketComputed.push(ticket);
+      }
+      // this.ticketComputed = this.allTickets;
+      // console.log("allTickets", this.allTickets);
+    },
     // async getStepName(ticket) {
     //   // const step = await dataService.getTicketStep(ticket);
     //   const ptr = await dataService.getTicketStep(ticket);
@@ -194,7 +252,10 @@ export default {
     //   return node.info.type.get() === "BIMObject";
     // },
     analytics() {
-      EventBus.$emit("show-analytics");
+      EventBus.$emit("show-analytics", this.ticketComputed);
+    },
+    openFilterDialog() {
+      this.$refs.filterDialog.open();
     },
     // overTableRow(el) {
     //   let self = this;
@@ -267,19 +328,19 @@ export default {
       // if (this.clicked === false) {
       //   event.target.parentElement.style.backgroundColor = "#2D3D93";
       //   event.target.parentElement.style.color = "white";
-      //   this.oldTarget = event.target;
+      //   this. = event.target;
       //   this.clicked = true;
       // } else {
-      //   this.oldTarget.parentElement.style.color = "black";
-      //   this.oldTarget.parentElement.style.backgroundColor = "white";
+      //   this..parentElement.style.color = "black";
+      //   this..parentElement.style.backgroundColor = "white";
       //   this.clicked = false;
       // }
     },
     showTicketsColor() {
-      EventBus.$emit("display-colors", this.allTickets);
+      EventBus.$emit("display-colors", this.ticketComputed);
     },
     exportCsv() {
-      EventBus.$emit("export");
+      EventBus.$emit("export", this.ticketComputed);
     }
     // timeConverter(UNIX_timestamp) {
     //   var a = new Date(UNIX_timestamp);

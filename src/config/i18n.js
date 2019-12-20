@@ -14,10 +14,13 @@ add('Step', 'Etat');
 add('Details', 'Détails');
 add('Building', 'Bâtiment');
 
-add('Sorry, nothing to display', 'Aucun Ticket retrouver');
+add('Sorry, nothing to display', 'Aucun Ticket retrouver.');
+add('Try to modify option\'s filter', 'Essayez de modifier les options de filtre.');
+add('Filter Option', 'Options de filtre');
+
 add('Show Tickets Color', 'Affichier les Tickets');
 add('Export to CSV.', 'Export en CSV.');
-add('Choose a process', 'Choisissez un process');
+add('Choose a process', 'Choisissez un domaine');
 
 
 add('id', 'Identifiant Mission');

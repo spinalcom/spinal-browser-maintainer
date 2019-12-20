@@ -32,8 +32,11 @@
     <div v-else
          class="mySidebarx">
       <div class="sidebar-goto-floor-btn-container">
-        <p id="floorSelectedTitleId"
-           @click="backToFloor">← {{ floor }}</p>
+        <div id="floorSelectedTitleId"
+             class="sidebar-goto-floor-btn"
+             @click="backToFloor"><i class="material-icons"> keyboard_arrow_left
+          </i><span>{{ floor }}</span>
+        </div>
         <v-icon dark
                 @click="showFloor"
                 class="icon-show-floor">remove_red_eye</v-icon>
@@ -312,6 +315,10 @@ p {
   padding-left: 2px;
   padding-top: 2px;
   margin-bottom: 0px !important;
+  display: flex;
+}
+#floorSelectedTitleId > * {
+  align-self: center;
 }
 .mySidebar-container {
   background-color: #272727;
@@ -326,7 +333,9 @@ p {
   width: 100%;
   overflow: auto;
 }
-
+.sidebar-goto-floor-btn {
+  cursor: pointer;
+}
 .mySidebarx-logo-container {
   /* background-color: rgb(237, 237, 237);; */
   border-right: #222 solid;
@@ -396,8 +405,17 @@ p {
   right: 0;
   top: 0;
 }
+
+.icon-show-floor:hover {
+  background-color: #356bab;
+  border-radius: 50%;
+}
+
 .sidebar-goto-floor-btn-container {
   position: relative;
+}
+#floorSelectedTitleId.sidebar-goto-floor-btn:hover {
+  color: #2d3d93;
 }
 .selected-item {
   background-color: #2d3d93;

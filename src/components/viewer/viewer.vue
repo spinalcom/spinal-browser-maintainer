@@ -48,6 +48,7 @@ export default {
     exten.forEach(ext => {
       this.forgeViewer.loadExtension(ext);
     });
+
     // const fitModel = () => {
     //   this.viewer.removeEventListener(
     //     window.Autodesk.Viewing.GEOMETRY_LOADED_EVENT,

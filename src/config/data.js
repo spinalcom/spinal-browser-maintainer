@@ -58,7 +58,7 @@ function loadModel(ptr) {
 let dataService = {
   ContextNode: {},
   ProcessNodes: {},
-  StepsNodes: {},
+  StepsNodes: new Map,
   TicketsNodes: {},
   total: {},
   async getFloor() {
@@ -267,12 +267,12 @@ let dataService = {
       const processNode = graph.SpinalGraphService.getRealNode(process.id.get());
       promises.push(graph.SpinalGraphService.getChildren(process.id.get(),
         [SPINAL_TICKET_SERVICE_STEP_RELATION_NAME]).then(child => {
-        return child.map((nodeId) => {
-          const node = graph.SpinalGraphService.getRealNode(nodeId.id.get());
-          this.StepsNodes[nodeId.id.get()] = node;
-          return { step: node, process: processNode };
-        });
-      }));
+          return child.map((nodeId) => {
+            const node = graph.SpinalGraphService.getRealNode(nodeId.id.get());
+            this.StepsNodes.set(nodeId.id.get(), node);
+            return { step: node, process: processNode };
+          });
+        }));
     }
     return Promise.all(promises);
   },
@@ -344,13 +344,13 @@ let dataService = {
   getFloorRooms(floorId) {
     return graph.SpinalGraphService.findNodes(floorId, geographicConstants
       .GEOGRAPHIC_RELATIONS, (node) => {
-      graph.SpinalGraphService._addNode(node);
-      return node.getType().get() === geographicConstants.ROOM_TYPE;
-    }).then(res => {
-      return res.map(el => {
-        return el.info.get();
+        graph.SpinalGraphService._addNode(node);
+        return node.getType().get() === geographicConstants.ROOM_TYPE;
+      }).then(res => {
+        return res.map(el => {
+          return el.info.get();
+        });
       });
-    });
   },
   getProcessName(obj) {
     let allProcess = [];
@@ -368,6 +368,19 @@ let dataService = {
         }
       }
     }, 2000);
+  },
+  getStatusNames() {
+    const res = [];
+    for (const [, stepsNode] of this.StepsNodes) {
+      const name = stepsNode.info.name.get();
+      if (!res.some((e) => e.name === name)) {
+        res.push({
+          name,
+          color: stepsNode.info.color.get()
+        })
+      }
+    }
+    return res;
   },
   async getAllData() {
     let processName = {};
@@ -387,7 +400,8 @@ let dataService = {
       totalTickets: this.total,
       equipements: '',
       ticketsByProcess,
-      statusEnd
+      statusEnd,
+      allStatusNames: this.getStatusNames()
     };
     return res;
   },
@@ -396,13 +410,13 @@ let dataService = {
     await graph.init();
     return graph.SpinalGraphService.findNodes(id, geographicConstants
       .GEOGRAPHIC_RELATIONS, (node) => {
-      graph.SpinalGraphService._addNode(node);
-      return node.getType().get() === geographicConstants.EQUIPMENT_TYPE;
-    }).then(res => {
-      return res.map(el => {
-        return el.info.dbid.get();
+        graph.SpinalGraphService._addNode(node);
+        return node.getType().get() === geographicConstants.EQUIPMENT_TYPE;
+      }).then(res => {
+        return res.map(el => {
+          return el.info.dbid.get();
+        });
       });
-    });
   },
 
   async getBimObjectByModel(id) {

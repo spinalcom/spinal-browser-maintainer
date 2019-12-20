@@ -33,7 +33,7 @@ async function getLocal(ticket, res) {
   res.floor = res.localModel.floor.name;
 }
 
-async function getStep(ticket, res) {
+export async function getStep(ticket, res) {
   const ptr = await dataService.getTicketStep(ticket);
   res.stepName = ptr.info.name.get();
   res.stepColor = ptr.info.color.get();
