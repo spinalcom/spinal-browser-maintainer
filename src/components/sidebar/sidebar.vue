@@ -1,56 +1,82 @@
 
 <template>
-  <div class="mySidebarx" v-if="rendering">
-  <div class="mySidebarx" v-if="selectedLevel">
-      <p id="HeaderTitle">Building</p>
-
-        <div 
-          v-for="(item, index) in floors"
-          :key="item.name"
-          @click="onItemClick(item)"
-          @mouseover="mouseOver(item)"
-          @mouseleave="mouseLeave()"
-          :title="item.name"
-        >
-        <v-divider style="width: 190px" color="white"></v-divider>
-
-        <p class="sitebarElement">
-        {{ shortenText(item.name) }}</p>
-
-        <div class="displayBadge" v-if="counter[index].count!==undefined">
-          <p style="color:white !important">{{ counter[index].count }}</p>
+  <div class="mySidebar-container"
+       v-if="rendering">
+    <div class="mySidebarx"
+         v-if="selectedLevel">
+      <div class="sidebar-goto-floor-btn-container">
+        <p id="floorSelectedTitleId">{{translate('Building')}}</p>
+        <v-icon dark
+                @click="showBat"
+                class="icon-show-floor">remove_red_eye</v-icon>
+      </div>
+      <!-- <p id="HeaderTitle">{{translate('Building')}}</p> -->
+      <div v-for="(item) in floors"
+           :key="item.name"
+           :title="item.name">
+        <v-divider style="width: 190px"
+                   color="white"></v-divider>
+        <div class="sitebarElementItem"
+             @click="onItemClick(item)"
+             @mouseover="mouseOver(item)"
+             @mouseleave="mouseLeave()">
+          <p class="sitebarElement">
+            {{ shortenText(item.name) }}</p>
+          <div class="displayBadge"
+               v-if="getTiketsNumber(item)!==0">
+            <p style="color:white !important">{{ getTiketsNumber(item) }}</p>
+          </div>
         </div>
-
-        </div>
-  </div>
-  <div v-else class="mySidebarx">
-    <p id="floorSelectedTitleId" @click="backToFloor">← {{ floor }}</p>
-    <div 
-       v-for="item in roomsDisplayed"
-      :key="item.name"
-      >
-        <v-divider style="width: 190px" color="white"></v-divider>
-      <div class="test">
-      <p class="sitebarElement"
-        :value="item"
-        :title="item.name"
-        @mouseover="mouseOver(item)"
-        @mouseleave="mouseLeave"
-        @click="onItemClick(item, $event)">{{ shortenText(item.name) }}
-        </p>
-
-        <div class="displayBadge" v-if="numberForBadge(item.tickets)!==0">
-            <p style="color:white !important">{{ numberForBadge(item.tickets) }}</p>
-        </div>
-
-     </div>
+      </div>
     </div>
-  </div>
-</div>
+    <div v-else
+         class="mySidebarx">
+      <div class="sidebar-goto-floor-btn-container">
+        <div id="floorSelectedTitleId"
+             class="sidebar-goto-floor-btn"
+             @click="backToFloor"><i class="material-icons"> keyboard_arrow_left
+          </i><span>{{ floor }}</span>
+        </div>
+        <v-icon dark
+                @click="showFloor"
+                class="icon-show-floor">remove_red_eye</v-icon>
+      </div>
+      <div v-for="item in roomsDisplayed"
+           :key="item.name">
+        <v-divider style="width: 190px"
+                   color="white"></v-divider>
+        <div class="sitebarElementItem"
+             :class="{'selected-item': item.id === itemSelectedId}"
+             @click="onItemClick(item)"
+             @mouseover="mouseOver(item)"
+             @mouseleave="mouseLeave()">
+          <p class="sitebarElement"
+             :value="item"
+             :title="item.name">{{ shortenText(item.name) }}
+          </p>
+
+          <div class="displayBadge"
+               v-if="numberForBadge(item.tickets)!==0">
+            <!-- <div class="displayBadge" -->
+            <!-- > -->
+            <p style="color:white !important">{{ numberForBadge(item.tickets) }}
+            </p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <hr />
+    <div class="mySidebarx-logo-container">
+      <img src="../../assets/spinalcomv2-power by.png"
+           id="spinalcomLogo"
+           alt="spinalcom">
+    </div>
 </template>
 
 <script>
 import { EventBus } from "../../config/event";
+import { tl } from "../../config/i18n";
 
 export default {
   data() {
@@ -60,8 +86,10 @@ export default {
       reduce: true,
       menus: [],
       selectedLevel: true,
+      itemSelectedId: "",
+      selectedLevelId: "",
       roomsDisplayed: [],
-      roomSelected: '',
+      roomSelected: "",
       oldTarget: {},
       selectedProcess: "",
       rendering: true,
@@ -93,105 +121,110 @@ export default {
     }
 
     EventBus.$on("select-process", processName => {
-     this.selectedProcess = processName
-      for (var item in this.floors) {
-        this.calculeTotalTicket(this.floors[item]);
-      }
+      this.selectedProcess = processName;
+      this.calculeTotalTicket(this.floors);
       let self = this;
-      setTimeout(function() {
-       self.rendering = false;
-       self.rendering = true;
-    }, 1000)
-   });
+      // setTimeout(function() {
+      //   self.rendering = false;
+      //   self.rendering = true;
+      // }, 1000);
+    });
 
     EventBus.$on("getBackToProcess", () => {
-      this.selectedProcess = ''
-      for (var item in this.floors) {
-        this.calculeTotalTicket(this.floors[item]);
-      }
+      this.selectedProcess = "";
+      this.calculeTotalTicket(this.floors);
       let self = this;
-      setTimeout(function() {
-       self.rendering = false;
-       self.rendering = true;
-    }, 1000)
-
+      // setTimeout(function() {
+      //   self.rendering = false;
+      //   self.rendering = true;
+      // }, 1000);
     });
 
     this.menus.push(content);
   },
   created() {
     let self = this;
-    for (var item in this.floors) {
-      this.calculeTotalTicket(this.floors[item]);
-    }
+    // for (var item in this.floors) {
+    // this.calculeTotalTicket(this.floors[item]);
+    // }
 
-    setTimeout(function() {
-      for (var item in self.floors) {
-        self.calculeTotalTicket(self.floors[item]);
-      }
-    }, 3000)
-    setTimeout(function() {
-      self.rendering = false;
-      self.rendering = true;
-    }, 3002)
+    // setTimeout(function() {
+    self.calculeTotalTicket(self.floors);
+    // }, 3000);
+    // setTimeout(function() {
+    //   self.rendering = false;
+    //   self.rendering = true;
+    // }, 3002);
   },
   methods: {
-    calculeTotalTicket(item) {
-      let self = this;
-      let iterator;
-      let count = 0;
-      if (item !== undefined) {
-      for (var i in self.allData.rooms) {
-        if (self.allData.rooms[i].floor === item.name) {
-          iterator = i;
-          for (var el in self.allData.rooms[i].processNumber) {
-            if (this.selectedProcess !== '') {
-              if (this.selectedProcess === el)
-                count = count + self.allData.rooms[i].processNumber[el];
-            }
-            else
-              count = count + self.allData.rooms[i].processNumber[el];
-          }
+    translate: tl,
+    getTiketsNumber(ticket) {
+      for (const floor of this.allData.rooms) {
+        if (floor.floor === ticket.name) {
+          return floor.count;
         }
-      }
-      if (count == 0) {
-        self.counter[iterator] = {};
-        self.counter[iterator].count = undefined;
-        return 0;
-      }
-        self.counter[iterator] = {};
-        self.counter[iterator].count = count;
-        return count;
       }
       return 0;
     },
-    onItemClick(item, target) {
-      if (target !== undefined)
-        if (this.roomSelected !== item.id) {
-          if (this.oldTarget.target !== undefined) {
-            this.oldTarget.target.parentElement.style.backgroundColor = '#272727';
-          }
-          this.roomSelected = item.id;
-          target.target.parentElement.style.backgroundColor = '#2D3D93';
-          this.oldTarget = target;
-        } else {
-          this.roomSelected = '';
-          target.target.parentElement.style.backgroundColor = '#272727';
-          this.oldTarget = {};
-          EventBus.$emit("click-room", 'reset');
-          return;
-        }
-      switch (item.type) {
-        case "geographicFloor":
-          EventBus.$emit("click-event", item);
-          this.openFloor(item.name);
-          break;
-
-        default:
-          break;
+    calculeTotalTicket() {
+      for (let i = 0; i < this.rooms.length; i++) {
+        this.counter[i] = this.rooms[i].count;
       }
-      this.roomsSelected = item.id;
-      EventBus.$emit("click-room", item);
+    },
+    onItemClick(item) {
+      // if (target !== undefined) {
+      //   if (this.roomSelected !== item.id) {
+      //     if (this.oldTarget.target !== undefined) {
+      //       this.oldTarget.target.parentElement.style.backgroundColor =
+      //         "#272727";
+      //     }
+      //     this.roomSelected = item.id;
+      //     target.target.parentElement.style.backgroundColor = "#2D3D93";
+      //     this.oldTarget = target;
+      //   } else {
+      //     this.roomSelected = "";
+      //     target.target.parentElement.style.backgroundColor = "#272727";
+      //     this.oldTarget = {};
+      //     EventBus.$emit("click-room", "reset");
+      //     return;
+      //   }
+      // }
+      // switch (item.type) {
+      //   case "geographicFloor":
+      //     // EventBus.$emit("click-event", item);
+      //     // EventBus.$emit("click-room", item, this.selectedLevelId);
+      //     this.openFloor(item.name);
+      //     break;
+
+      //   default:
+      //     break;
+      // }
+      if (item.type === "geographicFloor") {
+        this.selectedLevelId = item.id;
+        this.selectedLevelItem = item;
+        this.itemSelectedId = "";
+        this.openFloor(item.name);
+        EventBus.$emit("click-room", {
+          select: item,
+          floor: this.selectedLevelId
+        });
+      } else if (item.type === "geographicRoom") {
+        if (this.itemSelectedId === item.id) {
+          this.itemSelectedId = "";
+          EventBus.$emit("click-room", {
+            select: this.selectedLevelItem,
+            floor: this.selectedLevelId,
+            noSelect: true
+          });
+        } else {
+          this.itemSelectedId = item.id;
+          EventBus.$emit("click-room", {
+            select: item,
+            floor: this.selectedLevelId
+          });
+        }
+      }
+      // EventBus.$emit("click-event", item);
       return;
     },
     shortenText(text) {
@@ -200,43 +233,54 @@ export default {
     numberForBadge(tickets) {
       let count = 0;
       if (tickets !== undefined) {
-        if (this.selectedProcess !== '') {
-          for (var el in tickets)
-            if (tickets[el].processName == this.selectedProcess)
-              count++;
-            return count;
+        if (this.selectedProcess !== "") {
+          for (var el in tickets) {
+            if (tickets[el].processName == this.selectedProcess) count++;
+          }
+          return count;
         } else {
           return tickets.length;
         }
-      } else
-      return 0;
+      } else {
+        return 0;
+      }
     },
     backToFloor() {
       this.selectedLevel = true;
-      EventBus.$emit("reset-select");
+      this.itemSelectedId = "";
+      EventBus.$emit("show-bat");
     },
     openFloor(floorSelected) {
-      if (this.selectedLevel)
-        this.selectedLevel = false;
-      else
-        this.selectedLevel = true;
-
+      if (this.selectedLevel) this.selectedLevel = false;
+      else this.selectedLevel = true;
       for (var i in this.rooms) {
-        if ( this.rooms[i].floor == floorSelected )
+        if (this.rooms[i].floor == floorSelected) {
           this.roomsDisplayed = this.rooms[i].rooms;
         }
-
+      }
       this.floor = floorSelected;
     },
     mouseOver(item) {
-      EventBus.$emit("mouse-over", item);
+      if (!this.itemSelectedId) {
+        EventBus.$emit("mouse-over", item);
+      }
     },
-    isolate(item) {
-      this.roomsSelected = item.id;
-      EventBus.$emit("click-room", item);
-    },
+    // isolate(item) {
+    //   this.roomsSelected = item.id;
+    //   EventBus.$emit("click-room", item, this.selectedLevelId);
+    // },
     mouseLeave() {
-      EventBus.$emit("mouse-leave");
+      if (!this.itemSelectedId) {
+        EventBus.$emit("mouse-leave");
+      }
+    },
+    showFloor() {
+      this.itemSelectedId = "";
+      EventBus.$emit("show-floor", this.selectedLevelId);
+    },
+    showBat() {
+      this.itemSelectedId = "";
+      EventBus.$emit("show-bat");
     }
   }
 };
@@ -244,18 +288,15 @@ export default {
 
 <style scoped>
 #HeaderTitle {
-    color: white;
-    background-color: grey;
-    margin-left: -6px;
-    height: 32px;
-    padding-top: 9px;
-    padding-left: 9px;
-    margin-top: -6px;
-    margin-left: 0px;
-    margin-bottom: 0px !important;
-}
-.test span {
-  /*margin-top: 10px;*/
+  color: white;
+  background-color: grey;
+  margin-left: -6px;
+  height: 32px;
+  padding-top: 9px;
+  padding-left: 9px;
+  margin-top: -6px;
+  margin-left: 0px;
+  margin-bottom: 0px !important;
 }
 
 .span.v-badge__badge.red {
@@ -274,14 +315,52 @@ p {
   padding-left: 2px;
   padding-top: 2px;
   margin-bottom: 0px !important;
+  display: flex;
 }
-.mySidebarx {
-  z-index: 100;
+#floorSelectedTitleId > * {
+  align-self: center;
+}
+.mySidebar-container {
   background-color: #272727;
-  height: calc(93.7%);
-  width: 191px;
-  overflow: auto;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
 
+.mySidebarx {
+  flex-grow: 1;
+  width: 100%;
+  overflow: auto;
+}
+.sidebar-goto-floor-btn {
+  cursor: pointer;
+}
+.mySidebarx-logo-container {
+  /* background-color: rgb(237, 237, 237);; */
+  border-right: #222 solid;
+  margin: 5px 0px;
+  /* width: 100%; */
+}
+
+.mySidebarx-logo-container > img {
+  padding: 8px;
+}
+
+.mySidebarx::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+.mySidebarx::-webkit-scrollbar-thumb {
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  background: rgba(169, 169, 169, 0.9);
+}
+.mySidebarx::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.3);
+  box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.3);
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
 }
 .badgeElementInSidebar {
   margin-top: 18px;
@@ -292,12 +371,18 @@ p {
   display: inline-flex;
   height: 20px;
   width: 20px;
-  padding-top: 3px;
-  padding-left: 5px;
+  /* padding-top: 3px;
+  padding-left: 5px; */
+  text-align: center;
+
   border-radius: 50%;
   background-color: red;
   float: right;
   margin-top: 8px;
+  pointer-events: none;
+}
+.displayBadge > p {
+  width: inherit;
 }
 
 .sitebarElement {
@@ -307,14 +392,35 @@ p {
   margin-bottom: 10px;
   margin-top: 10px;
   padding-left: 8px;
+  pointer-events: none;
+}
+.sitebarElementItem:hover > .sitebarElement {
+  color: #356bab;
+}
+.sitebarElementItem {
   cursor: pointer;
 }
-.sitebarElement:hover {
-  color: #356BAB;  
+.icon-show-floor {
+  position: absolute;
+  right: 0;
+  top: 0;
 }
 
+.icon-show-floor:hover {
+  background-color: #356bab;
+  border-radius: 50%;
+}
+
+.sidebar-goto-floor-btn-container {
+  position: relative;
+}
+#floorSelectedTitleId.sidebar-goto-floor-btn:hover {
+  color: #2d3d93;
+}
+.selected-item {
+  background-color: #2d3d93;
+}
 .sidebarDivider {
   width: 92%;
 }
-
 </style>

@@ -3,7 +3,7 @@ const Path = require('path');
 
 // Single entrypoint file location:
 const entryFiles = [
-  Path.join(__dirname, '..', 'src', 'index.html'),
+  Path.join(__dirname, '..', 'src', 'index.html')
 ];
 const OuputDir = Path.join(__dirname, '..', 'www');
 // OR: Multiple files with globbing (can also be .js)
@@ -37,14 +37,13 @@ if (process.env.NODE_ENV === 'development') {
   console.log("development mode ON");
   options.watch = true;
   options.cache = true;
-  options.cacheDir = Path.join(OuputDir,
-      '.cache'), // The directory cache gets put in, defaults to .cache
-    options.hmr = true;
+  options.cacheDir = Path.join(OuputDir, '.cache'), // The directory cache gets put in, defaults to .cache
+  options.hmr = true;
 }
 
 
 
-(async function() {
+(async function () {
   // Initializes a bundler using the entrypoint location and options provided
   const bundler = new Bundler(entryFiles, options);
 

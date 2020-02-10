@@ -21,15 +21,11 @@
  * with this file. If not, see
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
+import { SpinalGraphService } from 'spinal-env-viewer-graph-service';
+import { spinalIO } from './spinal-io';
 import {
-  SpinalGraphService
-} from 'spinal-env-viewer-graph-service';
-import {
-  spinalIO
-} from './spinal-io';
-var throttle = require('lodash.throttle');
-import { SCENE_RELATION_NAME, PART_RELATION_NAME, SCENE_RELATION_TYPE } 
-  from "spinal-env-viewer-plugin-scene/src/constants";
+  SCENE_RELATION_NAME, PART_RELATION_NAME, SCENE_RELATION_TYPE
+} from "spinal-env-viewer-plugin-scene/src/constants";
 
 export class GraphService {
   constructor() {
@@ -44,7 +40,7 @@ export class GraphService {
       try {
         const graph = await spinalIO.getPathModel();
         this.graphID = await this.SpinalGraphService
-            .setGraph(graph);
+          .setGraph(graph);
 
         resolve(this.graphID);
       } catch (e) {
@@ -55,10 +51,10 @@ export class GraphService {
     return this.initPromise;
   }
   getScene() {
-      let sceneContextLst = SpinalGraphService.getContextWithType("SpinalService")
-      let sceneContext = sceneContextLst[0]
-      console.log(sceneContext);
-      return sceneContext.getChildren(SCENE_RELATION_NAME);    
+    let sceneContextLst = SpinalGraphService.getContextWithType("SpinalService");
+    let sceneContext = sceneContextLst[0];
+    console.log(sceneContext);
+    return sceneContext.getChildren(SCENE_RELATION_NAME);
   }
 
   async getOccupations(onChangeFunc) {

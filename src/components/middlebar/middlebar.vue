@@ -1,11 +1,17 @@
 <template>
   <div class="middleBar">
 
-    <md-icon class="material-icons custom-icon" value="room" v-on:click.native="onClick">room</md-icon>
+    <md-icon class="material-icons custom-icon"
+             value="room"
+             v-on:click.native="onClick">room</md-icon>
     <div class="display-icon"></div>
-    <md-icon class="material-icons custom-icon" value="device" v-on:click.native="onClick">devices</md-icon>
+    <md-icon class="material-icons custom-icon"
+             value="device"
+             v-on:click.native="onClick">devices</md-icon>
     <div class="display-icon"></div>
-    <md-icon class="material-icons custom-icon" value="ticket" v-on:click.native="onClick">event</md-icon>
+    <md-icon class="material-icons custom-icon"
+             value="ticket"
+             v-on:click.native="onClick">event</md-icon>
 
   </div>
 </template>
@@ -18,41 +24,23 @@ export default {
   data() {
     return {
       data: []
-    }
+    };
   },
   mounted() {
-     this.getEvents();
+    this.getEvents();
   },
   methods: {
     onClick: function() {
-
       let choice = event.target.getAttribute("value");
 
-      if (choice === "room")
+      if (choice === "room") {
         EventBus.$emit("choose-room");
-      else if (choice === "device")
+      } else if (choice === "device") {
         EventBus.$emit("choose-device");
-      else if (choice === "ticket")
+      } else if (choice === "ticket") {
         EventBus.$emit("choose-ticket");
-
+      }
     },
-
-
-
-    // getEvents() {
-    //   EventBus.$on("choose-room", () => {
-    //     // this.Dosomething();
-    //   });
-
-    //   EventBus.$on("choose-device", () => {
-    //     // this.Dosomething();
-    //   });
-
-    //   EventBus.$on("choose-ticket", () => {
-    //     // this.Dosomething();
-    //   });
-
-    // }
     update: function(el) {
       console.log("update", el);
     },
@@ -76,7 +64,7 @@ export default {
 }
 .material-icons {
   font-size: 230% !important;
-  margin-top: 0.4%;  
+  margin-top: 0.4%;
 }
 
 .display-icon {
@@ -87,6 +75,4 @@ export default {
 .custom-icon {
   color: black;
 }
-
-
 </style>

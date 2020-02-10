@@ -1,12 +1,38 @@
 <!DOCTYPE html>
-<html>
+<html style="overflow: hidden;">
 
 <head>
 
   <base href="/html/maintainer/">
-  <title>Maintainer</title>
+  <title>Operation Center</title>
   <meta http-equiv="Content-Type"
         content="text/html;charset=UTF-8">
+  <meta name="theme-color"
+        content="#292929">
+  <meta name="viewport"
+        content="initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <link rel="apple-touch-icon"
+        sizes="180x180"
+        href="./icons/apple-touch-icon.png">
+  <link rel="icon"
+        type="image/png"
+        sizes="32x32"
+        href="./icons/favicon-32x32.png">
+  <link rel="icon"
+        type="image/png"
+        sizes="16x16"
+        href="./icons/favicon-16x16.png">
+  <link rel="manifest"
+        href="./icons/site.webmanifest">
+  <link rel="mask-icon"
+        href="./icons/safari-pinned-tab.svg"
+        color="#5bbad5">
+  <link rel="shortcut icon"
+        href="./icons/favicon.ico">
+  <meta name="msapplication-TileColor"
+        content="#da532c">
+  <meta name="msapplication-config"
+        content="./icons/browserconfig.xml">
 
 
   <link rel="stylesheet"
@@ -20,12 +46,6 @@
 
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
         rel="stylesheet">
-  <!-- 
-  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700"
-        rel="stylesheet" />
-  <link href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
-        rel="stylesheet" /> -->
-
   <style>
     html,
     body {
@@ -35,21 +55,17 @@
       height: 100%;
     }
   </style>
-
 </head>
 
 <body>
-  <!-- <p>qdq</p> -->
-
   <div id="app">
-
     <div id="page-loader"
          class="fade show"><span class="spinner"></span></div>
-
   </div>
   <script
           src="https://developer.api.autodesk.com/modelderivative/v2/viewers/6.*/viewer3D.min.js">
   </script>
+  <script src="./panelClass.js"></script>
   <script src="./index.js"></script>
 
 </body>

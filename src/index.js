@@ -26,10 +26,11 @@
 import "babel-polyfill";
 
 import Vue from "vue";
-/*import VueMaterial from "vue-material";*/
+import VueMaterial from "vue-material";
 import Vuetify from 'vuetify';
-import 'vuetify/dist/vuetify.min.css'
-
+import 'vue-material/dist/vue-material.css';
+import 'vue-material/dist/theme/default-dark.css';
+import 'vuetify/dist/vuetify.min.css';
 // import VueBootstrap from "bootstrap-vue";
 // import VueInsProgressBar from "vue-ins-progress-bar";
 
@@ -45,9 +46,13 @@ import App from "./app.vue";
 
 //import Vuesax from "vuesax";
 //import "vuesax/dist/vuesax.css";
+import VTooltip from 'v-tooltip';
 
+Vue.use(VTooltip);
+import './app.css';
 Vue.use(Vuetify);
 //Vue.use(Vuesax);
-/*Vue.use(VueMaterial);*/
+Vue.use(VueMaterial);
 
+import "./mod/spinal-env-viewer-plugin-ticket/src/index";
 new Vue(App).$mount("#app");

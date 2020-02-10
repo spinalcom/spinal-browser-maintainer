@@ -35,8 +35,7 @@ import {
 } from './crypt';
 
 let $ = require("jquery");
-
-const SpinalUserManager = window.SpinalUserManager;
+import axios from "axios";
 
 function getParameterByName(name, url) {
   if (!url) url = window.location.href;
@@ -54,6 +53,8 @@ class SpinalIO {
     this.connectPromise = null;
     this.user = null;
     this.conn = null;
+    this.serverHost = null;
+    // this.getServerConfigProm = null;
   }
 
   decriJson(encryptedHex) {
@@ -73,6 +74,21 @@ class SpinalIO {
     }
   }
 
+  getServerConfig() {
+    // if (this.getServerConfigProm !== null) return this.getServerConfigProm;
+    return Promise.resolve(window.location.origin);
+    // let url = "/config.json";
+    // this.getServerConfigProm = axios
+    //   .get(url)
+    //   .then(res => {
+    //     this.serverHost = res.data.host;
+    //     return this.serverHost;
+    //   })
+    //   .catch(() => {
+    //     return window.location.origin;
+    //   });
+    // return this.getServerConfigProm;
+  }
 
   getauth() {
     if (this.user !== null) return this.user;
@@ -89,31 +105,34 @@ class SpinalIO {
     this.connectPromise = new Promise((resolve, reject) => {
       $(document).ready(() => {
 
-        FileSystem.CONNECTOR_TYPE = "Browser"
-
+        FileSystem.CONNECTOR_TYPE = "Browser";
+        FileSystem.is_cordova = true;
         const user = this.getauth();
         if (this.user.username) {
-          SpinalUserManager.get_user_id(
-            'http://' + window.location.host, user.username, user
-            .password,
-            response => {
-              this.spinalUserId = parseInt(response);
-              this.conn =
-                window.spinalCore.connect(`http://${this.spinalUserId}:${
-                user.password}@${window.location.host}/`);
-              resolve(this.conn);
-            },
-            () => {
-              window.location = '/html/drive/';
+          this.getServerConfig().then(serverHost => {
+            return axios.get(`${serverHost}/get_user_id`, {
+              params: {
+                u: user.username,
+                p: user.password
+              }
+            }).then(response => {
+              let id = parseInt(response.data);
+              const host = serverHost.replace(/https?:\/\//, "");
+              this.conn = window.spinalCore.connect(
+                `http://${id}:${user.password}@${host}/`
+              );
+              resolve();
+            }, () => {
+              window.location = "/html/drive/";
               reject('Authentication Connection Error');
             });
+          });
         } else {
           window.location = '/html/drive/';
           reject('Authentication Connection Error');
         }
       });
-
-    })
+    });
     return this.connectPromise;
   }
   getModelPath() {
@@ -133,8 +152,12 @@ class SpinalIO {
   }
 
   getPathModel() {
-    const path = this.getModelPath();
-    return this.load(path);
+    try {
+      const path = this.getModelPath();
+      return this.load(path);
+    } catch (e) {
+      return this.load('/__users__/public/digital_twin/default');
+    }
   }
 
   load(path) {
@@ -196,12 +219,12 @@ class SpinalIO {
         if (withAdminCheck === true) {
           return this.loadPtr(userFile).then(
             async (res) => {
-                await this.checkUserAdmin(user, res);
-                return res;
-              },
-              () => {
-                throw new Error('Undefined User');
-              });
+              await this.checkUserAdmin(user, res);
+              return res;
+            },
+            () => {
+              throw new Error('Undefined User');
+            });
         } else {
           return this.loadPtr(userFile);
         }
@@ -213,3 +236,5 @@ class SpinalIO {
 }
 
 export const spinalIO = new SpinalIO();
+if (!window.spinal) { window.spinal = {}; }
+if (!window.spinal.spinalSystem) { window.spinal.spinalSystem = spinalIO; }
