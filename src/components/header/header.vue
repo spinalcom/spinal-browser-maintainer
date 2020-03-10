@@ -26,8 +26,8 @@ with this file. If not, see
   <nav class="navbar navbar-light bg-light mainNavbar">
     <!-- <a class="navbar-brand" -->
     <!-- href="#"> -->
-    <img src="../../assets/SEML LOGO split.jpg"
-         id="spinalcomLogo"
+    <img id="spinalcomLogo"
+         src="../../assets/SEML LOGO split.jpg"
          class="d-inline-block align-top"
          alt="spinalcom">
     <!-- <img src="../../assets/Eiffage Logo.jpg"
@@ -47,7 +47,14 @@ with this file. If not, see
       <img src="./Eiffage Logo.jpg"
            alt="Eiffage Logo">
     </div> -->
-
+    <v-btn-toggle>
+      <v-btn @click="$emit('onViewerHide')">
+        <v-icon>image</v-icon>
+      </v-btn>
+      <v-btn @click="$emit('onTicketsHide')">
+        <v-icon>list</v-icon>
+      </v-btn>
+    </v-btn-toggle>
     <!-- </a> -->
   </nav>
 </template>
