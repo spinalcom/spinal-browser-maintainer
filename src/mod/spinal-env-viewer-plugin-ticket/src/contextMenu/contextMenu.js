@@ -1,3 +1,27 @@
+/*
+ * Copyright 2020 SpinalCom - www.spinalcom.com
+ *
+ * This file is part of SpinalCore.
+ *
+ * Please read all of the following terms and conditions
+ * of the Free Software license Agreement ("Agreement")
+ * carefully.
+ *
+ * This Agreement is a legally binding contract between
+ * the Licensee (as defined below) and SpinalCom that
+ * sets forth the terms and conditions that govern your
+ * use of the Program. By installing and/or using the
+ * Program, you agree to abide by all the terms and
+ * conditions stated or referenced herein.
+ *
+ * If you do not agree to abide by these terms and
+ * conditions, do not demonstrate your acceptance and do
+ * not install or use the Program.
+ * You should have received a copy of the license along
+ * with this file. If not, see
+ * <http://resources.spinalcom.com/licenses.pdf>.
+ */
+
 
 const TICKET_CONTEXT_MENU = "TICKET_CONTEXT_MENU";
 const {
@@ -133,14 +157,14 @@ class MyContextMenu extends Autodesk.Viewing.Extensions.ViewerObjectContextMenu 
     try {
       const spinalNode = await spinal.BimObjectService.getBIMObject(dbId, model);
       if (!spinalNode) return;
-      const parent = await this.getParentGeo(spinalNode.info.id.get());
+      const parent = await this.getParentGeo(spinalNode.id.get());
       const props = await this.getProperties(model, dbId);
       if (this.isObjValid(props)) {
         menu.push({
           title: 'Déclarer un ticket sur cet objet',
           target: () => {
             spinal.spinalPanelManagerService.openPanel("Ticket Panel Manager", {
-              local: parent.info.id.get(), bimObj: spinalNode.info.id.get()
+              local: parent.info.id.get(), bimObj: spinalNode.id.get()
             });
           }
         });
