@@ -168,11 +168,9 @@ export default {
   },
   watch: {
     backFrom() {
-      console.log("this.backFrom", this.backFrom);
       this.calculateTotal(false, this.backFrom);
     },
     processList() {
-      console.log("processList", this.processList);
       this.calculateTotal();
     }
   },
@@ -180,7 +178,6 @@ export default {
     // let self = this;
     this.getEvent();
     this.calculateTotal(false);
-    console.log("allData", this.allData);
     this.statusNames = this.allData.allStatusNames;
   },
   methods: {
@@ -196,11 +193,7 @@ export default {
       EventBus.$emit("select-process", target);
     },
     calculateTotal(bool, item) {
-      // console.log("START calculateTotal");
-      // console.log("this.allData", this.allData, item);
       if (bool) lastSelected = item;
-      // console.log("ITEM", item, this);
-      // console.log("this.BadgeValue HELLLO", this.BadgeValue, this.processList);
       this.proDisplayLst = this.processList.map(e => {
         return { processName: e, tickets: [] };
       });
@@ -214,7 +207,6 @@ export default {
             for (const process of this.proDisplayLst) {
               if (ticket.processName === process.processName) {
                 // if (typeof process.tickets !== 'undefined') process.tickets = [];
-                // console.log(ticket);
 
                 if (
                   !lastSelected ||
@@ -231,7 +223,6 @@ export default {
           }
         }
       }
-      console.log("proDisplayLst", this.proDisplayLst);
     },
     getEvent() {
       EventBus.$on("show-bat", () => this.calculateTotal(true));
