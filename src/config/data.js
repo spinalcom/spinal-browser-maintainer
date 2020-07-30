@@ -1,19 +1,19 @@
 /*
  * Copyright 2020 SpinalCom - www.spinalcom.com
- * 
+ *
  * This file is part of SpinalCore.
- * 
+ *
  * Please read all of the following terms and conditions
  * of the Free Software license Agreement ("Agreement")
  * carefully.
- * 
+ *
  * This Agreement is a legally binding contract between
  * the Licensee (as defined below) and SpinalCom that
  * sets forth the terms and conditions that govern your
  * use of the Program. By installing and/or using the
  * Program, you agree to abide by all the terms and
  * conditions stated or referenced herein.
- * 
+ *
  * If you do not agree to abide by these terms and
  * conditions, do not demonstrate your acceptance and do
  * not install or use the Program.
@@ -60,7 +60,7 @@ function sortBIMObjectByModel(arrayOfBIMObject) {
       arrayModel.push({
         selection: [],
         model
-      })
+      });
     }
   }
 
@@ -98,9 +98,7 @@ let dataService = {
   async getFloor() {
     await graph.init();
     let context = await graph.SpinalGraphService.getContext(
-      geographicConstants
-        .FLOOR_REFERENCE_CONTEXT);
-
+      geographicConstants.FLOOR_REFERENCE_CONTEXT);
 
     if (typeof context === "undefined") { return Promise.resolve([]); }
 
@@ -148,8 +146,9 @@ let dataService = {
     for (const floor of floors) {
       for (const room of floor.rooms) {
         if (room.id === ticket.ticket.info.local.get()) {
-          floor.count += 1;
-          // if (!statusEnd.includes(ticket.step.info.name.get())) {  }
+          if (!statusEnd.includes(ticket.step.info.name.get())) {
+            floor.count += 1;
+          }
           if (typeof room.tickets === 'undefined') room.tickets = [];
           room.tickets.push(ticket);
           return;
@@ -301,12 +300,12 @@ let dataService = {
       const processNode = graph.SpinalGraphService.getRealNode(process.id.get());
       promises.push(graph.SpinalGraphService.getChildren(process.id.get(),
         [SPINAL_TICKET_SERVICE_STEP_RELATION_NAME]).then(child => {
-          return child.map((nodeId) => {
-            const node = graph.SpinalGraphService.getRealNode(nodeId.id.get());
-            this.StepsNodes.set(nodeId.id.get(), node);
-            return { step: node, process: processNode };
-          });
-        }));
+        return child.map((nodeId) => {
+          const node = graph.SpinalGraphService.getRealNode(nodeId.id.get());
+          this.StepsNodes.set(nodeId.id.get(), node);
+          return { step: node, process: processNode };
+        });
+      }));
     }
     return Promise.all(promises);
   },
@@ -378,13 +377,13 @@ let dataService = {
   getFloorRooms(floorId) {
     return graph.SpinalGraphService.findNodes(floorId, geographicConstants
       .GEOGRAPHIC_RELATIONS, (node) => {
-        graph.SpinalGraphService._addNode(node);
-        return node.getType().get() === geographicConstants.ROOM_TYPE;
-      }).then(res => {
-        return res.map(el => {
-          return el.info.get();
-        });
+      graph.SpinalGraphService._addNode(node);
+      return node.getType().get() === geographicConstants.ROOM_TYPE;
+    }).then(res => {
+      return res.map(el => {
+        return el.info.get();
       });
+    });
   },
   getProcessName(obj) {
     let allProcess = [];
@@ -411,7 +410,7 @@ let dataService = {
         res.push({
           name,
           color: stepsNode.info.color.get()
-        })
+        });
       }
     }
     return res;
@@ -422,6 +421,7 @@ let dataService = {
     let floors = await this.getFloor();
     let rooms = await this.getRooms(floors);
     let ticketsByProcess = await this.getTickets(rooms, processName);
+    console.log("ticketsByProcess", ticketsByProcess);
     await this.getEquipments(rooms);
     this.getProcessName(processName);
     let context = await graph.SpinalGraphService.getContext(SERVICE_NAME);
@@ -437,6 +437,7 @@ let dataService = {
       statusEnd,
       allStatusNames: this.getStatusNames()
     };
+    console.log("res",res);
     return res;
   },
   async getBimObjects(id) {
@@ -444,13 +445,13 @@ let dataService = {
     await graph.init();
     return graph.SpinalGraphService.findNodes(id, geographicConstants
       .GEOGRAPHIC_RELATIONS, (node) => {
-        graph.SpinalGraphService._addNode(node);
-        return node.getType().get() === geographicConstants.EQUIPMENT_TYPE;
-      }).then(res => {
-        return res.map(el => {
-          return el.info.dbid.get();
-        });
+      graph.SpinalGraphService._addNode(node);
+      return node.getType().get() === geographicConstants.EQUIPMENT_TYPE;
+    }).then(res => {
+      return res.map(el => {
+        return el.info.dbid.get();
       });
+    });
   },
 
   async getBimObjectByModel(id) {

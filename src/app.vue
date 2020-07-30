@@ -209,6 +209,7 @@ export default Vue.extend({
 <style scoped>
 .app-viewer-display.dataViewHide {
   width: 100%;
+  height: 100% !important;
 }
 .dataViewDisplay.dataViewHide {
   display: none;
@@ -218,6 +219,7 @@ export default Vue.extend({
 }
 .dataViewDisplay.viewerHide {
   width: 100%;
+  height: 100% !important;
 }
 
 .roomcontext {

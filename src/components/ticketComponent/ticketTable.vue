@@ -1,3 +1,27 @@
+<!--
+Copyright 2020 SpinalCom - www.spinalcom.com
+
+This file is part of SpinalCore.
+
+Please read all of the following terms and conditions
+of the Free Software license Agreement ("Agreement")
+carefully.
+
+This Agreement is a legally binding contract between
+the Licensee (as defined below) and SpinalCom that
+sets forth the terms and conditions that govern your
+use of the Program. By installing and/or using the
+Program, you agree to abide by all the terms and
+conditions stated or referenced herein.
+
+If you do not agree to abide by these terms and
+conditions, do not demonstrate your acceptance and do
+not install or use the Program.
+You should have received a copy of the license along
+with this file. If not, see
+<http://resources.spinalcom.com/licenses.pdf>.
+-->
+
 <template>
   <div class="ticketTableMainContainer">
     <div class="ticketTableHeaderContainer">
@@ -12,10 +36,12 @@
       </v-btn>
       <v-tooltip bottom>
         <template v-slot:activator="{ on }">
-          <h3 v-on="on"
-              id="title">{{title}}</h3>
+          <h3 id="title"
+              v-on="on">
+            {{ title }}
+          </h3>
         </template>
-        <span>{{title}}</span>
+        <span>{{ title }}</span>
       </v-tooltip>
 
       <div class="ticketTableHeaderBtnRow">
@@ -32,20 +58,20 @@
 
         <v-tooltip bottom>
           <template v-slot:activator="{ on }">
-            <v-btn v-on="on"
-                   text
+            <v-btn text
                    icon
+                   v-on="on"
                    @click="exportCsv">
               <v-icon>get_app</v-icon>
             </v-btn>
           </template>
-          <span>{{translate('Export to CSV.')}}</span>
+          <span>{{ translate('Export to CSV.') }}</span>
         </v-tooltip>
         <v-tooltip bottom>
           <template v-slot:activator="{ on }">
-            <v-btn v-on="on"
-                   text
+            <v-btn text
                    icon
+                   v-on="on"
                    @click="analytics">
               <v-icon>assessment</v-icon>
             </v-btn>
@@ -55,20 +81,19 @@
 
         <v-tooltip bottom>
           <template v-slot:activator="{ on }">
-            <v-btn v-on="on"
-                   text
+            <v-btn text
                    icon
+                   v-on="on"
                    @click="showTicketsColor">
               <v-icon>remove_red_eye</v-icon>
             </v-btn>
           </template>
-          <span>{{translate('Show Tickets Color')}}</span>
+          <span>{{ translate('Show Tickets Color') }}</span>
         </v-tooltip>
         <filter-dialog ref="filterDialog"
                        :steps="steps"
-                       :selectedSteps="selectedSteps"></filter-dialog>
+                       :selected-steps="selectedSteps" />
       </div>
-
     </div>
 
     <v-data-table :headers="headers"
@@ -83,17 +108,16 @@
                  color="error"
                  style="width:100%;text-align: center;display:block;">
           <h2>
-            {{translate('Sorry, nothing to display')}}
+            {{ translate('Sorry, nothing to display') }}
           </h2>
           <p>
-            {{translate('Try to modify option\'s filter')}}
+            {{ translate('Try to modify option\'s filter') }}
           </p>
           <v-btn primary
                  text
                  @click="openFilterDialog">
-            <v-icon>filter_list</v-icon>{{translate('Filter Option')}}
+            <v-icon>filter_list</v-icon>{{ translate('Filter Option') }}
           </v-btn>
-
         </v-alert>
       </template>
 
@@ -111,11 +135,11 @@
         </v-tooltip>
       </template>
       <template v-slot:items="props">
-        <tableRowSpinal @onSelect="onClick"
+        <tableRowSpinal :is-selected="selectedItemId === props.item.info.id.get()"
+                        :ticket-id="props.item.info.id.get()"
+                        @onSelect="onClick"
                         @onMouseEnter="onMouseEnter"
-                        @onSelectDetails="selectDetails(props)"
-                        :isSelected="selectedItemId === props.item.info.id.get()"
-                        :ticketId="props.item.info.id.get()"></tableRowSpinal>
+                        @onSelectDetails="selectDetails(props)" />
         <!-- <tr> -->
 
         <!-- <td>{{test(props)}}</td> -->
@@ -148,21 +172,22 @@
 <script>
 import { EventBus } from "../../config/event";
 import filterDialog from "./filterDialog.vue";
-import graph from "../../config/GraphService";
+// import graph from "../../config/GraphService";
 import { tl } from "../../config/i18n";
-import stepName from "./stepName.vue";
+// import stepName from "./stepName.vue";
 import dataService from "../../config/data";
 import tableRowSpinal from "./tableRowSpinal";
 
 const getTicketStep = dataService.getTicketStep;
 
 export default {
-  name: "ticketTable",
+  name: "TicketTable",
   components: {
     filterDialog,
-    stepName,
+    // stepName,
     tableRowSpinal
   },
+  props: ["allTickets", "steps", "selectedSteps", "title"],
   data() {
     return {
       headers: [
@@ -191,10 +216,6 @@ export default {
       ticketComputed: []
     };
   },
-  props: ["allTickets", "steps", "selectedSteps", "title"],
-  mounted() {
-    return this.updateAllTickets();
-  },
   computed: {
     // ticketComputed() {
     //   const ticketComputed = [];
@@ -213,6 +234,9 @@ export default {
       return this.updateAllTickets();
     }
   },
+  mounted() {
+    return this.updateAllTickets();
+  },
   methods: {
     getTicketStep(tickets) {
       const prom = [];
@@ -230,7 +254,7 @@ export default {
       const ticketSteps = await this.getTicketStep(this.allTickets);
       for (const { step, ticket } of ticketSteps) {
         if (this.selectedSteps.some(e => e.name === step.info.name.get()))
-          this.ticketComputed.push(ticket);
+        {this.ticketComputed.push(ticket);}
       }
       // this.ticketComputed = this.allTickets;
       // console.log("allTickets", this.allTickets);
@@ -305,7 +329,7 @@ export default {
 
       EventBus.$emit(
         "ticket-details",
-        spinal.spinalGraphService.getInfo(item.item.info.id.get())
+        window.spinal.spinalGraphService.getInfo(item.item.info.id.get())
       );
     },
     onMouseEnter(item) {

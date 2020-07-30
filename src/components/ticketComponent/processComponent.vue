@@ -1,43 +1,146 @@
+<!--
+Copyright 2020 SpinalCom - www.spinalcom.com
+
+This file is part of SpinalCore.
+
+Please read all of the following terms and conditions
+of the Free Software license Agreement ("Agreement")
+carefully.
+
+This Agreement is a legally binding contract between
+the Licensee (as defined below) and SpinalCom that
+sets forth the terms and conditions that govern your
+use of the Program. By installing and/or using the
+Program, you agree to abide by all the terms and
+conditions stated or referenced herein.
+
+If you do not agree to abide by these terms and
+conditions, do not demonstrate your acceptance and do
+not install or use the Program.
+You should have received a copy of the license along
+with this file. If not, see
+<http://resources.spinalcom.com/licenses.pdf>.
+-->
+
 <template>
   <div class="overflowDisplayProcess">
-
-    <v-btn style="position: absolute; left: 8px; top: 8px;"
-           v-bind="{type:'rounded', small: true}"
-           class="media-v-btn--icon"
-           href="https://www.alteva.net/EMIssiON?base=semlrdl"
-           target="_blank">
-      <v-icon>open_in_new</v-icon>
-      <span class="btn-open-emission-text">Ouvrir eMission</span>
-    </v-btn>
-
-    <!-- <div class="selectEyeForTickets">
-      <button>
-        <v-icon>get_app</v-icon>
-      </button>
-      <button>
-        <v-icon>assessment</v-icon>
-      </button>
-
-    </div> -->
-    <h3 class="displayProcessElementTitle">{{translate('Choose a process')}}
-    </h3>
     <div class="displayProcessElementMainContent">
-      <div v-for="element in proDisplayLst"
-           class="displayButtonChooseProcess">
-        <button class="buttonProcessDisplay"
-                @click="selectProcess(element.processName)">
-          <!-- 				<v-badge right color="red">
-      <template v-slot:badge>
-        <span class="processBadge">6</span>
-      </template> -->
-          {{ element.processName }}
-          <p class="displayCountBadge"
-             v-if="element.tickets.length !== 0">{{ element.tickets.length }}
-          </p>
-        </button>
+      <!-- <md-table md-card
+                style="min-height: 400px;">
+        <md-table-toolbar>
+          <div class="md-toolbar-section-start">
+            <h1 class="md-title">
+              {{ translate('Choose a process') }}
+            </h1>
+          </div>
 
-      </div>
+          <md-field class="md-toolbar-section-end toolbar-openMission">
+            <v-btn v-bind="{type:'rounded', small: true}"
+                   class="media-v-btn--icon"
+                   href="https://www.alteva.net/EMIssiON?base=semlrdl"
+                   target="_blank">
+              <v-icon>open_in_new</v-icon>
+              <span class="btn-open-emission-text">Ouvrir eMission</span>
+            </v-btn>
+          </md-field>
+        </md-table-toolbar>
 
+        <md-table-row v-for="element in proDisplayLst"
+                      @click="selectProcess(element.processName)">
+          <md-table-cell>
+            {{ element.processName }}
+          </md-table-cell>
+
+          <md-table-cell v-for="statusName in statusNames"
+                         :key="statusName.name"
+                         class="table-header-cell-process">
+            <div v-tooltip="statusName.name"
+                 class="cell-color-status"
+                 :style="{
+                   'background-color': statusName.color
+                 }"></div>
+            {{ getNbTicketByStatus(element.tickets,statusName.name) }}
+          </md-table-cell>
+        </md-table-row>
+      </md-table> -->
+
+      <v-card>
+        <v-card-title>
+          <v-toolbar flat
+                     color="white">
+            <v-toolbar-title>
+              {{ translate('Choose a process') }}
+            </v-toolbar-title>
+            <v-spacer></v-spacer>
+            <v-btn v-bind="{type:'rounded', small: true}"
+                   class="media-v-btn--icon"
+                   href="https://www.alteva.net/EMIssiON?base=semlrdl"
+                   target="_blank">
+              <v-icon>open_in_new</v-icon>
+              <span class="btn-open-emission-text">Ouvrir eMission</span>
+            </v-btn>
+          </v-toolbar>
+          <div style="width: 100%;">
+            <v-data-table hide-headers
+                          hide-actions
+                          :items="proDisplayLst"
+                          class="elevation-1">
+              <template v-slot:items="props">
+                <tr @click="selectProcess(props.item.processName)">
+                  <td>{{ props.item.processName }}</td>
+                  <td v-for="statusName in statusNames"
+                      :key="statusName.name"
+                      v-tooltip="statusName.name"
+                      class="table-header-cell-process">
+                    <div class="cell-color-status"
+                         :style="{
+                           'background-color': statusName.color
+                         }"></div>
+                    {{ getNbTicketByStatus(props.item.tickets, statusName.name) }}
+                  </td>
+                </tr>
+              </template>
+            </v-data-table>
+          </div>
+        </v-card-title>
+      </v-card>
+      <v-card>
+        <v-card-title>
+          <v-toolbar flat
+                     color="white">
+            <v-toolbar-title>
+              Legends
+            </v-toolbar-title>
+          </v-toolbar>
+
+          <!-- <div style="width: 100%;text-align: center;">
+            <h3 class="headline mb-2">
+              Legends
+            </h3>
+          </div> -->
+
+          <div
+            style="display: flex; flex-wrap: wrap;justify-content: space-around;">
+            <div v-for="statusName in statusNames"
+                 :key="statusName.name"
+                 style="padding: 8px;">
+              <v-card style="width:150px; display:flex; align-items: center;">
+                <v-card-title
+                  style="padding: 8px 12px;  margin-bottom: 0!important">
+                  <h4 class="mb-0">
+                    {{ statusName.name }}
+                  </h4>
+                  <div v-tooltip="statusName.name"
+                       class="cell-color-status"
+                       :style="{
+                         'background-color': statusName.color
+                       }"></div>
+                </v-card-title>
+              </v-card>
+            </div>
+          </div>
+        </v-card-title>
+      </v-card>
     </div>
   </div>
 </template>
@@ -48,27 +151,49 @@ let lastSelected = null;
 import { tl } from "../../config/i18n";
 
 export default {
-  name: "processComponent",
+  name: "ProcessComponent",
+  props: ["processList", "allData", "backFrom", "load"],
   data() {
     return {
       BadgeValue: {},
       actualizeBadge: true,
-      proDisplayLst: []
+      proDisplayLst: [],
+      statusNames: []
     };
   },
-  props: ["processList", "allData", "backFrom", "load"],
+  computed: {
+    headers() {
+      return ["", ...this.statusNames];
+    }
+  },
+  watch: {
+    backFrom() {
+      console.log("this.backFrom", this.backFrom);
+      this.calculateTotal(false, this.backFrom);
+    },
+    processList() {
+      console.log("processList", this.processList);
+      this.calculateTotal();
+    }
+  },
+  mounted() {
+    // let self = this;
+    this.getEvent();
+    this.calculateTotal(false);
+    console.log("allData", this.allData);
+    this.statusNames = this.allData.allStatusNames;
+  },
   methods: {
     translate: tl,
+    getNbTicketByStatus(tickets, statusName) {
+      let count = 0;
+      for (const ticket of tickets) {
+        if (ticket.step.info.name.get() === statusName) count++;
+      }
+      return count;
+    },
     selectProcess(target) {
       EventBus.$emit("select-process", target);
-      // if (target.target.className !== "displayCountBadge") {
-      //   let txt = target.target.innerHTML
-      //     .split(/</g)[0]
-      //     .split("\n")
-      //     .join("");
-      //   txt = txt.split("\t").join("");
-      //   EventBus.$emit("select-process", txt);
-      // }
     },
     calculateTotal(bool, item) {
       // console.log("START calculateTotal");
@@ -106,48 +231,7 @@ export default {
           }
         }
       }
-
-      // if (this.backFrom !== "") {
-      //   let rooms = this.allData.rooms;
-      //   for (var room in rooms) {
-      //     if (rooms[room].floor === this.backFrom) {
-      //       this.BadgeValue = rooms[room].processNumber;
-      //     }
-      //   }
-      //   return;
-      // }
-
-      // if (bool) {
-      //   if (typeof item.tickets !== "undefined") {
-      //     for (const ticket of item.tickets) {
-      //       const processName = ticket.processName;
-      //       if (typeof this.BadgeValue[processName] === "undefined") {
-      //         this.BadgeValue[processName] = 1;
-      //       } else {
-      //         this.BadgeValue[processName] += 1;
-      //       }
-      //     }
-
-      //   }
-
-      //   // let rooms = this.allData.rooms;
-      //   // for (var mRoom in rooms) {
-      //   //   if (rooms[mRoom].floor === item.name) {
-      //   //     this.BadgeValue = rooms[mRoom].processNumber;
-      //   //   }
-      //   // }
-      // } else {
-      //   console.log("calculateTotal ", this.allData);
-      //   this.BadgeValue = this.allData.totalTickets.count;
-      // }
-    },
-    displayBadge(value) {
-      //   if (this.BadgeValue === undefined) {
-      //     return " ";
-      //   }
-      //   console.log("this.BadgeValue", this.BadgeValue, value);
-      //   if (this.BadgeValue[value] === undefined) return " ";
-      //   else return this.BadgeValue[value];
+      console.log("proDisplayLst", this.proDisplayLst);
     },
     getEvent() {
       EventBus.$on("show-bat", () => this.calculateTotal(true));
@@ -156,30 +240,31 @@ export default {
       );
       EventBus.$on("data-update", () => this.calculateTotal(false));
     }
-  },
-  watch: {
-    backFrom() {
-      this.calculateTotal(false, this.backFrom);
-    },
-    processList() {
-      this.calculateTotal();
-    }
-  },
-  mounted() {
-    // let self = this;
-    this.getEvent();
-    this.calculateTotal(false);
-    // if (this.load) {
-    // this.calculateTotal(false);
-    // } else {
-    //   setTimeout(function() {
-    //     self.calculateTotal(false);
-    //   }, 3000);
-    // }
   }
 };
 </script>
+
+<style>
+/* .displayProcessElementMainContent * {
+    color: black !important;
+    background-color: white !important;
+} */
+</style>
+
 <style scoped>
+.table-header-cell-process {
+  position: relative;
+}
+.cell-color-status {
+  height: 100%;
+  width: 8px;
+  top: 0;
+  left: 0;
+  position: absolute;
+}
+.toolbar-openMission::after {
+  height: 0 !important;
+}
 .selectEyeForTickets {
   position: absolute;
   right: 10px;
@@ -213,9 +298,13 @@ export default {
 }
 .displayProcessElementMainContent {
   width: 100%;
-  height: calc(100% - 55px);
+  height: 100%;
   overflow: auto;
   padding-bottom: 16px;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  padding: 20px;
 }
 
 .displayProcessElementMainContent::-webkit-scrollbar {

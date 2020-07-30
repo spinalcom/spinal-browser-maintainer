@@ -1,14 +1,42 @@
+<!--
+Copyright 2020 SpinalCom - www.spinalcom.com
+
+This file is part of SpinalCore.
+
+Please read all of the following terms and conditions
+of the Free Software license Agreement ("Agreement")
+carefully.
+
+This Agreement is a legally binding contract between
+the Licensee (as defined below) and SpinalCom that
+sets forth the terms and conditions that govern your
+use of the Program. By installing and/or using the
+Program, you agree to abide by all the terms and
+conditions stated or referenced herein.
+
+If you do not agree to abide by these terms and
+conditions, do not demonstrate your acceptance and do
+not install or use the Program.
+You should have received a copy of the license along
+with this file. If not, see
+<http://resources.spinalcom.com/licenses.pdf>.
+-->
+
 
 <template>
-  <div class="mySidebar-container"
-       v-if="rendering">
-    <div class="mySidebarx"
-         v-if="selectedLevel">
+  <div v-if="rendering"
+       class="mySidebar-container">
+    <div v-if="selectedLevel"
+         class="mySidebarx">
       <div class="sidebar-goto-floor-btn-container">
-        <p id="floorSelectedTitleId">{{translate('Building')}}</p>
+        <p id="floorSelectedTitleId">
+          {{ translate('Building') }}
+        </p>
         <v-icon dark
-                @click="showBat"
-                class="icon-show-floor">remove_red_eye</v-icon>
+                class="icon-show-floor"
+                @click="showBat">
+          remove_red_eye
+        </v-icon>
       </div>
       <!-- <p id="HeaderTitle">{{translate('Building')}}</p> -->
       <div v-for="(item) in floors"
@@ -20,11 +48,16 @@
              @click="onItemClick(item)"
              @mouseover="mouseOver(item)"
              @mouseleave="mouseLeave()">
-          <p class="sitebarElement">
-            {{ shortenText(item.name) }}</p>
-          <div class="displayBadge"
-               v-if="getTiketsNumber(item)!==0">
-            <p style="color:white !important">{{ getTiketsNumber(item) }}</p>
+          <div class="sitebarElement">
+            <span>
+              {{ item.name }}
+            </span>
+          </div>
+          <div v-if="getTiketsNumber(item)!==0"
+               class="displayBadge">
+            <p style="color:white !important">
+              {{ getTiketsNumber(item) }}
+            </p>
           </div>
         </div>
       </div>
@@ -34,12 +67,15 @@
       <div class="sidebar-goto-floor-btn-container">
         <div id="floorSelectedTitleId"
              class="sidebar-goto-floor-btn"
-             @click="backToFloor"><i class="material-icons"> keyboard_arrow_left
+             @click="backToFloor">
+          <i class="material-icons"> keyboard_arrow_left
           </i><span>{{ floor }}</span>
         </div>
         <v-icon dark
-                @click="showFloor"
-                class="icon-show-floor">remove_red_eye</v-icon>
+                class="icon-show-floor"
+                @click="showFloor">
+          remove_red_eye
+        </v-icon>
       </div>
       <div v-for="item in roomsDisplayed"
            :key="item.name">
@@ -50,28 +86,32 @@
              @click="onItemClick(item)"
              @mouseover="mouseOver(item)"
              @mouseleave="mouseLeave()">
-          <p class="sitebarElement"
-             :value="item"
-             :title="item.name">{{ shortenText(item.name) }}
-          </p>
-
-          <div class="displayBadge"
-               v-if="numberForBadge(item.tickets)!==0">
-            <!-- <div class="displayBadge" -->
-            <!-- > -->
-            <p style="color:white !important">{{ numberForBadge(item.tickets) }}
-            </p>
+          <div class="sitebarElement"
+               :value="item"
+               :title="item.name">
+            <span>
+              {{ item.name }}
+            </span>
           </div>
 
+          <div v-if="numberForBadge(item.tickets)!==0"
+               class="displayBadge">
+            <!-- <div class="displayBadge" -->
+            <!-- > -->
+            <p style="color:white !important">
+              {{ numberForBadge(item.tickets) }}
+            </p>
+          </div>
         </div>
       </div>
     </div>
     <hr />
     <div class="mySidebarx-logo-container">
-      <img src="../../assets/spinalcomv2-power by.png"
-           id="spinalcomLogo"
+      <img id="spinalcomLogo"
+           src="../../assets/spinalcomv2-power by.png"
            alt="spinalcom">
     </div>
+  </div>
 </template>
 
 <script>
@@ -79,6 +119,7 @@ import { EventBus } from "../../config/event";
 import { tl } from "../../config/i18n";
 
 export default {
+  props: ["floors", "rooms", "allData"],
   data() {
     return {
       active: true,
@@ -96,7 +137,6 @@ export default {
       counter: {}
     };
   },
-  props: ["floors", "rooms", "allData"],
   mounted() {
     let content = {
       title: "Floors",
@@ -123,7 +163,6 @@ export default {
     EventBus.$on("select-process", processName => {
       this.selectedProcess = processName;
       this.calculeTotalTicket(this.floors);
-      let self = this;
       // setTimeout(function() {
       //   self.rendering = false;
       //   self.rendering = true;
@@ -133,7 +172,6 @@ export default {
     EventBus.$on("getBackToProcess", () => {
       this.selectedProcess = "";
       this.calculeTotalTicket(this.floors);
-      let self = this;
       // setTimeout(function() {
       //   self.rendering = false;
       //   self.rendering = true;
@@ -385,6 +423,10 @@ p {
   width: inherit;
 }
 
+.sitebarElement > span {
+  overflow: hidden;
+  white-space: nowrap;
+}
 .sitebarElement {
   width: 150px;
   color: white;
