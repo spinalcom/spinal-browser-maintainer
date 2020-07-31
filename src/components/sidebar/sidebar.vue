@@ -272,12 +272,26 @@ export default {
       let count = 0;
       if (tickets !== undefined) {
         if (this.selectedProcess !== "") {
-          for (var el in tickets) {
-            if (tickets[el].processName == this.selectedProcess) count++;
+          for (const el in tickets) {
+            if (
+              !this.allData.statusEnd.includes(
+                tickets[el].step.info.name.get()
+              ) &&
+              tickets[el].processName == this.selectedProcess
+            ) {
+              count++;
+            }
           }
           return count;
         } else {
-          return tickets.length;
+          for (const el in tickets) {
+            if (
+              !this.allData.statusEnd.includes(tickets[el].step.info.name.get())
+            ) {
+              count++;
+            }
+          }
+          return count;
         }
       } else {
         return 0;
