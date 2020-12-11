@@ -157,7 +157,8 @@ class MyContextMenu extends Autodesk.Viewing.Extensions.ViewerObjectContextMenu 
     try {
       const spinalNode = await spinal.BimObjectService.getBIMObject(dbId, model);
       if (!spinalNode) return;
-      const parent = await this.getParentGeo(spinalNode.id.get());
+      const id = typeof spinalNode.id === "undefined" ? spinalNode.info.id.get() : spinalNode.id.get();
+      const parent = await this.getParentGeo(id);
       const props = await this.getProperties(model, dbId);
       if (this.isObjValid(props)) {
         menu.push({
